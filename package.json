@@ -1,13 +1,14 @@
 {
   "name": "botgram",
-  "version": "0.0.0-none",
+  "version": "1.0.0",
   "keywords": [ "telegram", "bot" ],
   "description": "Microframework to build Telegram bots.",
   "homepage": "https://github.com/jmendeth/node-botgram",
 
   "main": "index.js",
   "dependencies": {
-    "minimatch": "3"
+    "minimatch": "3",
+    "form-data": ">= 1.0.0-rc3"
   },
 
   "bugs": {

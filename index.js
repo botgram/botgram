@@ -1,1 +1,1 @@
-var Minimatch = require("minimatch").Minimatch;
+module.exports = require("./lib/bot");
