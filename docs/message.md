@@ -1,0 +1,237 @@
+# Message object
+
+The first argument passed to handlers, which will be called
+`msg` throughout this document, contains a description about
+the message that is being processed.
+
+All messages have the following data:
+
+ - `msg.id` returns the message ID.
+
+ - `msg.date` returns a `Date` object with the time this message
+   was posted.
+
+ - `msg.chat` returns information about the chat this message was sent to:
+     - `msg.chat.id` returns the chat's unique ID.
+     - `msg.chat.type` returns one of `user`, `group`, `supergroup` and `channel`.
+     - `msg.chat.title` returns the group, supergroup or channel title. Not present if this is a user.
+     - `msg.chat.firstname` returns the user's first name. Only present if this is a user.
+     - `msg.chat.lastname` returns the user's last name, or `null` if not set. Only present if this is a user.
+     - `msg.chat.username` returns the chat's username, or `null` if not set. Only present if this is a user or channel.
+     - `msg.chat.name` returns the first name and last name joined for users, or title for everything else.
+
+ - `msg.from` (not present on channels) returns information about the user who sent this message:
+     - `msg.from.id` returns the user's unique ID.
+     - `msg.from.type` returns `user`.
+     - `msg.from.firstname` returns the user's first name.
+     - `msg.from.lastname` returns the user's last name, or `null` if not set.
+     - `msg.from.username` returns the chat's username, or `null` if not set.
+     - `msg.from.name` returns the first name and last name joined.
+
+ - `msg.forward` (only present on forwarded messages) returns information about
+   the original message:
+     - `msg.forward.from` returns information about the user who sent the message,
+       in the same format as `msg.from`. Not present if forwarded from a channel (FIXME: verify).
+     - `msg.forward.date` returns a `Date` object when the message was posted.
+
+ - `msg.reply` (only present if this message is a reply to another message) returns
+   information about the message being replied to, in the same format as `msg`.
+   Note even if `msg.reply` itself is a reply, `msg.reply.reply` will not be present.
+
+ - `msg.group` is an alias to `msg.chat` if the message was sent to a group
+   or supergroup, not present otherwise.
+
+ - `msg.user` is an alias to `msg.chat` if the message was sent on a user (private)
+   chat, not present otherwise.
+
+
+## Text
+
+Text messages have the following additional fields:
+
+ - `msg.type` returns `text`.
+
+ - `msg.text` returns the raw message text.
+
+ - `msg.mentions` returns an array of usernames, one for every `@mention` in
+   `msg.text`, in order.
+
+Texts of the form `/<name>[@<username>] <args>` are also *commands* and have
+the following extra fields:
+
+ - `msg.command` returns the command name, i.e. the word after the slash.
+
+ - `msg.args()` returns the whole arguments string.
+
+ - `msg.args(N)` returns a list of N arguments, by splitting the string
+   by the first N-1 spaces. If fewer spaces are found, the returned list
+   will have less than N items.
+
+ - `msg.username` returns the username, if present in the command, otherwise `null`.
+
+ - `msg.mine` returns `true` if the command is aimed at this bot (at least).
+
+ - `msg.exclusive` returns `true` if the command is aimed **exclusively** to this
+   bot (either because it's a private chat, or because the username was present
+   and matched this bot's).
+
+
+## Audio
+
+These messages contain audio to be treated as music by the Telegram clients.
+Audio messages have the following additional fields:
+
+ - `msg.type` returns `audio`.
+
+ - `msg.duration` returns the duration of the audio in seconds, as defined by the sender.
+
+ - `msg.file` returns information about the audio file:
+     - `msg.file.id` returns the ID of the file.
+     - `msg.file.size` returns the size of the file if known, not present otherwise.
+     - `msg.file.mime` returns the MIME type of the file if defined, not present otherwise.
+
+ - `msg.performer` returns the performer of the audio as defined by sender or by audio tags, not present otherwise.
+
+ - `msg.title` returns the title of the audio as defined by sender or by audio tags, not present otherwise.
+
+
+## Document
+
+Document messages contain a general file, or attachment, and have the following
+additional fields:
+
+ - `msg.type` returns `document`.
+
+ - `msg.file` returns information about the attached file:
+     - `msg.file.id` returns the ID of the file.
+     - `msg.file.size` returns the size of the file if known, not present otherwise.
+     - `msg.file.mime` returns the MIME type of the file if defined, not present otherwise.
+
+ - `msg.filename` returns the original filename if defined, not present otherwise.
+
+ - `msg.thumbnail` returns information about the document's thumbnail as defined by sender, not present otherwise.
+     - `msg.thumbnail.file` returns information about the image file:
+         - `msg.thumbnail.file.id` returns the ID of the file.
+         - `msg.thumbnail.file.size` returns the size of the file if known, not present otherwise.
+     - `msg.thumbnail.width` returns the width of the image in pixels.
+     - `msg.thumbnail.height` returns the height of the image in pixels.
+
+
+## Photo
+
+Photo messages have the following additional fields:
+
+ - `msg.type` returns `photo`.
+
+ - `msg.sizes` returns an array of images, containing all available sizes of the photo.
+   Each size (item) has the following fields:
+     - `msg.sizes[x].file` returns information about the image file:
+         - `msg.sizes[x].file.id` returns the ID of the file.
+         - `msg.sizes[x].file.size` returns the size of the file if known, not present otherwise.
+     - `msg.sizes[x].width` returns the width of the image in pixels.
+     - `msg.sizes[x].height` returns the height of the image in pixels.
+
+ - `msg.image` points to the larger size available in `msg.sizes`.
+
+ - `msg.caption` returns a caption for the photo of 200 characters at most, if defined. Not present otherwise.
+
+
+## Sticker
+
+Sticker messages have the following additional fields:
+
+ - `msg.type` returns `sticker`.
+
+ - `msg.file` returns information about the sticker image:
+     - `msg.file.id` returns the ID of the file.
+     - `msg.file.size` returns the size of the file if known, not present otherwise.
+
+ - `msg.width` returns the width of the sticker in pixels.
+
+ - `msg.height` returns the height of the sticker in pixels.
+
+ - `msg.thumbnail` returns information about the sticker's thumbnail if available, not present otherwise.
+     - `msg.thumbnail.file` returns information about the image file:
+         - `msg.thumbnail.file.id` returns the ID of the file.
+         - `msg.thumbnail.file.size` returns the size of the file if known, not present otherwise.
+     - `msg.thumbnail.width` returns the width of the image in pixels.
+     - `msg.thumbnail.height` returns the height of the image in pixels.
+
+
+## Video
+
+Video messages have the following additional fields:
+
+ - `msg.type` returns `video`.
+
+ - `msg.width` returns the width of the video in pixels, as defined by sender.
+
+ - `msg.height` returns the height of the video in pixels, as defined by sender.
+
+ - `msg.duration` returns the duration of the video in seconds, as defined by sender.
+
+ - `msg.file` returns information about the video file:
+     - `msg.file.id` returns the ID of the file.
+     - `msg.file.size` returns the size of the file if known, not present otherwise.
+     - `msg.file.mime` returns the MIME type of the file if defined, not present otherwise.
+
+ - `msg.thumbnail` returns information about the video thumbnail if available, not present otherwise.
+     - `msg.thumbnail.file` returns information about the image file:
+         - `msg.thumbnail.file.id` returns the ID of the file.
+         - `msg.thumbnail.file.size` returns the size of the file if known, not present otherwise.
+     - `msg.thumbnail.width` returns the width of the image in pixels.
+     - `msg.thumbnail.height` returns the height of the image in pixels.
+
+ - `msg.caption` returns a caption for the video of 200 characters at most, if defined. Not present otherwise.
+
+
+## Voice
+
+Voice messages have the following additional fields:
+
+ - `msg.type` returns `voice`.
+
+ - `msg.duration` returns the duration of the audio as defined by sender.
+
+ - `msg.file` returns information about the audio file:
+     - `msg.file.id` returns the ID of the file.
+     - `msg.file.size` returns the size of the file if known, not present otherwise.
+     - `msg.file.mime` returns the MIME type of the file if defined, not present otherwise.
+
+
+## Contact
+
+Contact messages have the following additional fields:
+
+ - `msg.type` returns `contact`.
+
+ - `msg.phone` returns the contact's phone number.
+
+ - `msg.firstname` returns the contact's first name.
+
+ - `msg.lastname` returns the contact's last name if defined, not present otherwise.
+
+ - `msg.userId` returns the contact's Telegram user ID if known, not present otherwise.
+
+
+## Location
+
+Location messages have the following additional fields:
+
+ - `msg.type` returns `location`.
+
+ - `msg.longitude` returns a decimal longitude as defined by sender.
+
+ - `msg.latitude` returns a decimal latitude as defined by sender.
+
+
+## Update
+
+This type of message indicates some kind of change in a chat,
+such as someone entering a group, new photo, and so on. Updates
+are the only kind of message that can't be resent. Update
+messages have the following additional fields:
+
+ - `msg.type` returns `update`.
+
+TODO: complete this
