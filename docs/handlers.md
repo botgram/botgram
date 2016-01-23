@@ -12,6 +12,15 @@ The different kinds of handler to register are documented below.
 The most general one is `all(handler)`, which gets any message
 the bot could possibly receive.
 
+A handler is passed the bot object as the value of `this`.
+
+
+## `all(handler)`
+
+Register a handler that will receive any incoming message.
+
+Calling `all(handler)` is completely equivalent to `message(true, handler)`.
+
 
 ## `message([alsoUpdates], handler)`
 
@@ -31,13 +40,6 @@ bot.message(true, function (msg, reply, text) {
   // matches messages of any kind, including updates
 });
 ~~~
-
-
-## `all(handler)`
-
-Register a handler that will receive any incoming message.
-
-Calling `all(handler)` is completely equivalent to `message(true, handler)`.
 
 
 ## `text([alsoCommands], handler)`
@@ -82,7 +84,8 @@ bot.mention(true, "foobar", function (msg, reply, next) {
 ~~~
 
 In the above example, a text message like `@foobar @<bot username>`
-could be accepted by all three handlers.
+could be accepted by all three handlers. Usernames are checked
+case insensitively.
 
 
 ## `command([name...], handler)`

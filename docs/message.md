@@ -44,6 +44,9 @@ All messages have the following data:
  - `msg.user` is an alias to `msg.chat` if the message was sent on a user (private)
    chat, not present otherwise.
 
+ - `msg.queued` returns `true` if the message was sent while the bot was
+   not running.
+
 
 ## Text
 
@@ -53,8 +56,10 @@ Text messages have the following additional fields:
 
  - `msg.text` returns the raw message text.
 
- - `msg.mentions` returns an array of usernames, one for every `@mention` in
-   `msg.text`, in order.
+ - `msg.mentions()` returns an array of usernames, one for every `@mention` in
+   `msg.text`, in order. There might be duplicates present.
+
+ - `msg.mentions(x)` returns the number of mentions for username `x` in the message.
 
 Texts of the form `/<name>[@<username>] <args>` are also *commands* and have
 the following extra fields:
