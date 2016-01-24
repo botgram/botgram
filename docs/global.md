@@ -64,9 +64,9 @@ If any of these has to change, the file has to be uploaded again.
 ## Miscellaneous
 
 - upload media if not there
-- bot.fileGet(file, callback(err, stream, size))
-- bot.fileStream(file, callback(err, buffer))
-- bot.fileLoad(file, callback(err, url))
+- bot.fileGet(file, callback(err, info))
+- bot.fileStream(file, callback(err, stream))
+- bot.fileLoad(file, callback(err, buffer))
 
 -[static] parse text message
 -[static] reexported emoji substitution
@@ -85,7 +85,9 @@ If any of these has to change, the file has to be uploaded again.
 - ready
 
 
+- stop
 
+- callMethod
 
 
 
@@ -105,3 +107,6 @@ some decent traffic.
 
 Long polling, on the other hand, is really easy to implement and
 requires zero configuration from either side.
+
+
+TODO: make everything chainable
