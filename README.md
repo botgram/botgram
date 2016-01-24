@@ -34,13 +34,13 @@ Main features:
    force reply, chat actions, deep linking...
  - Ability to stream downloads and uploads.
 
-Follow the [tutorial], take a look at more [examples],
-or consult the [documentation].
+**Follow the [tutorial], take a look at more [examples],
+or consult the [documentation].**
 
 
 
 [connect]: https://github.com/senchalabs/connect
 
-[tutorial]: https://github.com/jmendeth/botgram/blob/master/docs/tutorial.md
-[examples]: https://github.com/jmendeth/botgram/tree/master/examples
-[documentation]: https://github.com/jmendeth/botgram/blob/master/docs/index.md
+[tutorial]: https://github.com/jmendeth/node-botgram/blob/master/docs/tutorial.md
+[examples]: https://github.com/jmendeth/node-botgram/tree/master/examples
+[documentation]: https://github.com/jmendeth/node-botgram/blob/master/docs/index.md
