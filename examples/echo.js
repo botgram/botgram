@@ -7,5 +7,9 @@ var bot = botgram(process.argv[2]);
 
 bot.message(function (msg, reply, next) {
   reply.text("You said:");
-  reply.message(msg);
+  try {
+    reply.message(msg);
+  } catch (err) {
+    reply.text("Couldn't resend that.");
+  }
 });
