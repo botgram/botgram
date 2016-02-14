@@ -7,7 +7,7 @@ var bot = botgram(process.argv[2]);
 var counter = 0;
 
 bot.command("start", "help", function (msg, reply, next) {
-  reply.text("Use /up to increment the counter! :point_up:");
+  reply.text("Use /up to increment the counter! \u261D");
 });
 
 bot.command("up", function (msg, reply, next) {
@@ -15,7 +15,4 @@ bot.command("up", function (msg, reply, next) {
   reply.text(counter.toString().split("").map(numberToEmoji).join(""));
 });
 
-function numberToEmoji(n) {
-  var emojis = ["zero","one","two","three","four","five","six","seven","eight","nine"];
-  return ":" + emojis[Number(n)] + ":";
-}
+function numberToEmoji(n) { return n + "\u20E3"; }

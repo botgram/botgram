@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Remove privacy mode on this bot, then add it to groups to correct
 // fellows who say Linux without the accompanying "GNU/".
+// Usage: ./stallman.js <auth token>
 
 var botgram = require("botgram");
 var bot = botgram(process.argv[2]);

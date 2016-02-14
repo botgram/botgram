@@ -2,7 +2,7 @@
 
 This document will walk you through creating your first
 Telegram bot with Botgram. Before we begin, you should
-install Telegram if you don't have it already, and
+install Telegram if you don't have it already,
 [talk to the BotFather](https://telegram.me/BotFather)
 and register your first bot.
 
@@ -20,7 +20,7 @@ and examples.
 To use Botgram, you first create a Bot object:
 
 ~~~ js
-var bot = botgram("<auth token>");
+var bot = botgram("123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11");
 ~~~
 
 Then, to start receiving Telegram messages, register some handlers:
@@ -43,14 +43,14 @@ When the bot receives a message, it calls the first handler that
 matches it, passing it the message as the first parameter `msg`.
 If no handlers match, the message will be silently ignored.
 
-Try running that code (remember to put your auth token in it)
+Try running that code (remember to put your actual auth token in it)
 and talk to your bot!
 
 
 ## Sending replies
 
 Printing to the console is okay, but not very interesting. Let's
-actually reply to the user when they send us a photo, using the
+actually reply to the user when they send us a text, using the
 `reply` object:
 
 ~~~ js
@@ -75,7 +75,7 @@ bot.contact(function (msg, reply, next) {
 });
 
 bot.video(function (msg, reply, next) {
-  reply.text("That's a " + msg.width + "x" + msg.height + " photo.");
+  reply.text("That's a " + msg.width + "x" + msg.height + " video.");
 });
 
 bot.location(function (msg, reply, next) {
@@ -137,13 +137,13 @@ bot.voice(function (msg, reply, next) {
   bot.fileLoad(msg.file, function (err, buffer) {
     if (err) throw err;
     console.log("Downloaded! Writing to disk...");
-    require("fs").writeFile("voice.opus", buffer);
+    require("fs").writeFile("voice.ogg", buffer);
   });
 });
 ~~~
 
 This example will write the binary contents (stored at `buffer`)
-into a file `voice.opus`.
+into a file `voice.ogg`.
 
 This is just a silly example. While using `bot.fileLoad` is
 convenient sometimes, it's fairly limited (you can't get updates
@@ -166,3 +166,8 @@ TODO: write this section
 
 -> write context
 -> filter out accumulated messages
+
+
+[message]: message.md
+[handlers]: handlers.md
+[reply]: reply.md
