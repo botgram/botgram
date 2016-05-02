@@ -8,6 +8,8 @@ Everything (bot, reply) is chainable, returns this by default.
 
 - custom keyboard
 - force reply
+- disable link preview
+- silent
 - forward id, chatId
   forward msg
 

@@ -81,6 +81,9 @@ If any of these has to change, the file has to be uploaded again.
 - getProfilePictures
 - context
 
+- kickMember
+- unbanMember
+
 
 - ready
 
@@ -107,6 +110,13 @@ some decent traffic.
 
 Long polling, on the other hand, is really easy to implement and
 requires zero configuration from either side.
+
+### Update IDs
+
+Update IDs are there only to verify that updates are received in
+the correct order, and ensure there are no lost updates. Because
+botgram handles update receiving for the user, exposing them
+is useless.
 
 
 TODO: make everything chainable

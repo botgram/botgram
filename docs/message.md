@@ -56,10 +56,36 @@ Text messages have the following additional fields:
 
  - `msg.text` returns the raw message text.
 
+ - `msg.entities` returns an array of entities present in `msg.text`:
+
+     - `msg.entities[x].type` returns the type of entity: `mention`,
+       `hashtag`, `bot_command`, `url`, `email`, `bold`, `italic`, `code`, `pre`
+       or `text_link` (for clickable text URLs).
+
+     - `msg.entities[x].offset` returns the offset, in characters, at which the
+       entity starts in `msg.text`.
+
+     - `msg.entities[x].length` returns the length, in characters, that the
+       entity spans in `msg.text`.
+
+     - `msg.entities[x].url` returns the URL to be opened, if `type` is `text_link`.
+       Not present otherwise.
+
  - `msg.mentions()` returns an array of usernames, one for every `@mention` in
-   `msg.text`, in order. There might be duplicates present.
+   `msg.text`, and in order of appearance (there might be duplicates present).
+   Items are stripped from the leading `@`.
 
  - `msg.mentions(x)` returns the number of mentions for username `x` in the message.
+   The username is checked case-insensitively, use `msg.mentions()` manually if
+   a case-sensitive search is wanted.
+
+ - `msg.hashtags()` returns an array of hashtags, one for every `#hashtag` in
+   `msg.text`, and in order of appearance (there might be duplicates present).
+   Items are stripped from the leading `#`.
+
+ - `msg.hashtags(x)` returns the number of appearances of hashtag `x` in the message.
+   The hashtag is checked case-insensitively, use `msg.hashtags()` manually if
+   a case-sensitive search is wanted.
 
 Texts of the form `/<name>[@<username>] <args>` are also *commands* and have
 the following extra fields:
@@ -228,6 +254,25 @@ Location messages have the following additional fields:
  - `msg.longitude` returns a decimal longitude as defined by sender.
 
  - `msg.latitude` returns a decimal latitude as defined by sender.
+
+
+## Venue
+
+Venue messages have the following additional fields:
+
+ - `msg.type` returns `venue`.
+
+ - `msg.location` returns the venue location coordinates.
+
+     - `msg.location.longitude` returns a decimal longitude.
+     - `msg.location.latitude` returns a decimal latitude.
+
+ - `msg.title` returns the name of the venue.
+
+ - `msg.address` returns the address of the venue.
+
+ - `msg.foursquareId` returns the Foursquare identifier of the venue
+   if known, not present otherwise.
 
 
 ## Update
