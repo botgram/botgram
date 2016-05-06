@@ -33,6 +33,8 @@ All messages have the following data:
      - `msg.forward.from` returns information about the user who sent the message,
        in the same format as `msg.from`. Not present if forwarded from a channel (FIXME: verify).
      - `msg.forward.date` returns a `Date` object when the message was posted.
+     - `msg.forward.chat` returns information about the chat the message was forwarded from,
+       in the same format as `msg.chat`. Only present if forwarded from a channel.
 
  - `msg.reply` (only present if this message is a reply to another message) returns
    information about the message being replied to, in the same format as `msg`.
@@ -180,6 +182,8 @@ Sticker messages have the following additional fields:
  - `msg.width` returns the width of the sticker in pixels.
 
  - `msg.height` returns the height of the sticker in pixels.
+
+ - `msg.emoji` returns a string with the emoji associated to the sticker.
 
  - `msg.thumbnail` returns information about the sticker's thumbnail if available, not present otherwise.
      - `msg.thumbnail.file` returns information about the image file:
