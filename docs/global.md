@@ -92,6 +92,8 @@ If any of these has to change, the file has to be uploaded again.
 
 - callMethod
 
+- formatCommand
+
 
 
 ## Things not exposed
