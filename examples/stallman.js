@@ -3,7 +3,7 @@
 // fellows who say Linux without the accompanying "GNU/".
 // Usage: ./stallman.js <auth token>
 
-var botgram = require("botgram");
+var botgram = require("..");
 var bot = botgram(process.argv[2]);
 
 var rant = "When you say Linux, you probably mean the GNU operating " +

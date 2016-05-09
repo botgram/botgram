@@ -2,7 +2,7 @@
 // This bot echoes back whatever you send to it.
 // Usage: ./echo.js <auth token>
 
-var botgram = require("botgram");
+var botgram = require("..");
 var bot = botgram(process.argv[2]);
 
 bot.message(function (msg, reply, next) {

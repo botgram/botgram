@@ -5,7 +5,7 @@
 // Usage: ./hasher.js <auth token>
 
 var crypto = require("crypto");
-var botgram = require("botgram");
+var botgram = require("..");
 var bot = botgram(process.argv[2]);
 
 var algs = [["SHA512", "SHA256", "SHA1"], ["DSA", "MD5", "MD4"]];

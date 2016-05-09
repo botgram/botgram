@@ -2,7 +2,7 @@
 // Bot holding a single counter, allowing anyone to increment it and see its value.
 // Usage: ./counter.js <auth token>
 
-var botgram = require("botgram");
+var botgram = require("..");
 var bot = botgram(process.argv[2]);
 var counter = 0;
 
