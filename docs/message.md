@@ -289,3 +289,19 @@ messages have the following additional fields:
  - `msg.type` returns `update`.
 
 TODO: complete this
+
+
+## Unknown
+
+If botgram could't recognize this type of message (either because
+it's empty, or because a new type of message was added to the API
+and botgram does not support it yet), then `msg.type` will not
+be present.
+
+Instead, `msg.unparsed` will be set to the raw `Message` object
+with any unparsed fields left. This is for debugging purposes only;
+you should not depend on this feature, as newer versions of botgram
+will parse the message and break your code.
+
+Note that by default, unknown messages are discarded unless the
+`ignoreUnknown` option is set.

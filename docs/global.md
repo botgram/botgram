@@ -15,8 +15,8 @@ the following options are supported:
  - `autodetect`: Make a `getMe` call to the API, to test the auth token and get the bot's
    username, id and names. If autodetection is disabled, the user should manually set them (default: yes).
  - `retryInterval`: When a network error occurs, Botgram will wait this time, in milliseconds, before retrying (default: 2000).
- - `ignoreEmpty`: Telegram might theoretically send an empty message (containing only id, timestamp and chat).
-   If this option is set, such a message will be ignored, otherwise it'll be delivered to `all()` handlers. (default: yes)
+ - `ignoreUnknown`: If we receive a message of unknown type, ignore it silently (default: yes).
+   If false, the message will be processed by `all()` handlers.
 
 
 ## Handlers (missing)

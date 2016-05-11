@@ -20,7 +20,7 @@ A handler is passed the bot object as the value of `this`.
 Register a handler that will receive any incoming message.
 
 Calling `all(handler)` is equivalent to `message(true, handler)`,
-except that empty messages will also be received if `ignoreEmpty`
+except that unknown messages will also be received if `ignoreUnknown`
 is set to `false`.
 
 
