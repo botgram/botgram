@@ -19,7 +19,9 @@ A handler is passed the bot object as the value of `this`.
 
 Register a handler that will receive any incoming message.
 
-Calling `all(handler)` is completely equivalent to `message(true, handler)`.
+Calling `all(handler)` is equivalent to `message(true, handler)`,
+except that empty messages will also be received if `ignoreEmpty`
+is set to `false`.
 
 
 ## `message([alsoUpdates], handler)`
