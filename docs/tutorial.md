@@ -120,7 +120,7 @@ You have to call `bot.fileGet` like this:
 bot.voice(function (msg, reply, next) {
   bot.fileGet(msg.file, function (err, info) {
     if (err) throw err;
-    console.log("We got the link:", info.link);
+    console.log("We got the link:", bot.fileLink(info));
   });
 });
 ~~~
