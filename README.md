@@ -13,7 +13,7 @@ bot.command("start", "help", function (msg, reply, next) {
 bot.command("alert", function (msg, reply, next) {
   var args = msg.args(2);
   var seconds = Number(args[0]), text = args[1];
-  if (seconds === NaN || !text) return next();
+  if (isNaN(seconds) || !text) return next();
 
   setTimeout(function () {
     reply.text(text);
