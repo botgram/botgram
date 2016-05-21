@@ -281,14 +281,59 @@ Venue messages have the following additional fields:
 
 ## Update
 
-This type of message indicates some kind of change in a chat,
+This type of message indicates some kind of change or event in a chat,
 such as someone entering a group, new photo, and so on. Updates
 are the only kind of message that can't be resent. Update
 messages have the following additional fields:
 
  - `msg.type` returns `update`.
 
-TODO: complete this
+### Member updates
+
+ - `msg.subject` returns `member`, indicating that some users' membership
+   to a chat changed.
+ - `msg.action` returns `new` if the user is now a member of the chat,
+   or `leave` if the user is no longer a member of the chat.
+ - `msg.member` returns the user whose chat membership changed, in the
+   sane format as `msg.from`.
+
+### Title updates
+
+ - `msg.subject` returns `title`, indicating that the title changed.
+ - `msg.action` returns `new` if a new title has been set.
+ - `msg.title` returns the chat's current title after the change.
+
+### Photo updates
+
+ - `msg.subject` returns `photo`, indicating that the chat photo changed.
+ - `msg.action` returns `new` if a (new) photo was set, or `delete` if the
+   existing photo was removed.
+ - `msg.photo` returns the chat's current photo after the change. Not
+   present if the photo was removed.
+
+### Chat updates
+
+ - `msg.subject` returns `chat`, indicating that the change affects the
+   chat as a whole.
+ - `msg.action` returns `create` if the chat has been created, `migrateTo`
+   if this chat has been migrated to a new one and no longer exists, and
+   `migrateFrom` if this chat has been created as a result of a migration.
+ - `msg.toId` returns the numeric ID of the chat that has been created to
+   migrate this one. Only present if `msg.action` is `migrateTo`.
+ - `msg.fromId` returns the numeric ID of the chat that was migrated to this
+   one, and no longer exists. Only present if `msg.action` is `migrateFrom`.
+
+At the time of this writing, migrations only occur from groups to supergroups.
+When migrated, a `migrateTo` update is first sent at the group, and then a
+`migrateFrom` update is sent at the supergroup. Since they are redundant,
+you'll probably only want to listen on one of them.
+
+### Message updates
+
+ - `msg.subject` returns `message`, indicating that the change affects a
+   particuar message of the chat.
+ - `msg.action` returns `pin` if a (new) message was pinned to this chat.
+ - `msg.message` returns the affected message, in the same format as `msg`.
 
 
 ## Unknown
