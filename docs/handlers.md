@@ -65,11 +65,12 @@ bot.text(true, function (msg, reply, next) {
 ~~~
 
 
-## `mention([alsoCommands], [username], handler)`
+## `mention([alsoCommands], [username...], handler)`
 
 Equivalent to `text(alsoCommands, handler)` except that it
-also filters texts that contain mentions to the bot, or to
-`username` if passed. Examples:
+also filters texts that contain mentions to (at least) one
+of the passed usernames. If no usernames are passed, it will
+capture mentions to the bot. Examples:
 
 ~~~ js
 bot.mention(function (msg, reply, next) {
@@ -88,6 +89,10 @@ bot.mention(true, "foobar", function (msg, reply, next) {
 In the above example, a text message like `@foobar @<bot username>`
 could be accepted by all three handlers. Usernames are checked
 case insensitively.
+
+**Note:** Telegram now supports mentions to users without
+username. If you wish to capture these mentions, you should
+use `text(...)` and filter based on `msg.entities`.
 
 
 ## `command([name...], handler)`
@@ -160,3 +165,18 @@ bot.command(true, function (msg, reply, next) {
 
 
 TODO: document rest of handlers
+
+
+## The edit queue
+
+Some kinds of message can be edited after being posted. These edits are not
+processed by the handlers you register normally (by calling `bot.xxx(...)`.
+Instead, you should register them at the `bot.edited` queue. For example,
+to listen for text messages being updated:
+
+~~~ js
+bot.edited.text(function (msg, reply, next) {
+  console.log("Message from %s was edited on %s", msg.date, msg.editDate);
+  console.log("New text is:", msg.text);
+});
+~~~

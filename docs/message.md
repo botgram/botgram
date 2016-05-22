@@ -11,6 +11,9 @@ All messages have the following data:
  - `msg.date` returns a `Date` object with the time this message
    was posted.
 
+ - `msg.editDate`  returns a `Date` object with the time the message has
+   been last edited. Not present if the message has not been edited.
+
  - `msg.chat` returns information about the chat this message was sent to:
      - `msg.chat.id` returns the chat's unique ID.
      - `msg.chat.type` returns one of `user`, `group`, `supergroup` and `channel`.
@@ -61,8 +64,9 @@ Text messages have the following additional fields:
  - `msg.entities` returns an array of entities present in `msg.text`:
 
      - `msg.entities[x].type` returns the type of entity: `mention`,
-       `hashtag`, `bot_command`, `url`, `email`, `bold`, `italic`, `code`, `pre`
-       or `text_link` (for clickable text URLs).
+       `hashtag`, `bot_command`, `url`, `email`, `bold`, `italic`, `code`, `pre`,
+       `text_link` (for clickable text URLs) or `text_mention` (for mentions to
+       users without username).
 
      - `msg.entities[x].offset` returns the offset, in characters, at which the
        entity starts in `msg.text`.
@@ -72,6 +76,9 @@ Text messages have the following additional fields:
 
      - `msg.entities[x].url` returns the URL to be opened, if `type` is `text_link`.
        Not present otherwise.
+
+     - `msg.entities[x].user` returns the user that was mentioned, if `type` is
+       `text_mentioned`. Not present otherwise.
 
  - `msg.mentions()` returns an array of usernames, one for every `@mention` in
    `msg.text`, and in order of appearance (there might be duplicates present).
