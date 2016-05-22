@@ -30,12 +30,12 @@ Main features:
  - Simple, intuitive API.
  - Quick setup; just put your auth token and you're in business.
  - Powerful, [connect]-style message handling and filtering.
- - Exposes all functionality in the bots API 2.0, including custom
+ - Exposes all functionality in the Bot API 2.1, including custom
    keyboards, inline keyboards, force reply, chat actions, deep
    linking, kicking users, editing messages, notifications...
  - Ability to stream downloads and uploads.
 
-Bots API version implemented: May 12, 2016
+Bots API version implemented: May 22, 2016
 
 **Follow the [tutorial], take a look at more [examples],
 or consult the [documentation].**
