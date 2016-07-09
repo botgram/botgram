@@ -1,6 +1,6 @@
 {
   "name": "botgram",
-  "version": "2.0.0-alpha",
+  "version": "2.0.0-beta",
   "keywords": [ "telegram", "bot" ],
   "description": "Microframework to build Telegram bots.",
   "homepage": "https://github.com/jmendeth/node-botgram",
