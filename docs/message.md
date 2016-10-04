@@ -21,6 +21,7 @@ All messages have the following data:
      - `msg.chat.firstname` returns the user's first name. Only present if this is a user.
      - `msg.chat.lastname` returns the user's last name, or `null` if not set. Only present if this is a user.
      - `msg.chat.username` returns the chat's username, or `null` if not set. Only present if this is a user or channel.
+     - `msg.chat.allMembersAreAdmins` returns `true` if ‘All Members Are Admins’ is enabled, `false` otherwise. Only present if this is a group.
      - `msg.chat.name` returns the first name and last name joined for users, or title for everything else.
 
  - `msg.from` (not present on channels) returns information about the user who sent this message:
