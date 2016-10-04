@@ -41,3 +41,6 @@ at the time of this writing, link to telegram api manual.
 
 Modifiers are lost after a message send method is called, even if not
 applicable to that message.
+
+talk about HTTP URLs when uploading files, and file upload limits in
+both cases
