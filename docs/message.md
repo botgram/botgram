@@ -287,6 +287,38 @@ Venue messages have the following additional fields:
    if known, not present otherwise.
 
 
+## Game
+
+Game messages have the following additional fields:
+
+ - `msg.type` returns `game`.
+
+ - `msg.title` returns the game title.
+
+ - `msg.description` returns the game description.
+
+ - `msg.photo` returns the game photo.
+
+ - `msg.text` returns optional text.
+
+ - `msg.entities` returns entities in `msg.text`, only present if `msg.text` is present.
+   In the same format as for text messages.
+
+ - `msg.animation` returns an animation of the game for clients to show if specified, not present otherwise.
+
+     - `msg.animation.file` returns the animation file.
+         - `msg.animation.file.id` returns the ID of the file.
+         - `msg.animation.file.size` returns the size of the file if known, not present otherwise.
+         - `msg.animation.file.mime` returns the MIME type of the file if defined, not present otherwise.
+     - `msg.animation.filename` returns the filename of the animation file if known, not present otherwise.
+     - `msg.animation.thumb` returns information about the animation thumbnail if available, not present otherwise.
+         - `msg.animation.thumbnail.file` returns information about the image file:
+             - `msg.animation.thumbnail.file.id` returns the ID of the file.
+             - `msg.animation.thumbnail.file.size` returns the size of the file if known, not present otherwise.
+         - `msg.animation.thumbnail.width` returns the width of the image in pixels.
+         - `msg.animation.thumbnail.height` returns the height of the image in pixels.
+
+
 ## Update
 
 This type of message indicates some kind of change or event in a chat,
