@@ -35,7 +35,7 @@ Main features:
    linking, kicking users, editing messages, notifications...
  - Ability to stream downloads and uploads.
 
-Bots API version implemented: May 25, 2016
+Bots API version implemented: October 3, 2016
 
 **Follow the [tutorial], take a look at more [examples],
 or consult the [documentation].**
