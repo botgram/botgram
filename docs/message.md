@@ -34,11 +34,13 @@ All messages have the following data:
 
  - `msg.forward` (only present on forwarded messages) returns information about
    the original message:
-     - `msg.forward.from` returns information about the user who sent the message,
-       in the same format as `msg.from`. Not present if forwarded from a channel (FIXME: verify).
-     - `msg.forward.date` returns a `Date` object when the message was posted.
+     - `msg.forward.date` returns a `Date` object when the original message was posted.
+     - `msg.forward.id` returns the ID of the original message. Only present if
+       forwarded from a channel.
      - `msg.forward.chat` returns information about the chat the message was forwarded from,
        in the same format as `msg.chat`. Only present if forwarded from a channel.
+     - `msg.forward.from` returns information about the user who sent the message,
+       in the same format as `msg.from`. Not present if forwarded from a channel.
 
  - `msg.reply` (only present if this message is a reply to another message) returns
    information about the message being replied to, in the same format as `msg`.
