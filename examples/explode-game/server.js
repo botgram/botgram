@@ -27,7 +27,9 @@ bot.command("start", "game", function (msg, reply, next) {
 bot.callback(function (query, next) {
   if (query.gameShortName !== gameName) return next();
   queries[query.id] = query;
-  query.answer(null, null, url.resolve(publicBase, "/telegramBot/game.html?id="+query.id));
+  query.answer({
+    url: url.resolve(publicBase, "/telegramBot/game.html?id="+query.id)
+  });
 });
 
 server.get("/telegramBot/game.html", function (req, res, next) {
