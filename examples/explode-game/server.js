@@ -44,7 +44,6 @@ server.get("/telegramBot/submitExplode/:score", function (req, res, next) {
   bot.setGameScore(query.from, parseInt(req.params.score), {
     chat: query.message ? query.message.chat : null,
     message: query.message || query.inlineMessageId,
-    editMessage: true,
   }, function (err, result) {});
 });
 
