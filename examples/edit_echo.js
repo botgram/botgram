@@ -12,7 +12,7 @@ var bot = botgram(process.argv[2]);
 var sentMessages = {};
 
 bot.message(function (msg, reply, next) {
-  sentMessages[msg.id] = promiseForResult(reply.message(msg));
+  sentMessages[msg.id] = reply.message(msg).then();
 });
 
 // Receive edits to messages
@@ -23,26 +23,14 @@ bot.edited.all(function (msg, reply, next) {
   // If this is a text message, edit it
   if (msg.text) {
     sentMessages[msg.id] = sentMessages[msg.id].then(function (ownMsg) {
-      return promiseForResult(reply.editText(ownMsg, msg.text));
+      return reply.editText(ownMsg, msg.text).then();
     });
   }
 
   // If the message has a caption, edit it
   if (msg.caption) {
     sentMessages[msg.id] = sentMessages[msg.id].then(function (ownMsg) {
-      return promiseForResult(reply.editCaption(ownMsg, msg.caption));
+      return reply.editCaption(ownMsg, msg.caption).then();
     });
   }
 });
-
-
-// Returns a promise for the returned message, parsed into a Message object.
-function promiseForResult(reply) {
-  return new Promise(function (resolve, reject) {
-    reply.then(function (err, result, next) {
-      if (err) reject(err);
-      else resolve(new botgram.Message().parse(result, bot.options));
-      next();
-    });
-  });
-}
