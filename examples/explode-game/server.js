@@ -61,3 +61,5 @@ server.listen(3103, function () {
     console.log("  %s\n", bot.linkGame(gameName));
   });
 });
+
+// FIXME: use getGameHighScores and display them on game too
