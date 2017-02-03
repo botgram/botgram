@@ -15,7 +15,7 @@ All messages have the following data:
    been last edited. Not present if the message has not been edited.
 
  - `msg.chat` returns information about the chat this message was sent to:
-     - `msg.chat.id` returns the chat's unique ID.
+     - `msg.chat.id` returns the chat's unique ID. It's a positive integer for users, and a negative one for groups.
      - `msg.chat.type` returns one of `user`, `group`, `supergroup` and `channel`.
      - `msg.chat.title` returns the group, supergroup or channel title. Not present if this is a user.
      - `msg.chat.firstname` returns the user's first name. Only present if this is a user.

@@ -30,7 +30,7 @@ Main features:
  - Simple, intuitive API.
  - Quick setup; just put your auth token and you're in business.
  - Powerful, [connect]-style message handling and filtering.
- - Exposes all functionality in the Bot API 2.3, including custom
+ - Exposes all functionality in the Bot API 2.3.1, including custom
    keyboards, inline keyboards, force reply, chat actions, deep
    linking, kicking users, editing messages, notifications...
  - Ability to stream downloads and uploads.
