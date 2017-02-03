@@ -15,7 +15,6 @@ the following options are supported:
  - `agent`: Agent to use when making requests to Telegram (default: `undefined`, use Node.JS default).
  - `strict`: Enable strict mode (throw errors whenever we see unknown fields in the
    responses, do extra steps to verify responses are as we expect; default: no)
- - `actionInterval`: Interval, in milliseconds, at which to resend chat actions (default: 3000).
  - `autodetect`: Make a `getMe` call to the API, to test the auth token and get the bot's
    username, id and names. If autodetection is disabled, the user should manually set them (default: yes).
  - `retryInterval`: When a network error occurs, Botgram will wait this time, in milliseconds, before trying to get updates again (default: 2000).
