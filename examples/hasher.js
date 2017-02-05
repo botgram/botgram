@@ -22,7 +22,7 @@ bot.message(function (msg, reply, next) {
 });
 
 bot.command("start", "help", function (msg, reply, next) {
-  reply.text("Hi! Send me messages and I'll hash them with "+msg.context.alg+".\nUse /alg to change the hashing algorithm.");
+  reply.text("Hi! Send me messages or files and I'll hash them with "+msg.context.alg+".\nUse /alg to change the hashing algorithm.");
 });
 
 bot.command("alg", function (msg, reply, next) {
