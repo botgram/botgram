@@ -22,7 +22,7 @@ bot.message(function (msg, reply, next) {
 });
 
 bot.command("start", "help", function (msg, reply, next) {
-  reply.text("Hi! Send me messages or files and I'll hash them with "+msg.context.alg+".\nUse /alg to change the hashing algorithm.");
+  reply.html("Hi! Send me messages or files and I'll hash them with %s.\nUse /alg to change the hashing algorithm.", msg.context.alg);
 });
 
 bot.command("alg", function (msg, reply, next) {
@@ -34,16 +34,16 @@ bot.command("alg", function (msg, reply, next) {
 
 function chooseAlgorithm(alg, context, reply) {
   if (flatAlgs.indexOf(alg) == -1)
-    return reply.text("Huh? I don't know of any algorithm named "+alg+"...");
+    return reply.html("Huh? I don't know of any algorithm named %s...", alg);
   context.choosing = false;
   context.alg = alg;
-  reply.keyboard().text("Okay, I'll hash with "+alg+" from now on.");
+  reply.keyboard().html("Okay, I'll hash with %s from now on.", alg);
 }
 
 bot.text(function (msg, reply, next) {
   var hash = crypto.createHash(msg.context.alg);
   hash.update(msg.text, "utf-8");
-  reply.reply(msg).text(msg.context.alg + ": " + hash.digest("hex"));
+  reply.reply(msg).html("%s: %s", msg.context.alg, hash.digest("hex"));
 });
 
 bot.document(function (msg, reply, next) {
@@ -56,6 +56,6 @@ bot.document(function (msg, reply, next) {
   function hashDone() {
     var digest = hash.read();
     if (!digest) return;
-    reply.reply(msg).text(msg.context.alg + ": " + digest.toString("hex"));
+    reply.reply(msg).html("%s: %s", msg.context.alg, digest.toString("hex"));
   }
 });
