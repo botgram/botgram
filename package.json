@@ -8,7 +8,8 @@
   "main": "index.js",
   "dependencies": {
     "minimatch": "3",
-    "form-data": ">= 1.0.0-rc3"
+    "form-data": ">= 1.0.0-rc3",
+    "escape-html": "1"
   },
 
   "bugs": {

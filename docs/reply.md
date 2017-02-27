@@ -49,11 +49,19 @@ Accepted values for `mode` at the time of this writing are:
 Please check the [Bot API section](https://core.telegram.org/bots/api#formatting-options)
 for up to date details about available formatting modes and the limitations in place.
 
-### `html(text)`
+### `html(text, ...)`
 
   - `text` (`String`): HTML of the message.
 
 Send an HTML message. Convenience method for `text(text, "HTML")`.
+
+Additional arguments can be passed, and will be escaped and substituted
+by successive `%s` in `text`:
+
+~~~ js
+reply.html("Current command: <strong>%s</strong>\nUptime: <strong>%s</strong>",
+    "command > file", "3 days");
+~~~
 
 Please check the [Bot API section](https://core.telegram.org/bots/api#formatting-options)
 for up to date details about available formatting modes and the limitations in place.
@@ -360,6 +368,9 @@ This action obeys the `disablePreview` and `inlineKeyboard` modifiers.
   - `text` (`String`): New message HTML.
 
 Updates a text message to have the passed HTML. Convenience method for `editText(msg, text, "HTML")`.
+
+Additional arguments can be passed, and will be escaped and substituted
+by successive `%s` in `text`, in the same way as `.html(...)`.
 
 ### `editMarkdown(msg, text)`
 
