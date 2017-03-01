@@ -507,6 +507,10 @@ reply.then((err, sentMessage) => {
   if (err) throw err;
   // It's now in their servers, we can grab sentMessage.file and use that from now on
 });
+
+var buffer = fs.readFileSync("assets/photo.jpg");
+buffer.options = "photo.jpg"; // ALWAYS set the filename (not needed for file streams)
+reply.photo(buffer, "Random photo");
 ~~~
 
 Limits: 10 MB max size for photos, 50 MB for other files.
