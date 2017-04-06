@@ -108,7 +108,8 @@ the following extra fields:
 
  - `msg.args(N)` returns a list of N arguments, by splitting the string
    by the first N-1 spaces. If fewer spaces are found, the returned list
-   will have less than N items.
+   will have less than N items. In any case, if no arguments are present
+   `[]` will be returned.
 
  - `msg.username` returns the username, if present in the command, otherwise `null`.
 
