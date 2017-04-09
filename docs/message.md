@@ -55,6 +55,9 @@ All messages have the following data:
  - `msg.queued` returns `true` if the message was sent while the bot was
    not running.
 
+ - `msg.edited` returns `true` if this message is an edit (and was sent on [the
+   edit queue](handlers.md#the-edit-queue)), not present otherwise.
+
 
 ## Text
 
