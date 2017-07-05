@@ -31,6 +31,7 @@ All messages have the following data:
      - `msg.from.lastname` returns the user's last name, or `null` if not set.
      - `msg.from.username` returns the chat's username, or `null` if not set.
      - `msg.from.name` returns the first name and last name joined.
+     - `msg.from.language` returns the [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag) of the user's language
 
  - `msg.forward` (only present on forwarded messages) returns information about
    the original message:
