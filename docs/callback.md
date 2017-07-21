@@ -69,10 +69,10 @@ manipulate the system's volume using callback buttons.
 var ALLOWED_SENDERS = [ 8951984, 5091503, ... ];
 
 bot.command("volumeknob", function (msg, reply, next) {
-  reply.inlineKeyboard([
-    { text: "↑  Turn up", data: JSON.stringify({ type: "volume", direction: true }) },
-    { text: "↓  Turn down", data: JSON.stringify({ type: "volume", direction: false }) },
-  ]);
+  reply.inlineKeyboard([[
+    { text: "↑  Turn up", callback_data: JSON.stringify({ type: "volume", direction: true }) },
+    { text: "↓  Turn down", callback_data: JSON.stringify({ type: "volume", direction: false }) },
+  ]]);
   reply.text("Use the buttons below to modify the volume:");
 });
 
