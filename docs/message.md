@@ -341,8 +341,10 @@ messages have the following additional fields:
    to a chat changed.
  - `msg.action` returns `new` if the user is now a member of the chat,
    or `leave` if the user is no longer a member of the chat.
- - `msg.member` returns the user whose chat membership changed, in the
-   sane format as `msg.from`.
+ - `msg.member` (when `action` is `leave`) returns the user whose chat
+   membership changed, in the same format as `msg.from`.
+ - `msg.members` (when `action` is `new`) returns an array of users whose
+   chat membership changed, each of which in the same format as `msg.from`.
 
 ### Title updates
 
