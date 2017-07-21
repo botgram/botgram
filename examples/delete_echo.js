@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// This bot works like the echo example, only each echoed example has an
+// This bot works like the echo example, only each echoed message has an
 // inline button that tells the bot to delete it when pressed.
 // Usage: ./delete_echo.js <auth token>
 
