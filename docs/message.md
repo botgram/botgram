@@ -235,6 +235,31 @@ Video messages have the following additional fields:
  - `msg.caption` returns a caption for the video of 200 characters at most, if defined. Not present otherwise.
 
 
+## Video
+
+As of Telegram v.4.0, users can send short rounded [video messages](https://telegram.org/blog/video-messages-and-telescope),
+using an interface similar to that of voice notes.
+
+Video note messages have the following additional fields:
+
+ - `msg.type` returns `videoNote`.
+
+ - `msg.length` returns the width/height of the video in pixels, as defined by sender.
+
+ - `msg.duration` returns the duration of the video in seconds, as defined by sender.
+
+ - `msg.file` returns information about the video file:
+     - `msg.file.id` returns the ID of the file.
+     - `msg.file.size` returns the size of the file if known, not present otherwise.
+
+ - `msg.thumbnail` returns information about the video thumbnail if available, not present otherwise.
+     - `msg.thumbnail.file` returns information about the image file:
+         - `msg.thumbnail.file.id` returns the ID of the file.
+         - `msg.thumbnail.file.size` returns the size of the file if known, not present otherwise.
+     - `msg.thumbnail.width` returns the width of the image in pixels.
+     - `msg.thumbnail.height` returns the height of the image in pixels.
+
+
 ## Voice
 
 Voice messages have the following additional fields:
@@ -328,7 +353,8 @@ Game messages have the following additional fields:
 
 ## Update
 
-This type of message indicates some kind of change or event in a chat,
+This type of message (usually called «service message» in the official
+API docs) indicates some kind of change or event in a chat,
 such as someone entering a group, new photo, and so on. Updates
 are the only kind of message that can't be resent. Update
 messages have the following additional fields:
