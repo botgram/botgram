@@ -344,6 +344,7 @@ if you want them for longer.
 
 `action` can be one of `"typing"` (default), `"upload_photo"`,
 `"record_video"`, `"upload_video"`, `"record_audio"`, `"upload_audio"`,
+`"record_video_note"`, `"upload_video_note"`,
 `"upload_document"`, `"find_location"`.
 
 This action doesn't use any modifiers.
