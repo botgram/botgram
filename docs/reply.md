@@ -123,6 +123,17 @@ Send a video.
 At the time of this writing, bots can currently send videos of up to 50 MB in size.
 This limit may be changed in the future, check out the [Bot API section](https://core.telegram.org/bots/api#sendvideo) for up to date details.
 
+### `videoNote(file, [duration], [length])`
+
+  - `file`: Video file to send. Telegram clients support MP4 videos.
+  - `duration` (integer): Duration of the video in seconds.
+  - `length` (integer): Width/height of the video.
+
+Send a video note.
+
+At the time of this writing, sending video notes by passing a URL is not supported. Send it by passing a stream or buffer, or an existing file.
+This limit may be changed in the future, check out the [Bot API section](https://core.telegram.org/bots/api#sendvideonote) for up to date details.
+
 ### `voice(file, [duration], [caption])`
 
   - `file`: Audio file (`.ogg` encoded with OPUS).
