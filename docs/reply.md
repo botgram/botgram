@@ -394,6 +394,26 @@ This action obeys the `inlineKeyboard` modifier.
 Edit the caption of the passed message.
 This action obeys the `inlineKeyboard` modifier.
 
+### `deleteMessage(msg)`
+
+  - `msg` (`Message` | integer): Message to delete.
+
+Delete a message sent at this chat (including updates).  
+The following restrictions apply:
+
+ - A message can only be deleted if it was sent less than 48 hours ago.
+ - Bots can delete their own messages in groups and supergroups.
+ - Bots granted `can_post_messages` permissions can delete their own
+   messages in channels.
+ - If the bot is an administrator of a group, it can delete any message there.
+ - If the bot has `can_delete_messages` permission in a supergroup
+   or a channel, it can delete any message there.
+
+This action doesn't use any modifiers.
+
+Check out the [Bot API section](https://core.telegram.org/bots/api#deleteMessage)
+for up to date details.
+
 
 ## Miscellaneous
 
