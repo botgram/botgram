@@ -107,4 +107,4 @@ For a simple example (that also shows how to delete messages),
 look at the [`delete_echo`](../examples/delete_echo.js).
 
 For a more complex (and functional) example, look
-at the [shell bot example](../examples/shell).
+at the [shell bot example](https://github.com/botgram/shell-bot).

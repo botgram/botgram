@@ -1,4 +1,4 @@
-[![Botgram](./docs/splash.png)](http://botgram.js.org)
+[![Botgram](./docs/splash.png)](https://botgram.js.org)
 
 [Bots] are special Telegram users controlled with an HTTP API. Botgram
 aims to expose the capabilities of this API with a very clear and minimal

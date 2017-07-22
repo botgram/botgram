@@ -331,8 +331,8 @@ bot.command("count", (msg, reply, next) => {
 });
 ~~~
 
-For practical examples see [`hasher`](../examples/hasher.js)
-or [the shell runner](../examples/shell). Keep in mind the context object
+For practical examples see [`hasher`](../examples/hasher.js) or [the
+shell runner](https://github.com/botgram/shell-bot). Keep in mind the context object
 **is not persisted**, so while it's a great way to pull off prototypes,
 you shouldn't use it (directly) in production.
 
