@@ -235,7 +235,7 @@ Video messages have the following additional fields:
  - `msg.caption` returns a caption for the video of 200 characters at most, if defined. Not present otherwise.
 
 
-## Video
+## Video note
 
 As of Telegram v.4.0, users can send short rounded [video messages](https://telegram.org/blog/video-messages-and-telescope),
 using an interface similar to that of voice notes.
