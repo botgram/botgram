@@ -39,6 +39,6 @@ or consult the [documentation].**
 
 [connect]: https://github.com/senchalabs/connect
 
-[tutorial]: https://github.com/jmendeth/node-botgram/blob/master/docs/tutorial.md
-[examples]: https://github.com/jmendeth/node-botgram/tree/master/examples
-[documentation]: https://github.com/jmendeth/node-botgram/blob/master/docs/index.md
+[tutorial]: https://github.com/botgram/botgram/blob/master/docs/tutorial.md
+[examples]: https://github.com/botgram/botgram/tree/master/examples
+[documentation]: https://github.com/botgram/botgram/blob/master/docs/index.md
