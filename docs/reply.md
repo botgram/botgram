@@ -361,7 +361,8 @@ if you want them for longer.
 This action doesn't use any modifiers.
 
 Check out the [Bot API section](https://core.telegram.org/bots/api#sendchataction)
-for up to date details.
+for up to date details, and the [`actions` example](../examples/actions.js)
+for a live test.
 
 ### `editText(msg, text, [mode])`
 

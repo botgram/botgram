@@ -4,6 +4,11 @@ The first argument passed to handlers, which will be called
 `msg` throughout this document, contains a description about
 the message that is being processed.
 
+> Suggestion: Running the [`print`](../example/print.js) and
+> forwarding or sending messages to your bot is a great way to
+> see what info does Telegram give and how it's structured in
+> the message object.
+
 All messages have the following data:
 
  - `msg.id` returns the message ID.
