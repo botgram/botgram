@@ -167,6 +167,21 @@ TODO: talk about resolving, hardcoding IDs and resolving at the start
 ### `formatCommand`
 
 
+## Sticker sets
+
+### `getStickerSet`
+
+### `uploadStickerFile`
+
+### `createNewStickerSet`
+
+### `addStickerToSet`
+
+### `setStickerPositionInSet`
+
+### `deleteStickerFromSet`
+
+
 ## Core
 
 ### `get`
