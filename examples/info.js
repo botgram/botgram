@@ -23,8 +23,12 @@ call(bot, bot.getChat, chatId).then(function (chat) {
   if (chat.firstname) console.log(" - first name: %s", chat.firstname);
   if (chat.lastname) console.log(" - last name: %s", chat.lastname);
   if (chat.title) console.log(" - title: %s", chat.title);
+  if (chat.description) console.log(" - description:\n       %s", chat.description);
+  if (chat.inviteLink) console.log(" - invite link: %s", chat.inviteLink);
 
   return Promise.resolve().then(function () {
+    return printChatPhotos(chat);
+  }).then(function () {
     return printProfilePhotos(chat);
   }).then(function () {
     return printMembers(chat);
@@ -35,6 +39,22 @@ call(bot, bot.getChat, chatId).then(function (chat) {
 }).catch(function (err) {
   process.nextTick(function () { throw err; });
 });
+
+
+// Fetch links to the chat photos
+function printChatPhotos(chat) {
+  return Promise.resolve().then(function () {
+    if (!chat.smallPhoto) return;
+    return call(bot, bot.fileGet, chat.smallPhoto).then(function (file) {
+      console.log(" - chat small photo: %s", bot.fileLink(file));
+    });
+  }).then(function () {
+    if (!chat.bigPhoto) return;
+    return call(bot, bot.fileGet, chat.bigPhoto).then(function (file) {
+      console.log(" - chat big photo: %s", bot.fileLink(file));
+    });
+  });
+}
 
 
 // Fetch list (and links to) profile photos for the user
@@ -81,7 +101,28 @@ function printMembers(chat) {
     return call(bot, bot.getChatAdministrators, chat).then(function (members) {
       console.log("\nChat administrators:");
       members.forEach(function (member) {
-        console.log(" - %s %s (%s)", member.status, member.user.id, member.user.name);
+        console.log("\n - %s %s (%s)", member.status, member.user.id, member.user.name);
+        var p = member.privileges;
+        console.log("   Privileges:");
+        if (member.status === "creator")
+          console.log("     user is the creator");
+        if (p.memberPromote !== undefined)
+          console.log("     can promote members:    %s", p.memberPromote ? "yes" : "no");
+        if (p.infoChange !== undefined)
+          console.log("     can change chat info:   %s", p.infoChange ? "yes" : "no");
+        if (p.messageDelete !== undefined)
+          console.log("     can delete messages:    %s", p.messageDelete ? "yes" : "no");
+        if (p.messagePost !== undefined)
+          console.log("     can post messages:      %s", p.messagePost ? "yes" : "no");
+        if (p.messageEdit !== undefined)
+          console.log("     can edit messages:      %s", p.messageEdit ? "yes" : "no");
+        if (p.userInvite !== undefined)
+          console.log("     can invite users:       %s", p.userInvite ? "yes" : "no");
+        if (p.memberRestrict !== undefined)
+          console.log("     can restrict members:   %s", p.memberRestrict ? "yes" : "no");
+        if (p.messagePin !== undefined)
+          console.log("     can pin messages:       %s", p.messagePin ? "yes" : "no");
+        console.log("   This bot %s edit messages from this user.", member.editAllowed ? "can" : "can't");
       });
     }, function (err) {
       console.error("\nError when fetching administrators:\n%s", err);
