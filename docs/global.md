@@ -133,7 +133,7 @@ TODO: talk about resolving, hardcoding IDs and resolving at the start
 ### `fileLoad(file, callback)`
 
 
-## Chat administration
+## Chat info
 
 ### `getChat`
 
@@ -145,7 +145,23 @@ TODO: talk about resolving, hardcoding IDs and resolving at the start
 
 ### `getProfilePictures`
 
-### `kickMember`
+
+## Chat administration
+
+### `kickMember(chat, user, [until], callback)`
+
+`until` can be passed as either of:
+
+ - An absolute `Date` when the ban ends.
+ - Duration of the ban, in seconds (number).
+
+If `until` is not passed, the user will be banned forever.
+The user will *also* be banned if `until` is less than 30 seconds
+away, or more than 366 days away. So if want a short ban, make
+sure to pass `40` or similar to prevent an accidental permanent ban.
+
+See the [API section](https://core.telegram.org/bots/api#kickchatmember)
+for up to date info.
 
 ### `unbanMember`
 
