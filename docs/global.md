@@ -135,18 +135,18 @@ TODO: talk about resolving, hardcoding IDs and resolving at the start
 
 ## Chat info
 
-### `getChat`
+### `getChat(chat, callback)`
 
-### `getChatAdministrators`
+Retrieve information for a chat (or user). Returns an extended `Chat` object
+if successful.
 
-### `getChatMembersCount`
-
-### `getChatMember`
+You can also use this method to resolve a username by passing a string
+(`"username"`, `"@username"`) as the `chat`.
 
 ### `getProfilePictures`
 
 
-## Chat administration
+## Chat membership
 
 ### `kickMember(chat, user, [until], callback)`
 
@@ -166,6 +166,12 @@ for up to date info.
 ### `unbanMember`
 
 ### `leaveChat`
+
+### `getChatAdministrators`
+
+### `getChatMembersCount`
+
+### `getChatMember`
 
 
 ## Message related
