@@ -204,6 +204,11 @@ some decent traffic.
 Long polling, on the other hand, is really easy to implement and
 requires zero configuration from either side.
 
+**Important:** Telegram doesn't allow the long polling method (the
+one used by Botgram to get updates) while a webhook is set on your
+bot, so **if you have used webhooks previously, disable them
+explicitely before using Botgram**.
+
 ### Update IDs
 
 Update IDs are there only to verify that updates are received in
