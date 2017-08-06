@@ -145,8 +145,22 @@ You can also use this method to resolve a username by passing a string
 
 ### `getProfilePictures`
 
+### `setChatTitle`
+
+### `setChatDescription`
+
+### `setChatPhoto`
+
+### `deleteChatPhoto`
+
+### `pinChatMessage`
+
+### `unpinChatMessage`
+
 
 ## Chat membership
+
+### `exportChatInviteLink`
 
 ### `kickMember(chat, user, [until], callback)`
 
@@ -172,6 +186,16 @@ for up to date info.
 ### `getChatMembersCount`
 
 ### `getChatMember`
+
+### `promoteChatMember(chat, user, privileges, callback)`
+
+### `restrictChatMember(chat, user, privileges, [until], callback)`
+
+The meaning and value of the optional `until` parameter is the
+same as in `kickMember`.
+
+See the [API section](https://core.telegram.org/bots/api#restrictchatmember)
+for up to date info.
 
 
 ## Message related
