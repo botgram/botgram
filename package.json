@@ -11,6 +11,9 @@
     "form-data": ">= 1.0.0-rc3",
     "escape-html": "1"
   },
+  "devDependencies": {
+    "eslint": "^4.4.1"
+  },
 
   "bugs": {
     "url": "https://github.com/botgram/botgram/issues"
