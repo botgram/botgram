@@ -205,12 +205,26 @@ Sticker messages have the following additional fields:
 
  - `msg.emoji` returns a string with the emoji associated to the sticker.
 
+ - `msg.setName` returns a string with the name of the sticker set this sticker belongs to (if available, not present otherwise).
+
  - `msg.thumbnail` returns information about the sticker's thumbnail if available, not present otherwise.
      - `msg.thumbnail.file` returns information about the image file:
          - `msg.thumbnail.file.id` returns the ID of the file.
          - `msg.thumbnail.file.size` returns the size of the file if known, not present otherwise.
      - `msg.thumbnail.width` returns the width of the image in pixels.
      - `msg.thumbnail.height` returns the height of the image in pixels.
+
+ - `msg.maskPosition` returns the position where the mask should be placed, for mask stickers. Not present otherwise.
+     - `msg.maskPosition.point` returns a string with the part of the face relative to which the mask
+       should be placed (at the time of this writing, one of `forehead`, `eyes`, `mouth`, or `chin`).
+     - `msg.maskPosition.shift` returns an object with a pair of numbers, specifying the mask shift (measured in mask widths / heights scaled
+       to the face size):
+         - `msg.maskPosition.shift.x` returns the X-axis shift, from left to right.
+           For example, choosing `-1.0` will place the mask just to the left of the default mask position.
+         - `msg.maskPosition.shift.y` returns the Y-axis shift, from top to bottom.
+           For example, choosing `1.0` will place the mask just below the default mask position.
+     - `msg.maskPosition.scale` returns a number with the relative mask scaling coefficient (i.e. `1.0` means original scale).
+
 
 
 ## Video

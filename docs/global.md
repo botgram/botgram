@@ -213,6 +213,21 @@ for up to date info.
 ### `formatCommand`
 
 
+## Sticker sets
+
+### `getStickerSet`
+
+### `uploadStickerFile`
+
+### `createNewStickerSet`
+
+### `addStickerToSet`
+
+### `setStickerPositionInSet`
+
+### `deleteStickerFromSet`
+
+
 ## Core
 
 ### `get`
