@@ -68,6 +68,19 @@ Once those "queued" updates have been consumed, a `synced` event will be emitted
 Then the processing loop will keep running, consuming real-time updates as they
 arrive and delivering them to handlers.
 
+#### Error handling
+
+A call to `getUpdates` failing *because of a network error* isn't fatal: an `updateError`
+will be emitted and it'll be and retried after `options.retryInterval` milliseconds
+unless the bot is explicitely stopped. Any other kind of error in the processing
+loop will cause an `error` event to be emitted.
+
+The processing loop isn't the only thing that can cause `error` objects to be emitted;
+messages failing to be sent (network error or not) will also cause them unless `.then()`
+is used, see [the corresponding section](reply.md#getting-result-and-handling-errors).
+
+So it's a good idea to listen to `error` events anyway.
+
 #### Username changes
 
 The bot's details aren't expected to change while it's running.
