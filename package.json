@@ -1,20 +1,21 @@
 {
   "name": "botgram",
   "version": "2.0.1",
-  "keywords": [ "telegram", "bot" ],
+  "keywords": [
+    "telegram",
+    "bot"
+  ],
   "description": "Microframework to build Telegram bots.",
   "homepage": "https://github.com/botgram/botgram",
-
   "main": "index.js",
   "dependencies": {
-    "minimatch": "3",
+    "escape-html": "1",
     "form-data": ">= 1.0.0-rc3",
-    "escape-html": "1"
+    "minimatch": "3"
   },
   "devDependencies": {
     "eslint": "^4.4.1"
   },
-
   "bugs": {
     "url": "https://github.com/botgram/botgram/issues"
   },
@@ -23,6 +24,5 @@
     "url": "https://github.com/botgram/botgram"
   },
   "license": "MIT",
-
   "author": "Xavier Mendez <me@jmendeth.com> (https://jmendeth.com)"
 }
