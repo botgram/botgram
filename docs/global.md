@@ -22,6 +22,35 @@ the following options are supported:
    If false, the message will be processed by `all()` handlers.
 
 
+## Connection pooling; running behind proxies
+
+As said above, the `agent` object passed at the options object is in charge of managing
+TCP connections made to Telegram severs. By default, Node.JS default agent is used,
+which can create many connections when there are many parallel requests, but will not
+keep them open.
+
+In order to improve responsiveness and performance of your bot, you could create an
+agent with options `keepAlive: true`. By default only 256 connections will be kept
+open; you can adjust this limit if you want. Example:
+
+~~~ js
+var https = require("https");
+
+var myAgent = new https.Agent({ keepAlive: true, maxFreeSockets: 5 });
+var bot = botgram(apiToken, { agent: myAgent });
+~~~
+
+If you're behind a corporate proxy, you could use [`https-proxy-agent`](https://github.com/TooTallNate/node-https-proxy-agent)
+to have Botgram make all requests through that proxy:
+
+~~~ js
+var HttpsProxyAgent = require("https-proxy-agent");
+
+var myAgent = new HttpsProxyAgent({ host: '168.63.76.32', port: 3128, keepAlive: true, maxFreeSockets: 5 });
+var bot = botgram(apiToken, { agent: myAgent });
+~~~
+
+
 ## Lifecycle
 
 When a bot is created, no requests to Telegram's API are made [until
@@ -104,6 +133,9 @@ batch of updates will still be delivered to the handlers. A last
 `getUpdates` request will be made to mark those as consumed, so Telegram
 doesn't deliver them to the bot when ran again. This last request will *not*
 be retried if it fails, though, so there's still a chance of that happening.
+
+**Note:** If you've passed a [custom agent](#connection_pooling_running_behind_proxies),
+it's recommended to call `agent.destroy()` when no longer using it.
 
 
 ## Updates
