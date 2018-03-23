@@ -75,29 +75,33 @@ Send a Markdown message. Convenience method for `text(text, "Markdown")`.
 Please check the [Bot API section](https://core.telegram.org/bots/api#formatting-options)
 for up to date details about available formatting modes and the limitations in place.
 
-### `photo(file, [caption])`
+### `photo(file, [caption], [captionMode])`
 
   - `file`: Image file to send.
   - `caption` (`String`): Optional caption.
+  - `captionMode` (`String` | `null`): Formatting of `caption`, see [`text(...)`](#texttext-mode) for options.
 
 Send a photo message.
 
-### `audio(file, [duration], [performer], [title], [caption])`
+### `audio(file, [duration], [performer], [title], [caption], [captionMode])`
 
   - `file`: Audio file to send, in `.mp3` format.
   - `duration` (integer): Duration of the clip in seconds.
   - `performer` (`String`): Song performer.
   - `title` (`String`): Song title.
   - `caption` (`String`): Optional caption.
+  - `captionMode` (`String` | `null`): Formatting of `caption`, see [`text(...)`](#texttext-mode) for options.
 
 Use this method to send audio files, if you want Telegram clients to display them in the music player.
 
 At the time of this writing, bots can currently send audio files of up to 50 MB in size.
 This limit may be changed in the future, check out the [Bot API section](https://core.telegram.org/bots/api#sendaudio) for up to date details.
 
-### `document(file)`
+### `document(file, [caption], [captionMode])`
 
   - `file`: File to upload.
+  - `caption` (`String`): Optional caption.
+  - `captionMode` (`String` | `null`): Formatting of `caption`, see [`text(...)`](#texttext-mode) for options.
 
 Send a generic file.
 
@@ -110,13 +114,15 @@ This limit may be changed in the future, check out the [Bot API section](https:/
 
 Send an image as sticker.
 
-### `video(file, [duration], [width], [height], [caption])`
+### `video(file, [duration], [width], [height], [caption], [captionMode], [streaming])`
 
   - `file`: Video file to send. Telegram clients support MP4 videos.
   - `duration` (integer): Duration of the video in seconds.
   - `width` (integer): Width of the video in pixels.
   - `height` (integer): Height of the video in pixels.
   - `caption` (`String`): Optional caption.
+  - `captionMode` (`String` | `null`): Formatting of `caption`, see [`text(...)`](#texttext-mode) for options.
+  - `streaming` (`Boolean`): Indicates if the uploaded video is suitable for streaming.
 
 Send a video.
 
@@ -134,11 +140,12 @@ Send a video note.
 At the time of this writing, sending video notes by passing a URL is not supported. Send it by passing a stream or buffer, or an existing file.
 This limit may be changed in the future, check out the [Bot API section](https://core.telegram.org/bots/api#sendvideonote) for up to date details.
 
-### `voice(file, [duration], [caption])`
+### `voice(file, [duration], [caption], [captionMode])`
 
   - `file`: Audio file (`.ogg` encoded with OPUS).
   - `duration` (integer): Duration of the audio in seconds.
   - `caption` (`String`): Optional caption.
+  - `captionMode` (`String` | `null`): Formatting of `caption`, see [`text(...)`](#texttext-mode) for options.
 
 Send an audio file, which will be displayed by Telegram clients as a playable voice message.
 
