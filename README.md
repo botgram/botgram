@@ -11,7 +11,7 @@ const bot = botgram("<auth token>")
 bot.command("start", "help", (msg, reply) =>
   reply.text("To schedule an alert, do: /alert <seconds> <text>"))
 
-bot.command("alert", (msg, reply) => {
+bot.command("alert", (msg, reply, next) => {
   var [ seconds, text ] = msg.args(2)
   if (!seconds.match(/^\d+$/) || !text) return next()
 
