@@ -203,7 +203,7 @@ Sticker messages have the following additional fields:
 
  - `msg.height` returns the height of the sticker in pixels.
 
- - `msg.emoji` returns a string with the emoji associated to the sticker.
+ - `msg.emoji` returns a string with the emoji associated to the sticker if known, not present otherwise.
 
  - `msg.setName` returns a string with the name of the sticker set this sticker belongs to (if available, not present otherwise).
 
