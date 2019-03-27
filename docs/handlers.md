@@ -213,7 +213,7 @@ Register a handler that will receive all `photo` messages.
 
 Register a handler that will receive all `video` messages.
 
-### `video(handler)`
+### `videoNote(handler)`
 
 Register a handler that will receive all `videoNote` messages.
 

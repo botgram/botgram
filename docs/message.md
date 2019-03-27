@@ -90,7 +90,7 @@ Text messages have the following additional fields:
        Not present otherwise.
 
      - `msg.entities[x].user` returns the user that was mentioned, if `type` is
-       `text_mentioned`. Not present otherwise.
+       `text_mention`. Not present otherwise.
 
  - `msg.mentions()` returns an array of usernames, one for every `@mention` in
    `msg.text`, and in order of appearance (there might be duplicates present).
@@ -362,7 +362,7 @@ Game messages have the following additional fields:
          - `msg.animation.file.size` returns the size of the file if known, not present otherwise.
          - `msg.animation.file.mime` returns the MIME type of the file if defined, not present otherwise.
      - `msg.animation.filename` returns the filename of the animation file if known, not present otherwise.
-     - `msg.animation.thumb` returns information about the animation thumbnail if available, not present otherwise.
+     - `msg.animation.thumbnail` returns information about the animation thumbnail if available, not present otherwise.
          - `msg.animation.thumbnail.file` returns information about the image file:
              - `msg.animation.thumbnail.file.id` returns the ID of the file.
              - `msg.animation.thumbnail.file.size` returns the size of the file if known, not present otherwise.
