@@ -13,6 +13,9 @@ interface ChatBase {
     type: string;
     name: string;
     username?: string;
+
+    smallPhoto?: File;
+    bigPhoto?: File;
 }
 
 export interface chatUser extends ChatBase {
@@ -25,16 +28,21 @@ export interface chatUser extends ChatBase {
 export interface chatGroup extends ChatBase {
     type: "group";
     title: string;
+    allMembersAreAdmins?: boolean;
 }
 
 export interface chatSupergroup extends ChatBase {
     type: "supergroup";
     title: string;
+    description?: string;
+    inviteLink?: string;
 }
 
 export interface chatChannel extends ChatBase {
     type: "channel";
     title: string;
+    description?: string;
+    inviteLink?: string;
 }
 
 export type User = chatUser;
@@ -118,14 +126,14 @@ export interface messageDocument extends MessageBase {
     thumbnail?: Image;
 }
 
-export interface messagePhoto extends MessageBase {
+export interface messagePhoto extends MessageBase, Photo {
     type: "photo";
-    sizes: Image[];
-    image: Image;
     caption?: string;
 }
 
-export type messageSticker = MessageBase & { type: "sticker"; } & Sticker;
+export interface messageSticker extends MessageBase, Sticker {
+    type: "sticker";
+}
 
 export interface messageVideo extends MessageBase {
     type: "video";
@@ -159,10 +167,8 @@ export interface messageContact extends MessageBase {
     userId?: number;
 }
 
-export interface messageLocation extends MessageBase {
+export interface messageLocation extends MessageBase, Location {
     type: "location";
-    longitude: number;
-    latitude: number;
 }
 
 export interface messageVenue extends MessageBase {
@@ -177,10 +183,7 @@ export interface messageGame extends MessageBase {
     type: "game";
     title: string;
     description: string;
-    photo: {
-        sizes: Image[];
-        image: Image;
-    };
+    photo: Photo;
     text?: string;
     entities?: MessageEntity[];
     animation?: Animation;
@@ -211,10 +214,7 @@ export interface messageUpdatePhoto extends MessageBase {
     type: "update";
     subject: "photo";
     action: "new" | "delete";
-    photo?: {
-        sizes: Image[];
-        image: Image;
-    };
+    photo?: Photo;
 }
 
 export interface messageUpdateChat extends MessageBase {
@@ -328,6 +328,11 @@ export interface File {
     path?: string;
 }
 
+export interface Photo {
+    sizes: Image[];
+    image: Image;
+}
+
 export interface Animation {
     file: File;
     filename?: string;
@@ -345,20 +350,44 @@ export interface ChatMember {
     status: "creator" | "administrator" | "member" | "restricted" | "left" | "kicked",
     until?: Date;
     editAllowed?: boolean;
-    privileges: {
-        changeInfo?: boolean;
-        messagePost?: boolean;
-        messageEdit?: boolean;
-        messageDelete?: boolean;
-        userInvite?: boolean;
-        memberRestrict?: boolean;
-        messagePin?: boolean;
-        memberPromote?: boolean;
-        messageSend?: boolean;
-        messageSendMedia?: boolean;
-        messageSendOther?: boolean;
-        webPreviewAllow?: boolean;
-    };
+    privileges: ChatMemberPrivileges;
+}
+
+export type ChatMemberPrivileges = ChatMemberPermissions & ChatMemberRestrictions;
+
+export interface ChatMemberPermissions {
+    changeInfo?: boolean;
+    messagePost?: boolean;
+    messageEdit?: boolean;
+    messageDelete?: boolean;
+    userInvite?: boolean;
+    memberRestrict?: boolean;
+    messagePin?: boolean;
+    memberPromote?: boolean;
+}
+
+export interface ChatMemberRestrictions {
+    messageSend?: boolean;
+    messageSendMedia?: boolean;
+    messageSendOther?: boolean;
+    webPreviewAllow?: boolean;
+}
+
+export type KeyboardButton = string | {
+    text: string;
+    request?: "contact" | "location";
+};
+
+export type KeyboardRow = KeyboardButton | KeyboardButton[];
+
+export interface InlineKeyboardButton {
+    text: string;
+    url?: string;
+    callback_data?: string;
+    switch_inline_query?: string;
+    switch_inline_query_current_chat?: string;
+    callback_game?: {};
+    pay?: boolean;
 }
 
 // Stickers
@@ -441,6 +470,7 @@ export function resolveMessage(x: MessageLike): number;
 export function resolveSticker(x: StickerLike): string;
 export function resolveStickerSet(x: StickerSetLike): string;
 
-export function parsePhoto(photo: object, options: any);
+export function parsePhoto(photo: object, options: any): Photo;
 export function parseCommand(msg: messageTextBase): messageCommand;
-export function formatCommand(username: string | null | undefined | false, command: string, args?: string): string;
+export function formatCommand(username: string | null | undefined | false, command: string, args?: string | string[]): string;
+export function formatKeyboard(keys: KeyboardRow[]): object;
