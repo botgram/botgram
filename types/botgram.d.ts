@@ -1,4 +1,4 @@
-// <reference types="node">
+/// <reference types="node">
 
 import { Agent } from "https";
 import * as model from "./model";
@@ -25,8 +25,10 @@ declare namespace botgram {
         get(key: string): any;
         set(key: string, value: any): void;
         callMethod(method: string, parameters: object[], callback: (error: RequestError | null, result?: any) => any): void;
-        autodetect(callback: () => any): void;
+        autodetect(callback: (error: RequestError | null) => any): void;
+        ready(): Promise<void>;
         ready(callback: () => any): void;
+        synced(): Promise<void>;
         synced(callback: () => any): void;
         stop(): void;
         processUpdate(update: Update): any;
@@ -36,31 +38,71 @@ declare namespace botgram {
 
         // misc methods
 
+        fileGet(file: model.FileLike): Promise<File>;
         fileGet(file: model.FileLike, callback: (error: RequestError | null, result?: File) => any): void;
         fileLink(path: File | string): string;
+        fileStream(file: model.FileLike): Promise<ReadableStream>;
         fileStream(file: model.FileLike, callback: (error: RequestError | Error | null, result?: ReadableStream) => any): void;
+        fileLoad(file: model.FileLike): Promise<Buffer>;
         fileLoad(file: model.FileLike, callback: (error: RequestError | Error | null, result?: Buffer) => any): void;
 
+        getChat(chat: model.ChatLike): Promise<Chat>;
         getChat(chat: model.ChatLike, callback: (error: RequestError | null, result?: Chat) => any): void;
+        getProfilePhotos(user: model.ChatLike, range?: [number, number] | null): Promise<model.Photo & { total: number; }>;
         getProfilePhotos(user: model.ChatLike, callback: (error: RequestError | null, result?: model.Photo & { total: number; }) => any): void;
         getProfilePhotos(user: model.ChatLike, range: [number, number] | null, callback: (error: RequestError | null, result?: model.Photo & { total: number; }) => any): void;
-        setChatPhoto(chat: model.ChatLike, file: model.FileLike, callback: (error: RequestError | null) => any): void;
+        setChatPhoto(chat: model.ChatLike, file: model.InputFile): Promise<void>;
+        setChatPhoto(chat: model.ChatLike, file: model.InputFile, callback: (error: RequestError | null) => any): void;
+        deleteChatPhoto(chat: model.ChatLike): Promise<void>;
         deleteChatPhoto(chat: model.ChatLike, callback: (error: RequestError | null) => any): void;
+        setChatTitle(chat: model.ChatLike, title: string): Promise<void>;
         setChatTitle(chat: model.ChatLike, title: string, callback: (error: RequestError | null) => any): void;
+        setChatDescription(chat: model.ChatLike, description: string | false): Promise<void>;
         setChatDescription(chat: model.ChatLike, description: string | false, callback: (error: RequestError | null) => any): void;
+        pinChatMessage(chat: model.ChatLike, message: model.MessageLike, options: PinChatMessageOptions): Promise<void>;
         pinChatMessage(chat: model.ChatLike, message: model.MessageLike, options: PinChatMessageOptions, callback: (error: RequestError | null) => any): void;
+        unpinChatMessage(chat: model.ChatLike): Promise<void>;
         unpinChatMessage(chat: model.ChatLike, callback: (error: RequestError | null) => any): void;
 
+        exportChatInviteLink(chat: model.ChatLike): Promise<string>;
         exportChatInviteLink(chat: model.ChatLike, callback: (error: RequestError | null, result?: string) => any): void;
-        // ...
+        kickMember(chat: model.ChatLike, user: model.ChatLike, until?: Date | number): Promise<void>;
+        kickMember(chat: model.ChatLike, user: model.ChatLike, callback: (error: RequestError | null) => any): void;
+        kickMember(chat: model.ChatLike, user: model.ChatLike, until: Date | number | undefined, callback: (error: RequestError | null) => any): void;
+        unbanMember(chat: model.ChatLike, user: model.ChatLike): Promise<void>;
+        unbanMember(chat: model.ChatLike, user: model.ChatLike, callback: (error: RequestError | null) => any): void;
+        leaveChat(chat: model.ChatLike): Promise<void>;
+        leaveChat(chat: model.ChatLike, callback: (error: RequestError | null) => any): void;
+        getChatAdministrators(chat: model.ChatLike): Promise<ChatMember[]>;
+        getChatAdministrators(chat: model.ChatLike, callback: (error: RequestError | null, result?: ChatMember[]) => any): void;
+        getChatMembersCount(chat: model.ChatLike): Promise<number>;
+        getChatMembersCount(chat: model.ChatLike, callback: (error: RequestError | null, result?: number) => any): void;
+        getChatMember(chat: model.ChatLike, user: model.ChatLike): Promise<ChatMember>;
+        getChatMember(chat: model.ChatLike, user: model.ChatLike, callback: (error: RequestError | null, result?: ChatMember) => any): void;
+        promoteChatMember(chat: model.ChatLike, user: model.ChatLike, privileges: model.ChatMemberPermissions): Promise<void>;
         promoteChatMember(chat: model.ChatLike, user: model.ChatLike, privileges: model.ChatMemberPermissions, callback: (error: RequestError | null) => any): void;
+        restrictChatMember(chat: model.ChatLike, user: model.ChatLike, privileges: model.ChatMemberRestrictions, until?: Date | number): Promise<void>;
         restrictChatMember(chat: model.ChatLike, user: model.ChatLike, privileges: model.ChatMemberRestrictions, callback: (error: RequestError | null) => any): void;
         restrictChatMember(chat: model.ChatLike, user: model.ChatLike, privileges: model.ChatMemberRestrictions, until: Date | number | undefined, callback: (error: RequestError | null) => any): void;
 
         linkGame(gameShortName: string): string;
-        // ...
+        setGameScore(user: model.ChatLike, score: number, options: GameScoreMessage & GameScoreOptions): Promise<Message | true>;
+        setGameScore(user: model.ChatLike, score: number, options: GameScoreMessage & GameScoreOptions, callback: (error: RequestError | null, result?: Message | true) => any): void;
+        getGameHighScores(user: model.ChatLike, options: GameScoreMessage): Promise<GameHighScore[]>;
+        getGameHighScores(user: model.ChatLike, options: GameScoreMessage, callback: (error: RequestError | null, result?: GameHighScore[]) => any): void;
 
-        // ... stickers
+        getStickerSet(name: string): Promise<StickerSet>;
+        getStickerSet(name: string, callback: (error: RequestError | null, result?: StickerSet) => any): void;
+        uploadStickerFile(user: model.ChatLike, file: model.InputFile): Promise<File>;
+        uploadStickerFile(user: model.ChatLike, file: model.InputFile, callback: (error: RequestError | null, result?: File) => any): void;
+        createNewStickerSet(user: model.ChatLike, name: string, options: StickerSetOptions & StickerOptions): Promise<void>;
+        createNewStickerSet(user: model.ChatLike, name: string, options: StickerSetOptions & StickerOptions, callback: (error: RequestError | null) => any): void;
+        addStickerToSet(user: model.ChatLike, stickerSet: model.StickerSetLike, options: StickerOptions): Promise<void>;
+        addStickerToSet(user: model.ChatLike, stickerSet: model.StickerSetLike, options: StickerOptions, callback: (error: RequestError | null) => any): void;
+        setStickerPositionInSet(sticker: model.StickerLike, position: number): Promise<void>;
+        setStickerPositionInSet(sticker: model.StickerLike, position: number, callback: (error: RequestError | null) => any): void;
+        deleteStickerFromSet(sticker: model.StickerLike): Promise<void>;
+        deleteStickerFromSet(sticker: model.StickerLike, callback: (error: RequestError | null) => any): void;
 
         link(options?: LinkOptions | string, group?: boolean): string;
         linkGroup(options?: LinkOptions | string): string;
@@ -89,6 +131,30 @@ declare namespace botgram {
 
     interface PinChatMessageOptions {
         disableNotification?: boolean;
+    }
+
+    type GameScoreMessage =
+        { chat: model.ChatLike, message: model.MessageLike; } | { message: string; };
+
+    interface GameScoreOptions {
+        disableEditMessage?: boolean;
+        force?: boolean;
+    }
+
+    interface StickerSetOptions {
+        title: string;
+        containsMasks?: boolean;
+    }
+
+    interface StickerOptions {
+        sticker: model.InputFile;
+        emojis: string;
+        maskPosition?: {
+            point: model.MaskPosition["point"],
+            x_shift: number;
+            y_shift: number;
+            scale: number;
+        };
     }
 
     interface LinkOptions {
@@ -148,13 +214,13 @@ declare namespace botgram {
         text(text: string, mode?: ParseMode): this;
         html(text: string, ...args: string[]): this;
         markdown(text: string): this;
-        photo(file: FileContent, caption?: string, captionMode?: ParseMode): this;
-        audio(file: FileContent, duration?: number, performer?: string, title?: string, caption?: string, captionMode?: ParseMode): this;
-        document(file: FileContent, caption?: string, captionMode?: ParseMode): this;
-        sticker(file: FileContent): this;
-        video(file: FileContent, duration?: number, width?: number, height?: number, caption?: string, captionMode?: ParseMode, streaming?: boolean): this;
-        videoNote(file: FileContent, duration?: number, length?: number): this;
-        voice(file: FileContent, duration?: number, caption?: string, captionMode?: ParseMode): this;
+        photo(file: model.InputFile, caption?: string, captionMode?: ParseMode): this;
+        audio(file: model.InputFile, duration?: number, performer?: string, title?: string, caption?: string, captionMode?: ParseMode): this;
+        document(file: model.InputFile, caption?: string, captionMode?: ParseMode): this;
+        sticker(file: model.InputFile): this;
+        video(file: model.InputFile, duration?: number, width?: number, height?: number, caption?: string, captionMode?: ParseMode, streaming?: boolean): this;
+        videoNote(file: model.InputFile, duration?: number, length?: number): this;
+        voice(file: model.InputFile, duration?: number, caption?: string, captionMode?: ParseMode): this;
         location(latitude: number, longitude: number): this;
         venue(latitude: number, longitude: number, title: string, address: string, foursquareId?: string): this;
         contact(phone: string, firstname: string, lastname?: string): this;
@@ -175,11 +241,11 @@ declare namespace botgram {
         inlineKeyboard(keys: model.InlineKeyboardButton[][]): this;
 
         action(action?: ChatAction): this;
-        editText(msg: model.MessageLike, text: string, mode?: ParseMode): this;
-        editHTML(msg: model.MessageLike, text: string): this;
-        editMarkdown(msg: model.MessageLike, text: string): this;
-        editReplyMarkup(msg: model.MessageLike): this;
-        editCaption(msg: model.MessageLike, caption: string): this;
+        editText(msg: model.MessageLike | string, text: string, mode?: ParseMode): this;
+        editHTML(msg: model.MessageLike | string, text: string, ...args: string[]): this;
+        editMarkdown(msg: model.MessageLike | string, text: string): this;
+        editReplyMarkup(msg: model.MessageLike | string): this;
+        editCaption(msg: model.MessageLike | string, caption: string): this;
         deleteMessage(msg: model.MessageLike): this;
 
         then(): Promise<any>;
@@ -187,7 +253,6 @@ declare namespace botgram {
         to(chat: model.ChatLike): ReplyQueue;
     }
 
-    type FileContent = model.FileLike | string /* URL */ | ReadableStream | Buffer;
     type ParseMode = null | "Markdown" | "HTML";
     type ChatAction =
         "typing" |

@@ -356,21 +356,21 @@ export interface ChatMember {
 export type ChatMemberPrivileges = ChatMemberPermissions & ChatMemberRestrictions;
 
 export interface ChatMemberPermissions {
-    changeInfo?: boolean;
-    messagePost?: boolean;
-    messageEdit?: boolean;
-    messageDelete?: boolean;
-    userInvite?: boolean;
-    memberRestrict?: boolean;
-    messagePin?: boolean;
-    memberPromote?: boolean;
+    changeInfo: boolean;
+    messagePost: boolean;
+    messageEdit: boolean;
+    messageDelete: boolean;
+    userInvite: boolean;
+    memberRestrict: boolean;
+    messagePin: boolean;
+    memberPromote: boolean;
 }
 
 export interface ChatMemberRestrictions {
-    messageSend?: boolean;
-    messageSendMedia?: boolean;
-    messageSendOther?: boolean;
-    webPreviewAllow?: boolean;
+    messageSend: boolean;
+    messageSendMedia: boolean;
+    messageSendOther: boolean;
+    webPreviewAllow: boolean;
 }
 
 export type KeyboardButton = string | {
@@ -469,6 +469,9 @@ export function resolveChat(x: ChatLike): number;
 export function resolveMessage(x: MessageLike): number;
 export function resolveSticker(x: StickerLike): string;
 export function resolveStickerSet(x: StickerSetLike): string;
+
+export type InputFile = FileLike | string /* URL */ | ReadableStream | Buffer;
+export function resolveInputFile(file: InputFile): InputFile;
 
 export function parsePhoto(photo: object, options: any): Photo;
 export function parseCommand(msg: messageTextBase): messageCommand;
