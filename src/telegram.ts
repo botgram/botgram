@@ -88,6 +88,26 @@ export function isAttachment(x: object): x is Attachment {
 export type InputFile = FileId | string | Attachment
 
 /**
+ * For input files which are [[Attachment]] objects, this moves them
+ * to the top-level parameters and returns an "attach://" URL pointing
+ * to them. Other values are left untouched.
+ *
+ * Users shouldn't need to call this method.
+ *
+ * @param file Input file value
+ * @returns File ID or URL (possibly converted)
+ */
+export function extractInputFile(fdata: FormatData, file: InputFile): string {
+  if (typeof file === 'object' && isAttachment(file)) {
+    const id = fdata.fileId++
+    const name = '_file_' + id
+    fdata.parameters[name] = file
+    return "attach://" + name
+  }
+  return resolveFileId(file)
+}
+
+/**
  * Identifier for a binary file in Telegram servers, which can
  * be specified with either a [[File]] object (or any object with
  * a `file_id`) or its textual ID directly (`string`).
@@ -193,6 +213,15 @@ class Context {
   protected __getClient (): ClientBase {
     return (this as any).__client
   }
+}
+
+/**
+ * This structure tracks data that is local to a request formatting.
+ * Users shouldn't need to use this type directly.
+ */
+interface FormatData {
+  parameters: any
+  fileId: integer
 }
 
 
@@ -3476,6 +3505,7 @@ export abstract class ClientBase {
     allowed_updates?: UpdateKind[]
   }): BluebirdPromise<Update[]> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     if (typeof options.offset !== 'undefined') {
       parameters.offset = options.offset
@@ -3555,6 +3585,7 @@ export abstract class ClientBase {
     allowed_updates?: UpdateKind[]
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.url = url
     if (typeof options.certificate !== 'undefined') {
@@ -3576,6 +3607,7 @@ export abstract class ClientBase {
    */
   public deleteWebhook (): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     return this.callMethod('deleteWebhook', parameters)
   }
 
@@ -3586,6 +3618,7 @@ export abstract class ClientBase {
    */
   public getWebhookInfo (): BluebirdPromise<WebhookInfo> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     return this.callMethod('getWebhookInfo', parameters)
         .then((x: any) => new WebhookInfo(x, this))
   }
@@ -3601,6 +3634,7 @@ export abstract class ClientBase {
    */
   public getMe (): BluebirdPromise<User> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     return this.callMethod('getMe', parameters)
         .then((x: any) => new User(x, this))
   }
@@ -3647,6 +3681,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.text = text
@@ -3686,6 +3721,7 @@ export abstract class ClientBase {
     disable_notification?: boolean
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.from_chat_id = resolveChatId(message.chat)
@@ -3745,6 +3781,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.photo = photo
@@ -3836,6 +3873,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.audio = audio
@@ -3929,6 +3967,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.document = document
@@ -4026,6 +4065,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.video = video
@@ -4132,6 +4172,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.animation = animation
@@ -4216,6 +4257,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.voice = voice
@@ -4292,6 +4334,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.video_note = video_note
@@ -4337,6 +4380,7 @@ export abstract class ClientBase {
     reply_to_message?: MessageId | integer
   }): BluebirdPromise<Message[]> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.media = media.map(x => {
@@ -4394,6 +4438,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.latitude = latitude
@@ -4436,6 +4481,7 @@ export abstract class ClientBase {
     reply_markup?: IInlineKeyboardMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     if (typeof message === 'string') {
       parameters.inline_message_id = message
@@ -4472,6 +4518,7 @@ export abstract class ClientBase {
     reply_markup?: IInlineKeyboardMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     if (typeof message === 'string') {
       parameters.inline_message_id = message
@@ -4533,6 +4580,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.latitude = latitude
     parameters.longitude = longitude
@@ -4598,6 +4646,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.phone_number = options.phone_number
     parameters.first_name = options.first_name
@@ -4645,6 +4694,7 @@ export abstract class ClientBase {
    */
   public sendChatAction (chat: ChatId | string, action: ChatAction): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.action = action
     return this.callMethod('sendChatAction', parameters)
@@ -4671,6 +4721,7 @@ export abstract class ClientBase {
     limit?: integer
   }): BluebirdPromise<UserProfilePhotos> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.user_id = resolveUserId(user)
     if (typeof options.offset !== 'undefined') {
@@ -4701,6 +4752,7 @@ export abstract class ClientBase {
    */
   public getFile (file_id: string): BluebirdPromise<File> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.file_id = file_id
     return this.callMethod('getFile', parameters)
         .then((x: any) => new File(x, this))
@@ -4733,6 +4785,7 @@ export abstract class ClientBase {
     until_date?: Date
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.user_id = resolveUserId(user)
@@ -4754,6 +4807,7 @@ export abstract class ClientBase {
    */
   public unbanChatMember (chat: ChatId | string, user: UserId): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.user_id = resolveUserId(user)
     return this.callMethod('unbanChatMember', parameters)
@@ -4803,6 +4857,7 @@ export abstract class ClientBase {
     can_add_web_page_previews?: boolean
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.user_id = resolveUserId(user)
@@ -4878,6 +4933,7 @@ export abstract class ClientBase {
     can_promote_members?: boolean
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.user_id = resolveUserId(user)
@@ -4927,6 +4983,7 @@ export abstract class ClientBase {
    */
   public exportChatInviteLink (chat: ChatId | string): BluebirdPromise<string> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     return this.callMethod('exportChatInviteLink', parameters)
   }
@@ -4946,6 +5003,7 @@ export abstract class ClientBase {
    */
   public setChatPhoto (chat: ChatId | string, photo: InputFile): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.photo = photo
     return this.callMethod('setChatPhoto', parameters)
@@ -4965,6 +5023,7 @@ export abstract class ClientBase {
    */
   public deleteChatPhoto (chat: ChatId | string): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     return this.callMethod('deleteChatPhoto', parameters)
   }
@@ -4984,6 +5043,7 @@ export abstract class ClientBase {
    */
   public setChatTitle (chat: ChatId | string, title: string): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.title = title
     return this.callMethod('setChatTitle', parameters)
@@ -5000,6 +5060,7 @@ export abstract class ClientBase {
    */
   public setChatDescription (chat: ChatId | string, description: string | undefined): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.description = description
     return this.callMethod('setChatDescription', parameters)
@@ -5024,6 +5085,7 @@ export abstract class ClientBase {
     disable_notification?: boolean
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(message.chat)
     parameters.message_id = message.message_id
@@ -5045,6 +5107,7 @@ export abstract class ClientBase {
    */
   public unpinChatMessage (chat: ChatId | string): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     return this.callMethod('unpinChatMessage', parameters)
   }
@@ -5058,6 +5121,7 @@ export abstract class ClientBase {
    */
   public leaveChat (chat: ChatId | string): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     return this.callMethod('leaveChat', parameters)
   }
@@ -5072,6 +5136,7 @@ export abstract class ClientBase {
    */
   public getChat (chat: ChatId | string): BluebirdPromise<Chat> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     return this.callMethod('getChat', parameters)
         .then((x: any) => new Chat(x, this))
@@ -5089,6 +5154,7 @@ export abstract class ClientBase {
    */
   public getChatAdministrators (chat: ChatId | string): BluebirdPromise<ChatMember[]> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     return this.callMethod('getChatAdministrators', parameters)
         .then((x: any) => x.map((x: any) => new ChatMember(x, this)))
@@ -5103,6 +5169,7 @@ export abstract class ClientBase {
    */
   public getChatMembersCount (chat: ChatId | string): BluebirdPromise<integer> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     return this.callMethod('getChatMembersCount', parameters)
   }
@@ -5117,6 +5184,7 @@ export abstract class ClientBase {
    */
   public getChatMember (chat: ChatId | string, user: UserId): BluebirdPromise<ChatMember> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.user_id = resolveUserId(user)
     return this.callMethod('getChatMember', parameters)
@@ -5137,6 +5205,7 @@ export abstract class ClientBase {
    */
   public setChatStickerSet (chat: ChatId | string, sticker_set_name: string): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.sticker_set_name = sticker_set_name
     return this.callMethod('setChatStickerSet', parameters)
@@ -5154,6 +5223,7 @@ export abstract class ClientBase {
    */
   public deleteChatStickerSet (chat: ChatId | string): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     return this.callMethod('deleteChatStickerSet', parameters)
   }
@@ -5207,6 +5277,7 @@ export abstract class ClientBase {
     cache_time?: integer
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.callback_query_id = callback_query_id
     if (typeof options.text !== 'undefined') {
@@ -5262,6 +5333,7 @@ export abstract class ClientBase {
     reply_markup?: IInlineKeyboardMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     if (typeof message === 'string') {
       parameters.inline_message_id = message
@@ -5315,6 +5387,7 @@ export abstract class ClientBase {
     reply_markup?: IInlineKeyboardMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     if (typeof message === 'string') {
       parameters.inline_message_id = message
@@ -5358,6 +5431,7 @@ export abstract class ClientBase {
     reply_markup?: IInlineKeyboardMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     if (typeof message === 'string') {
       parameters.inline_message_id = message
@@ -5393,6 +5467,7 @@ export abstract class ClientBase {
     reply_markup?: IInlineKeyboardMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     if (typeof message === 'string') {
       parameters.inline_message_id = message
@@ -5425,6 +5500,7 @@ export abstract class ClientBase {
    */
   public deleteMessage (message: MessageId): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(message.chat)
     parameters.message_id = message.message_id
     return this.callMethod('deleteMessage', parameters)
@@ -5467,6 +5543,7 @@ export abstract class ClientBase {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.sticker = sticker
@@ -5489,6 +5566,7 @@ export abstract class ClientBase {
    */
   public getStickerSet (name: string): BluebirdPromise<StickerSet> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.name = name
     return this.callMethod('getStickerSet', parameters)
         .then((x: any) => new StickerSet(x, this))
@@ -5506,6 +5584,7 @@ export abstract class ClientBase {
    */
   public uploadStickerFile (user: UserId, png_sticker: InputFile): BluebirdPromise<File> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.user_id = resolveUserId(user)
     parameters.png_sticker = png_sticker
     return this.callMethod('uploadStickerFile', parameters)
@@ -5547,6 +5626,7 @@ export abstract class ClientBase {
     mask_position?: IMaskPosition
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.user_id = resolveUserId(user)
     parameters.name = name
     parameters.title = title
@@ -5587,6 +5667,7 @@ export abstract class ClientBase {
     mask_position?: IMaskPosition
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.user_id = resolveUserId(user)
     parameters.name = name
     parameters.png_sticker = options.png_sticker
@@ -5606,6 +5687,7 @@ export abstract class ClientBase {
    */
   public setStickerPositionInSet (sticker: string, position: integer): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.sticker = sticker
     parameters.position = position
     return this.callMethod('setStickerPositionInSet', parameters)
@@ -5619,6 +5701,7 @@ export abstract class ClientBase {
    */
   public deleteStickerFromSet (sticker: string): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.sticker = sticker
     return this.callMethod('deleteStickerFromSet', parameters)
   }
@@ -5684,6 +5767,7 @@ export abstract class ClientBase {
     switch_pm_parameter?: string
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.inline_query_id = inline_query_id
     parameters.results = results
@@ -5825,6 +5909,7 @@ export abstract class ClientBase {
     reply_markup?: IInlineKeyboardMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.chat_id = resolveChatId(chat)
     parameters.title = options.title
     parameters.description = options.description
@@ -5906,6 +5991,7 @@ export abstract class ClientBase {
     error_message?: string
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.shipping_query_id = shipping_query_id
     parameters.ok = ok
@@ -5945,6 +6031,7 @@ export abstract class ClientBase {
     error_message?: string
   }): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.pre_checkout_query_id = pre_checkout_query_id
     parameters.ok = ok
@@ -5976,6 +6063,7 @@ export abstract class ClientBase {
    */
   public setPassportDataErrors (user: UserId, errors: IPassportElementError[]): BluebirdPromise<true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     parameters.user_id = resolveUserId(user)
     parameters.errors = errors
     return this.callMethod('setPassportDataErrors', parameters)
@@ -6015,6 +6103,7 @@ export abstract class ClientBase {
     reply_markup?: IInlineKeyboardMarkup
   }): BluebirdPromise<Message> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.game_short_name = game_short_name
@@ -6059,6 +6148,7 @@ export abstract class ClientBase {
     disable_edit_message?: boolean
   }): BluebirdPromise<Message | true> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     if (typeof message === 'string') {
       parameters.inline_message_id = message
@@ -6100,6 +6190,7 @@ export abstract class ClientBase {
    */
   public getGameHighScores (message: MessageId | string, user: UserId): BluebirdPromise<GameHighScore[]> {
     const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
     if (typeof message === 'string') {
       parameters.inline_message_id = message
     } else {
@@ -9755,8 +9846,9 @@ export class ChatMember implements IChatMember {
  *
  * @param result - Object to populate
  * @param x - Data to format
+ * @param fdata - Formatting data structure
  */
-export function formatInputMedia (result: any, x: IInputMedia): object {
+export function formatInputMedia (result: any, x: IInputMedia, fdata: FormatData): object {
   if (x.type === 'photo') {
     return formatInputMediaPhoto(result, x, fdata)
   } else if (x.type === 'document') {
@@ -9780,8 +9872,9 @@ export function formatInputMedia (result: any, x: IInputMedia): object {
  *
  * @param result - Object to populate
  * @param x - Data to format
+ * @param fdata - Formatting data structure
  */
-export function formatInputMediaPhoto (result: any, x: IInputMediaPhoto): object {
+export function formatInputMediaPhoto (result: any, x: IInputMediaPhoto, fdata: FormatData): object {
   result.type = x.type
   result.media = extractInputFile(fdata, x.media)
   if (typeof x.caption !== 'undefined') {
@@ -9801,8 +9894,9 @@ export function formatInputMediaPhoto (result: any, x: IInputMediaPhoto): object
  *
  * @param result - Object to populate
  * @param x - Data to format
+ * @param fdata - Formatting data structure
  */
-export function formatInputMediaVideo (result: any, x: IInputMediaVideo): object {
+export function formatInputMediaVideo (result: any, x: IInputMediaVideo, fdata: FormatData): object {
   result.type = x.type
   result.media = extractInputFile(fdata, x.media)
   if (typeof x.thumb !== 'undefined') {
@@ -9837,8 +9931,9 @@ export function formatInputMediaVideo (result: any, x: IInputMediaVideo): object
  *
  * @param result - Object to populate
  * @param x - Data to format
+ * @param fdata - Formatting data structure
  */
-export function formatInputMediaAnimation (result: any, x: IInputMediaAnimation): object {
+export function formatInputMediaAnimation (result: any, x: IInputMediaAnimation, fdata: FormatData): object {
   result.type = x.type
   result.media = extractInputFile(fdata, x.media)
   if (typeof x.thumb !== 'undefined') {
@@ -9870,8 +9965,9 @@ export function formatInputMediaAnimation (result: any, x: IInputMediaAnimation)
  *
  * @param result - Object to populate
  * @param x - Data to format
+ * @param fdata - Formatting data structure
  */
-export function formatInputMediaAudio (result: any, x: IInputMediaAudio): object {
+export function formatInputMediaAudio (result: any, x: IInputMediaAudio, fdata: FormatData): object {
   result.type = x.type
   result.media = extractInputFile(fdata, x.media)
   if (typeof x.thumb !== 'undefined') {
@@ -9903,8 +9999,9 @@ export function formatInputMediaAudio (result: any, x: IInputMediaAudio): object
  *
  * @param result - Object to populate
  * @param x - Data to format
+ * @param fdata - Formatting data structure
  */
-export function formatInputMediaDocument (result: any, x: IInputMediaDocument): object {
+export function formatInputMediaDocument (result: any, x: IInputMediaDocument, fdata: FormatData): object {
   result.type = x.type
   result.media = extractInputFile(fdata, x.media)
   if (typeof x.thumb !== 'undefined') {
