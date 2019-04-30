@@ -174,6 +174,7 @@ export class ValidationError extends Error {
    */
   constructor (reason: string) {
     super(reason)
+    this.name = ValidationError.name
   }
 }
 
@@ -1347,14 +1348,8 @@ export interface IInputMediaPhoto {
   /** Type of the result */
   type: 'photo'
 
-  /**
-   * File to send. Pass a file_id to send a file that exists on the
-   * Telegram servers (recommended), pass an HTTP URL for Telegram to get a
-   * file from the Internet, or pass “attach://<file_attach_name>” to
-   * upload a new one using multipart/form-data under <file_attach_name>
-   * name.
-   */
-  media: string
+  /** File to send. See [[InputFile]] for ways to upload files. */
+  media: InputFile
 
   /** Caption of the photo to be sent, 0-1024 characters */
   caption?: string
@@ -1376,14 +1371,8 @@ export interface IInputMediaVideo {
   /** Type of the result */
   type: 'video'
 
-  /**
-   * File to send. Pass a file_id to send a file that exists on the
-   * Telegram servers (recommended), pass an HTTP URL for Telegram to get a
-   * file from the Internet, or pass “attach://<file_attach_name>” to
-   * upload a new one using multipart/form-data under <file_attach_name>
-   * name.
-   */
-  media: string
+  /** File to send. See [[InputFile]] for ways to upload files. */
+  media: InputFile
 
   /**
    * Thumbnail of the file sent; can be ignored if thumbnail generation for
@@ -1395,7 +1384,7 @@ export interface IInputMediaVideo {
    * if the thumbnail was uploaded using multipart/form-data under
    * <file_attach_name>.
    */
-  thumb?: InputFile | string
+  thumb?: InputFile
 
   /** Caption of the video to be sent, 0-1024 characters */
   caption?: string
@@ -1430,14 +1419,8 @@ export interface IInputMediaAnimation {
   /** Type of the result */
   type: 'animation'
 
-  /**
-   * File to send. Pass a file_id to send a file that exists on the
-   * Telegram servers (recommended), pass an HTTP URL for Telegram to get a
-   * file from the Internet, or pass “attach://<file_attach_name>” to
-   * upload a new one using multipart/form-data under <file_attach_name>
-   * name.
-   */
-  media: string
+  /** File to send. See [[InputFile]] for ways to upload files. */
+  media: InputFile
 
   /**
    * Thumbnail of the file sent; can be ignored if thumbnail generation for
@@ -1449,7 +1432,7 @@ export interface IInputMediaAnimation {
    * if the thumbnail was uploaded using multipart/form-data under
    * <file_attach_name>.
    */
-  thumb?: InputFile | string
+  thumb?: InputFile
 
   /** Caption of the animation to be sent, 0-1024 characters */
   caption?: string
@@ -1480,14 +1463,8 @@ export interface IInputMediaAudio {
   /** Type of the result */
   type: 'audio'
 
-  /**
-   * File to send. Pass a file_id to send a file that exists on the
-   * Telegram servers (recommended), pass an HTTP URL for Telegram to get a
-   * file from the Internet, or pass “attach://<file_attach_name>” to
-   * upload a new one using multipart/form-data under <file_attach_name>
-   * name.
-   */
-  media: string
+  /** File to send. See [[InputFile]] for ways to upload files. */
+  media: InputFile
 
   /**
    * Thumbnail of the file sent; can be ignored if thumbnail generation for
@@ -1499,7 +1476,7 @@ export interface IInputMediaAudio {
    * if the thumbnail was uploaded using multipart/form-data under
    * <file_attach_name>.
    */
-  thumb?: InputFile | string
+  thumb?: InputFile
 
   /** Caption of the audio to be sent, 0-1024 characters */
   caption?: string
@@ -1530,14 +1507,8 @@ export interface IInputMediaDocument {
   /** Type of the result */
   type: 'document'
 
-  /**
-   * File to send. Pass a file_id to send a file that exists on the
-   * Telegram servers (recommended), pass an HTTP URL for Telegram to get a
-   * file from the Internet, or pass “attach://<file_attach_name>” to
-   * upload a new one using multipart/form-data under <file_attach_name>
-   * name.
-   */
-  media: string
+  /** File to send. See [[InputFile]] for ways to upload files. */
+  media: InputFile
 
   /**
    * Thumbnail of the file sent; can be ignored if thumbnail generation for
@@ -1549,7 +1520,7 @@ export interface IInputMediaDocument {
    * if the thumbnail was uploaded using multipart/form-data under
    * <file_attach_name>.
    */
-  thumb?: InputFile | string
+  thumb?: InputFile
 
   /** Caption of the document to be sent, 0-1024 characters */
   caption?: string
@@ -3738,7 +3709,7 @@ export abstract class ClientBase {
    * new photo using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendPhoto (chat: ChatId | string, photo: InputFile | string, options?: {
+  public sendPhoto (chat: ChatId | string, photo: InputFile, options?: {
     /**
      * Photo caption (may also be used when resending photos by *file_id*),
      * 0-1024 characters
@@ -3811,7 +3782,7 @@ export abstract class ClientBase {
    * Internet, or upload a new one using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendAudio (chat: ChatId | string, audio: InputFile | string, options?: {
+  public sendAudio (chat: ChatId | string, audio: InputFile, options?: {
     /** Audio caption, 0-1024 characters */
     caption?: string
 
@@ -3843,7 +3814,7 @@ export abstract class ClientBase {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Sends the message
@@ -3910,7 +3881,7 @@ export abstract class ClientBase {
    * upload a new one using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendDocument (chat: ChatId | string, document: InputFile | string, options?: {
+  public sendDocument (chat: ChatId | string, document: InputFile, options?: {
     /**
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
@@ -3921,7 +3892,7 @@ export abstract class ClientBase {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Document caption (may also be used when resending documents by
@@ -3995,7 +3966,7 @@ export abstract class ClientBase {
    * new video using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendVideo (chat: ChatId | string, video: InputFile | string, options?: {
+  public sendVideo (chat: ChatId | string, video: InputFile, options?: {
     /** Duration of sent video in seconds */
     duration?: integer
 
@@ -4015,7 +3986,7 @@ export abstract class ClientBase {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Video caption (may also be used when resending videos by *file_id*),
@@ -4104,7 +4075,7 @@ export abstract class ClientBase {
    * Internet, or upload a new animation using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendAnimation (chat: ChatId | string, animation: InputFile | string, options?: {
+  public sendAnimation (chat: ChatId | string, animation: InputFile, options?: {
     /** Duration of sent animation in seconds */
     duration?: integer
 
@@ -4124,7 +4095,7 @@ export abstract class ClientBase {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Animation caption (may also be used when resending animation by
@@ -4209,7 +4180,7 @@ export abstract class ClientBase {
    * upload a new one using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendVoice (chat: ChatId | string, voice: InputFile | string, options?: {
+  public sendVoice (chat: ChatId | string, voice: InputFile, options?: {
     /** Voice message caption, 0-1024 characters */
     caption?: string
 
@@ -4282,7 +4253,7 @@ export abstract class ClientBase {
    * a URL is currently unsupported
    * @param options - Optional parameters
    */
-  public sendVideoNote (chat: ChatId | string, video_note: InputFile | string, options?: {
+  public sendVideoNote (chat: ChatId | string, video_note: InputFile, options?: {
     /** Duration of sent video in seconds */
     duration?: integer
 
@@ -4299,7 +4270,7 @@ export abstract class ClientBase {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Sends the message
@@ -4368,7 +4339,15 @@ export abstract class ClientBase {
     const parameters: any = {}
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
-    parameters.media = media
+    parameters.media = media.map(x => {
+      if (x.type === 'photo') {
+        return formatInputMediaPhoto({}, x, fdata)
+      } else if (x.type === 'video') {
+        return formatInputMediaVideo({}, x, fdata)
+      } else {
+        throw new ValidationError('No subtype matched')
+      }
+    })
     if (typeof options.disable_notification !== 'undefined') {
       parameters.disable_notification = options.disable_notification
     }
@@ -5386,7 +5365,7 @@ export abstract class ClientBase {
       parameters.chat_id = resolveChatId(message.chat)
       parameters.message_id = message.message_id
     }
-    parameters.media = media
+    parameters.media = formatInputMedia({}, media, fdata)
     if (typeof options.reply_markup !== 'undefined') {
       parameters.reply_markup = options.reply_markup
     }
@@ -5467,7 +5446,7 @@ export abstract class ClientBase {
    * upload a new one using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendSticker (chat: ChatId | string, sticker: InputFile | string, options?: {
+  public sendSticker (chat: ChatId | string, sticker: InputFile, options?: {
     /**
      * Sends the message
      * [silently](https://telegram.org/blog/channels-2-0#silent-messages).
@@ -5556,7 +5535,7 @@ export abstract class ClientBase {
      * for Telegram to get a file from the Internet, or upload a new one
      * using multipart/form-data.
      */
-    png_sticker: InputFile | string
+    png_sticker: InputFile
 
     /** One or more emoji corresponding to the sticker */
     emojis: string
@@ -5599,7 +5578,7 @@ export abstract class ClientBase {
      * for Telegram to get a file from the Internet, or upload a new one
      * using multipart/form-data.
      */
-    png_sticker: InputFile | string
+    png_sticker: InputFile
 
     /** One or more emoji corresponding to the sticker */
     emojis: string
@@ -6563,7 +6542,7 @@ export class ChatContext extends Context {
    * new photo using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendPhoto (photo: InputFile | string, options?: {
+  public sendPhoto (photo: InputFile, options?: {
     /**
      * Photo caption (may also be used when resending photos by *file_id*),
      * 0-1024 characters
@@ -6618,7 +6597,7 @@ export class ChatContext extends Context {
    * Internet, or upload a new one using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendAudio (audio: InputFile | string, options?: {
+  public sendAudio (audio: InputFile, options?: {
     /** Audio caption, 0-1024 characters */
     caption?: string
 
@@ -6650,7 +6629,7 @@ export class ChatContext extends Context {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Sends the message
@@ -6687,7 +6666,7 @@ export class ChatContext extends Context {
    * upload a new one using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendDocument (document: InputFile | string, options?: {
+  public sendDocument (document: InputFile, options?: {
     /**
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
@@ -6698,7 +6677,7 @@ export class ChatContext extends Context {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Document caption (may also be used when resending documents by
@@ -6751,7 +6730,7 @@ export class ChatContext extends Context {
    * new video using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendVideo (video: InputFile | string, options?: {
+  public sendVideo (video: InputFile, options?: {
     /** Duration of sent video in seconds */
     duration?: integer
 
@@ -6771,7 +6750,7 @@ export class ChatContext extends Context {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Video caption (may also be used when resending videos by *file_id*),
@@ -6827,7 +6806,7 @@ export class ChatContext extends Context {
    * Internet, or upload a new animation using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendAnimation (animation: InputFile | string, options?: {
+  public sendAnimation (animation: InputFile, options?: {
     /** Duration of sent animation in seconds */
     duration?: integer
 
@@ -6847,7 +6826,7 @@ export class ChatContext extends Context {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Animation caption (may also be used when resending animation by
@@ -6902,7 +6881,7 @@ export class ChatContext extends Context {
    * upload a new one using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendVoice (voice: InputFile | string, options?: {
+  public sendVoice (voice: InputFile, options?: {
     /** Voice message caption, 0-1024 characters */
     caption?: string
 
@@ -6954,7 +6933,7 @@ export class ChatContext extends Context {
    * a URL is currently unsupported
    * @param options - Optional parameters
    */
-  public sendVideoNote (video_note: InputFile | string, options?: {
+  public sendVideoNote (video_note: InputFile, options?: {
     /** Duration of sent video in seconds */
     duration?: integer
 
@@ -6971,7 +6950,7 @@ export class ChatContext extends Context {
      * if the thumbnail was uploaded using multipart/form-data under
      * <file_attach_name>.
      */
-    thumb?: InputFile | string
+    thumb?: InputFile
 
     /**
      * Sends the message
@@ -7519,7 +7498,7 @@ export class ChatContext extends Context {
    * upload a new one using multipart/form-data. 
    * @param options - Optional parameters
    */
-  public sendSticker (sticker: InputFile | string, options?: {
+  public sendSticker (sticker: InputFile, options?: {
     /**
      * Sends the message
      * [silently](https://telegram.org/blog/channels-2-0#silent-messages).
@@ -7780,7 +7759,7 @@ export class UserContext extends Context {
      * for Telegram to get a file from the Internet, or upload a new one
      * using multipart/form-data.
      */
-    png_sticker: InputFile | string
+    png_sticker: InputFile
 
     /** One or more emoji corresponding to the sticker */
     emojis: string
@@ -7812,7 +7791,7 @@ export class UserContext extends Context {
      * for Telegram to get a file from the Internet, or upload a new one
      * using multipart/form-data.
      */
-    png_sticker: InputFile | string
+    png_sticker: InputFile
 
     /** One or more emoji corresponding to the sticker */
     emojis: string
@@ -8494,7 +8473,7 @@ export class Update implements IUpdate {
    * Parses a raw [[IUpdate]] object received from Telegram, into Botgram's
    * representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -8575,7 +8554,7 @@ export class WebhookInfo implements IWebhookInfo {
    * Parses a raw [[IWebhookInfo]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -8625,7 +8604,7 @@ export class User extends UserContext implements IUser {
    * Parses a raw [[IUser]] object received from Telegram, into Botgram's
    * representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -8710,7 +8689,7 @@ export class Chat extends ChatContext implements IChat {
    * Parses a raw [[IChat]] object received from Telegram, into Botgram's
    * representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -8970,7 +8949,7 @@ export class Message extends MessageContext implements IMessage {
    * Parses a raw [[IMessage]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9139,7 +9118,7 @@ export class MessageEntity implements IMessageEntity {
    * Parses a raw [[IMessageEntity]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9175,7 +9154,7 @@ export class PhotoSize extends FileContext implements IPhotoSize {
    * Parses a raw [[IPhotoSize]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9217,7 +9196,7 @@ export class Audio extends FileContext implements IAudio {
    * Parses a raw [[IAudio]] object received from Telegram, into Botgram's
    * representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9264,7 +9243,7 @@ export class Document extends FileContext implements IDocument {
    * Parses a raw [[IDocument]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9312,7 +9291,7 @@ export class Video extends FileContext implements IVideo {
    * Parses a raw [[IVideo]] object received from Telegram, into Botgram's
    * representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9364,7 +9343,7 @@ export class Animation extends FileContext implements IAnimation {
    * Parses a raw [[IAnimation]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9406,7 +9385,7 @@ export class Voice extends FileContext implements IVoice {
    * Parses a raw [[IVoice]] object received from Telegram, into Botgram's
    * representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9449,7 +9428,7 @@ export class VideoNote extends FileContext implements IVideoNote {
    * Parses a raw [[IVideoNote]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9481,7 +9460,7 @@ export class UserProfilePhotos implements IUserProfilePhotos {
    * Parses a raw [[IUserProfilePhotos]] object received from Telegram,
    * into Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9515,7 +9494,7 @@ export class File extends FileContext implements IFile {
    * Parses a raw [[IFile]] object received from Telegram, into Botgram's
    * representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9588,7 +9567,7 @@ export class CallbackQuery extends CallbackQueryContext implements ICallbackQuer
    * Parses a raw [[ICallbackQuery]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9715,7 +9694,7 @@ export class ChatMember implements IChatMember {
    * Parses a raw [[IChatMember]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9769,6 +9748,178 @@ export class ChatMember implements IChatMember {
 }
 
 /**
+ * Formats [[IInputMedia]] data, from Botgram's representation into an
+ * object ready to be sent to Telegram
+ *
+ * Users should never need to use this method directly.
+ *
+ * @param result - Object to populate
+ * @param x - Data to format
+ */
+export function formatInputMedia (result: any, x: IInputMedia): object {
+  if (x.type === 'photo') {
+    return formatInputMediaPhoto(result, x, fdata)
+  } else if (x.type === 'document') {
+    return formatInputMediaDocument(result, x, fdata)
+  } else if (x.type === 'audio') {
+    return formatInputMediaAudio(result, x, fdata)
+  } else if (x.type === 'video') {
+    return formatInputMediaVideo(result, x, fdata)
+  } else if (x.type === 'animation') {
+    return formatInputMediaAnimation(result, x, fdata)
+  } else {
+    throw new ValidationError('No subtype matched')
+  }
+}
+
+/**
+ * Formats [[IInputMediaPhoto]] data, from Botgram's representation into
+ * an object ready to be sent to Telegram
+ *
+ * Users should never need to use this method directly.
+ *
+ * @param result - Object to populate
+ * @param x - Data to format
+ */
+export function formatInputMediaPhoto (result: any, x: IInputMediaPhoto): object {
+  result.type = x.type
+  result.media = extractInputFile(fdata, x.media)
+  if (typeof x.caption !== 'undefined') {
+    result.caption = x.caption
+  }
+  if (typeof x.parse_mode !== 'undefined') {
+    result.parse_mode = x.parse_mode
+  }
+  return result
+}
+
+/**
+ * Formats [[IInputMediaVideo]] data, from Botgram's representation into
+ * an object ready to be sent to Telegram
+ *
+ * Users should never need to use this method directly.
+ *
+ * @param result - Object to populate
+ * @param x - Data to format
+ */
+export function formatInputMediaVideo (result: any, x: IInputMediaVideo): object {
+  result.type = x.type
+  result.media = extractInputFile(fdata, x.media)
+  if (typeof x.thumb !== 'undefined') {
+    result.thumb = extractInputFile(fdata, x.thumb)
+  }
+  if (typeof x.caption !== 'undefined') {
+    result.caption = x.caption
+  }
+  if (typeof x.parse_mode !== 'undefined') {
+    result.parse_mode = x.parse_mode
+  }
+  if (typeof x.width !== 'undefined') {
+    result.width = x.width
+  }
+  if (typeof x.height !== 'undefined') {
+    result.height = x.height
+  }
+  if (typeof x.duration !== 'undefined') {
+    result.duration = x.duration
+  }
+  if (typeof x.supports_streaming !== 'undefined') {
+    result.supports_streaming = x.supports_streaming
+  }
+  return result
+}
+
+/**
+ * Formats [[IInputMediaAnimation]] data, from Botgram's representation
+ * into an object ready to be sent to Telegram
+ *
+ * Users should never need to use this method directly.
+ *
+ * @param result - Object to populate
+ * @param x - Data to format
+ */
+export function formatInputMediaAnimation (result: any, x: IInputMediaAnimation): object {
+  result.type = x.type
+  result.media = extractInputFile(fdata, x.media)
+  if (typeof x.thumb !== 'undefined') {
+    result.thumb = extractInputFile(fdata, x.thumb)
+  }
+  if (typeof x.caption !== 'undefined') {
+    result.caption = x.caption
+  }
+  if (typeof x.parse_mode !== 'undefined') {
+    result.parse_mode = x.parse_mode
+  }
+  if (typeof x.width !== 'undefined') {
+    result.width = x.width
+  }
+  if (typeof x.height !== 'undefined') {
+    result.height = x.height
+  }
+  if (typeof x.duration !== 'undefined') {
+    result.duration = x.duration
+  }
+  return result
+}
+
+/**
+ * Formats [[IInputMediaAudio]] data, from Botgram's representation into
+ * an object ready to be sent to Telegram
+ *
+ * Users should never need to use this method directly.
+ *
+ * @param result - Object to populate
+ * @param x - Data to format
+ */
+export function formatInputMediaAudio (result: any, x: IInputMediaAudio): object {
+  result.type = x.type
+  result.media = extractInputFile(fdata, x.media)
+  if (typeof x.thumb !== 'undefined') {
+    result.thumb = extractInputFile(fdata, x.thumb)
+  }
+  if (typeof x.caption !== 'undefined') {
+    result.caption = x.caption
+  }
+  if (typeof x.parse_mode !== 'undefined') {
+    result.parse_mode = x.parse_mode
+  }
+  if (typeof x.duration !== 'undefined') {
+    result.duration = x.duration
+  }
+  if (typeof x.performer !== 'undefined') {
+    result.performer = x.performer
+  }
+  if (typeof x.title !== 'undefined') {
+    result.title = x.title
+  }
+  return result
+}
+
+/**
+ * Formats [[IInputMediaDocument]] data, from Botgram's representation
+ * into an object ready to be sent to Telegram
+ *
+ * Users should never need to use this method directly.
+ *
+ * @param result - Object to populate
+ * @param x - Data to format
+ */
+export function formatInputMediaDocument (result: any, x: IInputMediaDocument): object {
+  result.type = x.type
+  result.media = extractInputFile(fdata, x.media)
+  if (typeof x.thumb !== 'undefined') {
+    result.thumb = extractInputFile(fdata, x.thumb)
+  }
+  if (typeof x.caption !== 'undefined') {
+    result.caption = x.caption
+  }
+  if (typeof x.parse_mode !== 'undefined') {
+    result.parse_mode = x.parse_mode
+  }
+  return result
+}
+
+/**
  * This object represents a sticker.
  */
 export class Sticker extends FileContext implements ISticker {
@@ -9797,7 +9948,7 @@ export class Sticker extends FileContext implements ISticker {
    * Parses a raw [[ISticker]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9844,7 +9995,7 @@ export class StickerSet implements IStickerSet {
    * Parses a raw [[IStickerSet]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9879,7 +10030,7 @@ export class InlineQuery extends InlineQueryContext implements IInlineQuery {
    * Parses a raw [[IInlineQuery]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9930,7 +10081,7 @@ export class ChosenInlineResult implements IChosenInlineResult {
    * Parses a raw [[IChosenInlineResult]] object received from Telegram,
    * into Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -9965,7 +10116,7 @@ export class ShippingQuery extends ShippingQueryContext implements IShippingQuer
    * Parses a raw [[IShippingQuery]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -10015,7 +10166,7 @@ export class PreCheckoutQuery extends PreCheckoutQueryContext implements IPreChe
    * Parses a raw [[IPreCheckoutQuery]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -10053,7 +10204,7 @@ export class PassportData implements IPassportData {
    * Parses a raw [[IPassportData]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -10080,7 +10231,7 @@ export class PassportFile extends FileContext implements IPassportFile {
    * Parses a raw [[IPassportFile]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -10174,7 +10325,7 @@ export class EncryptedPassportElement implements IEncryptedPassportElement {
    * Parses a raw [[IEncryptedPassportElement]] object received from
    * Telegram, into Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -10247,7 +10398,7 @@ export class Game implements IGame {
    * Parses a raw [[IGame]] object received from Telegram, into Botgram's
    * representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
@@ -10285,7 +10436,7 @@ export class GameHighScore implements IGameHighScore {
    * Parses a raw [[IGameHighScore]] object received from Telegram, into
    * Botgram's representation.
    *
-   * Users should never need to use this method directly.
+   * Users should never need to use this constructor directly.
    *
    * @param x - JSON-decoded object to parse
    * @param client - Client that returned contexts will make requests with
