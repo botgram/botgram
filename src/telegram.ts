@@ -25,6 +25,11 @@ export type integer = number
  * a `fs.ReadStrem`, you may omit the `filename` or `filepath` field
  * and it'll be autodetected from the original file / URL.
  * 
+ * **Note:** If you provide a stream, it'll always be fully read or
+ * destroyed after the request is made. However if an error is thrown
+ * when calling the request-making function, you must take care of it
+ * yourself.
+ * 
  * For more information, and the full list of options that may
  * be provided, see [form-data](https://github.com/form-data/form-data).
  */

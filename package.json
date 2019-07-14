@@ -14,11 +14,9 @@
     "@types/bluebird": "^3.5.26",
     "@types/form-data": "^2.2.1",
     "@types/node": "^11.12.2",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "form-data": "botgram/form-data#update-combined-stream"
   },
   "devDependencies": {
-    "@types/request-promise": "^4.1.42",
     "tslint": "^5.14.0",
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.14.2",

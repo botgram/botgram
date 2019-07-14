@@ -8,11 +8,16 @@
  */
 
 import * as util from 'util'
-import { Agent } from 'https'
+import * as url from 'url'
+import * as querystring from 'querystring'
+import * as stream from 'stream'
+import * as http from 'http'
+import * as https from 'https'
+import * as FormData from 'form-data'
 import * as BluebirdPromise from 'bluebird'
-import * as request from 'request-promise'
-import { Response } from 'request'
 import { ClientBase, isAttachment } from './telegram'
+const finished = util.promisify(stream.finished)
+const pipeline = util.promisify(stream.pipeline)
 
 /**
  * Contains information about the original request.
@@ -101,12 +106,11 @@ export class NetworkError extends RequestError {
  * updates or messages and just want to make requests to the API.
  *
  * Note that all API calls return a Bluebird promise, not a native one.
- * This is mainly because Bluebird promises are
- * [cancellable](http://bluebirdjs.com/docs/api/cancellation.html),
- * so you can call `result.cancel()` to abort the request (no `.then()`
+ * If you [enable cancellation](http://bluebirdjs.com/docs/api/cancellation.html),
+ * you may call `result.cancel()` to abort the request (no `.then()`
  * or `.catch()` handlers will be called). This shouldn't matter most
- * of the time, but if you need to convert it
- * into a native Promise you can call `Promise.resolve(result)`.
+ * of the time, but if you need to convert it into a native Promise you
+ * can call `Promise.resolve(result)`.
  *
  * Two types of error can occur as a result of an API call:
  * [[TelegramError]] if the API returned an error response,
@@ -158,16 +162,13 @@ export class Client extends ClientBase {
       Error.captureStackTrace(reqInfo, this.callMethod)
     }
 
-    // The strategy is to send the request as a GET if there are no attachments.
-    // Otherwise we're left to POSTing a multipart/form-data which has huge
-    // overhead for small properties, and sends *each property* in its SSL segment.
+    // Encode non-null parameters into strings (except if they're attachments)
     const data: any = {}
     let attachmentsPresent = false
-    Object.keys(parameters).forEach(key => {
+    Object.keys(parameters).forEach((key) => {
       let value: any = parameters[key]
       if (value !== null && value !== undefined) {
         if (isAttachment(value)) {
-          value = { value: value.file, options: value }
           attachmentsPresent = true
         } else if (typeof value !== "string") {
           value = JSON.stringify(value)
@@ -176,21 +177,76 @@ export class Client extends ClientBase {
       }
     })
 
-    const req = request({
+    const uri = this.options.apiBase + `bot${this.authToken}/${method}`
+    const options: http.RequestOptions = {
       agent: this.options.agent,
-      uri: this.options.apiBase + `bot${this.authToken}/${method}`,
       headers: { 'accept': 'application/json' },
-      method: attachmentsPresent ? "POST" : "GET",
-      qs: attachmentsPresent ? undefined : data,
-      formData: attachmentsPresent ? data : undefined,
+    }
 
-      simple: false,
-      followRedirect: false,
-      resolveWithFullResponse: true
+    // The strategy is to send the request as a GET if there are no attachments.
+    // Otherwise we're left to POSTing a multipart/form-data which has overhead
+    // for small properties.
+    if (attachmentsPresent) {
+      const form = new FormData()
+      const userStreams: stream.Readable[] = []
+      Object.keys(data).forEach((key) => {
+        const value = data[key]
+        if (isAttachment(value)) {
+          if (value.file instanceof stream.Readable) {
+            userStreams.push(value.file)
+          }
+          return form.append(key, value.file, value)
+        }
+        form.append(key, value)
+      })
+      const response = this._submitForm(form, uri, options).finally(() =>
+        userStreams.forEach((stream) => stream.destroy()))
+      return this._processResponse(reqInfo, response)
+    } else {
+      const fullUri = uri + '?' + querystring.stringify(data)
+      return this._processResponse(reqInfo, this._sendGet(fullUri, options))
+    }
+  }
+
+  private _submitForm(form: FormData, uri: string, options: http.RequestOptions): BluebirdPromise<http.IncomingMessage> {
+    options.method = 'POST'
+    options.headers = {...options.headers, ...form.getHeaders()}
+    if (form.hasKnownLength()) {
+      options.headers['content-type'] = form.getLengthSync()
+    }
+    const req = (options.protocol === 'https' ? https : http).request(uri, options)
+    return new BluebirdPromise((resolve, reject, onCancel) => {
+      pipeline(form, req).catch(reject)
+      req.on('error', reject)
+      req.on('response', resolve)
+      onCancel && onCancel(() => req.abort())
     })
+  }
 
-    return req.then((response: Response) => {
-      const body = JSON.parse(response.body)
+  private _sendGet (uri: string, options: http.RequestOptions): BluebirdPromise<http.IncomingMessage> {
+    const req = (options.protocol === 'https' ? https : http).get(uri, options)
+    return new BluebirdPromise((resolve, reject, onCancel) => {
+      req.on('error', reject)
+      req.on('response', resolve)
+      onCancel && onCancel(() => req.abort())
+    })
+  }
+
+  private _processResponse (reqInfo: RequestInfo, response: BluebirdPromise<http.IncomingMessage>): BluebirdPromise<any> {
+    // Collect the body; parse as JSON; emit result or TelegramError.
+    // For any other error, wrap inside NetworkError.
+    return response.then((response) => {
+      const chunks: Buffer[] = []
+      response.on('data', (chunk) => chunks.push(chunk))
+      return finished(response).then(() =>
+        ({ response, data: Buffer.concat(chunks).toString('utf-8') }))
+    }).then(({ response, data }) => {
+      let body: any
+      try {
+        body = JSON.parse(data)
+      } catch (err) {
+        throw new NetworkError(`body is not JSON: ${util.inspect(data)}`, reqInfo)
+      }
       if (body.ok !== false && body.ok !== true) {
         throw new NetworkError('ok field is not boolean', reqInfo)
       }
@@ -211,7 +267,8 @@ export class Client extends ClientBase {
 /**
  * Default agent used for requests
  */
-export const defaultAgent: Agent = new Agent({ keepAlive: true, maxFreeSockets: 5 })
+export const defaultAgent: https.Agent =
+  new https.Agent({ keepAlive: true, maxFreeSockets: 5 })
 
 /**
  * Default options for the API client
@@ -229,7 +286,7 @@ export interface ClientOptions {
   /**
    * `Agent` to use when performing requests, instead of the default.
    */
-  agent?: Agent
+  agent?: https.Agent
   /**
    * API base URL, useful to change in tests for mock servers
    */
