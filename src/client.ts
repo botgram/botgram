@@ -48,7 +48,7 @@ export class RequestError extends Error {
     this.req = req
 
     // Enhance stack trace
-    const params = util.inspect(this.req.parameters, { depth: 0 }).replace(/\s+/g, " ")
+    const params = util.inspect(this.req.parameters, { depth: 0 }).replace(/\s+/g, ' ')
     this.stack += '\n' + util.format('When calling method %s: %s', this.req.method, params)
     if (req.stack) {
       this.stack += '\n' + req.stack.split('\n').slice(1).join('\n')
@@ -170,7 +170,7 @@ export class Client extends ClientBase {
       if (value !== null && value !== undefined) {
         if (isAttachment(value)) {
           attachmentsPresent = true
-        } else if (typeof value !== "string") {
+        } else if (typeof value !== 'string') {
           value = JSON.stringify(value)
         }
         data[key] = value
@@ -208,9 +208,9 @@ export class Client extends ClientBase {
     }
   }
 
-  private _submitForm(form: FormData, uri: string, options: http.RequestOptions): BluebirdPromise<http.IncomingMessage> {
+  private _submitForm (form: FormData, uri: string, options: http.RequestOptions): BluebirdPromise<http.IncomingMessage> {
     options.method = 'POST'
-    options.headers = {...options.headers, ...form.getHeaders()}
+    options.headers = { ...options.headers, ...form.getHeaders() }
     if (form.hasKnownLength()) {
       options.headers['content-type'] = form.getLengthSync()
     }

@@ -3,10 +3,10 @@
  * the API client and long polling to receive bot updates.
  */
 
-import * as EventEmitter from "events"
+import * as EventEmitter from 'events'
 import * as BluebirdPromise from 'bluebird'
-import { Client, NetworkError } from "./client"
-import { Update, UpdateKind, integer } from "./telegram"
+import { Client, NetworkError } from './client'
+import { Update, UpdateKind, integer } from './telegram'
 
 /**
  * Implements an Update-receiving loop, which is started when the object
@@ -45,7 +45,7 @@ export class UpdateLoop extends EventEmitter {
   /**
    * Loop tick
    */
-  private loop() {
+  private loop () {
     if (!this.running) {
       return
     }
@@ -66,16 +66,16 @@ export class UpdateLoop extends EventEmitter {
         this.offset = updates[updates.length - 1].update_id + 1
       }
       if (!(this.queued && this.options.discard === true)) {
-        this.emit("updates", updates, this.queued)
+        this.emit('updates', updates, this.queued)
       }
       if (this.queued && updates.length < this.options.batchSize!) {
-        this.emit("sync")
+        this.emit('sync')
         this.queued = false
       }
       this.loop()
     }, error => {
       this.running = this.options.alwaysRetry ? true : (error instanceof NetworkError)
-      this.emit("error", error, this.running)
+      this.emit('error', error, this.running)
       if (this.running) {
         setTimeout(() => this.loop(), this.options.retryTime! * 1e3)
       }
@@ -87,7 +87,7 @@ export class UpdateLoop extends EventEmitter {
    * requests will be made to the API, and the current request
    * will be aborted.
    */
-  public stop(): void {
+  public stop (): void {
     this.running = false
     if (this.request) {
       this.request.cancel()

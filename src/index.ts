@@ -5,6 +5,6 @@ import { Bot, BotOptions } from './bot'
  * @param authToken The authentication token for the bot
  * @param options Bot & API client options
  */
-export default function botgram(authToken: string, options?: BotOptions): Bot {
+export default function botgram (authToken: string, options?: BotOptions): Bot {
   return new Bot(authToken, options)
 }

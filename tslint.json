@@ -1,5 +1,9 @@
 {
   "extends": [
     "tslint-config-standard"
-  ]
+  ],
+  "rules": {
+    "strict-type-predicates": { "severity": "off" },
+    "trailing-comma": { "severity": "off" }
+  }
 }

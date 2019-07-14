@@ -38,7 +38,7 @@ export interface Attachment extends AppendOptions {
   file: Readable | Uint8Array
 }
 
-export function isAttachment(x: object): x is Attachment {
+export function isAttachment (x: object): x is Attachment {
   const { file } = x as Attachment
   return (file instanceof Readable) || (file instanceof Uint8Array)
 }
@@ -102,12 +102,12 @@ export type InputFile = FileId | string | Attachment
  * @param file Input file value
  * @returns File ID or URL (possibly converted)
  */
-export function extractInputFile(fdata: FormatData, file: InputFile): string {
+export function extractInputFile (fdata: FormatData, file: InputFile): string {
   if (typeof file === 'object' && isAttachment(file)) {
     const id = fdata.fileId++
     const name = '_file_' + id
     fdata.parameters[name] = file
-    return "attach://" + name
+    return 'attach://' + name
   }
   return resolveFileId(file)
 }
@@ -8508,7 +8508,9 @@ export class PreCheckoutQueryContext extends Context {
     return this.__getClient().answerPreCheckoutQuery(this.id, ok, options)
   }
 
-}/**
+}
+
+/**
  * This object represents an incoming update.  
  * At most **one** of the optional parameters can be present in any given
  * update.
@@ -9051,7 +9053,7 @@ export class Message extends MessageContext implements IMessage {
    * @param client - Client that returned contexts will make requests with
    */
   constructor (x: any, client: ClientBase) {
-    super(client, { message_id: x.message_id, chat: x.chat})
+    super(client, { message_id: x.message_id, chat: x.chat })
     if (typeof x.from !== 'undefined') {
       this.from = new User(x.from, client)
     }
