@@ -208,6 +208,11 @@ export class Client extends ClientBase {
     }
   }
 
+  protected _streamFile (path: string): BluebirdPromise<http.IncomingMessage> {
+    const uri = this.options.apiBase + `file/bot${this.authToken}/${path}`
+    return this._sendGet(uri, { agent: this.options.agent })
+  }
+
   private _submitForm (form: FormData, uri: string, options: http.RequestOptions): BluebirdPromise<http.IncomingMessage> {
     options.method = 'POST'
     options.headers = { ...options.headers, ...form.getHeaders() }

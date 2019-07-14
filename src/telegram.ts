@@ -4,7 +4,7 @@
  */
 /* tslint:disable:class-name variable-name no-trailing-whitespace no-consecutive-blank-lines */
 
-import { Readable } from 'stream'
+import { finished, Readable } from 'stream'
 import * as BluebirdPromise from 'bluebird'
 import { IncomingMessage } from 'http'
 import { AppendOptions } from 'form-data'
@@ -3453,6 +3453,7 @@ export interface IGameHighScore {
 export abstract class ClientBase {
 
   protected abstract callMethod (name: string, parameters: object): BluebirdPromise<any>
+  protected abstract _streamFile (path: string): BluebirdPromise<IncomingMessage>
 
   // Getting updates
   // ---------------
@@ -4740,14 +4741,15 @@ export abstract class ClientBase {
   }
 
   /**
-   * Use this method to get basic info about a file and prepare it for
-   * downloading. For the moment, bots can download files of up to 20MB in
-   * size. On success, a [[IFile]] object is returned. The file can then be
-   * downloaded via the link
-   * `https://api.telegram.org/file/bot<token>/<file_path>`, where
-   * `<file_path>` is taken from the response. It is guaranteed that the
-   * link will be valid for at least 1 hour. When the link expires, a new
-   * one can be requested by calling [[getFile]] again.
+   * Use this method to get a (new) [[File]] object for the passed file
+   * identifier.
+   *
+   * This [[File]] object always contains a `file_path` attribute, but may
+   * not preserve the original file name and MIME type. You should save the
+   * file's MIME type and name if received.
+   *
+   * It's not necessary to use this method to download files, see
+   * [[streamFile]] and [[loadFile]].
    *
    * **Note:** This function may not preserve the original file name and
    * MIME type. You should save the file's MIME type and name (if
@@ -4761,6 +4763,53 @@ export abstract class ClientBase {
     parameters.file_id = resolveFileId(file)
     return this.callMethod('getFile', parameters)
         .then((x: any) => new File(x, this))
+  }
+
+  /**
+   * This method starts downloading a file from Telegram servers. If the
+   * passed `file` doesn't contain the `file_path` attribute, [[getFile]]
+   * will be called first to obtain it.
+   *
+   * **Note:** For the moment, bots can download files of up to 20MB in
+   * size.
+   *
+   * **Note:** Telegram only guarantees that download links will be valid
+   * for 1 hour. If the passed `file` was received a long time ago, the
+   * download may fail. You can first call [[getFile]] manually to get a
+   * fresh one.
+   *
+   * @param file - File to download
+   * @returns Promise that resolves with the HTTP response (readable
+   * stream). If you want the full body, see [[loadFile]].
+   */
+  public streamFile (file: FileId): BluebirdPromise<IncomingMessage> {
+    let filePromise: BluebirdPromise<File>
+    if (typeof (file as File).file_path === 'string') {
+      filePromise = BluebirdPromise.resolve(file as File)
+    } else {
+      filePromise = this.getFile(file)
+    }
+    return filePromise.then((file) => this._streamFile(file.file_path!))
+  }
+
+  /**
+   * Convenience method that calls [[streamFile]], collects the file
+   * contents into memory and returns them. This is discouraged for big
+   * files.
+   *
+   * @param file - File to download
+   * @returns Promise that resolves with the binary contents of the file.
+   */
+  public loadFile (file: FileId): BluebirdPromise<Buffer> {
+    return this.streamFile(file).then((response) => {
+      const chunks: Buffer[] = []
+      response.on('data', (chunk) => chunks.push(chunk))
+      return new BluebirdPromise((resolve, reject, onCancel) => {
+        finished(response, (err) => !err ?
+            resolve(Buffer.concat(chunks)) : reject(err))
+        onCancel && onCancel(() => response.destroy())
+      })
+    })
   }
 
   /**
@@ -6513,14 +6562,15 @@ export class FileContext extends Context {
   }
 
   /**
-   * Use this method to get basic info about a file and prepare it for
-   * downloading. For the moment, bots can download files of up to 20MB in
-   * size. On success, a [[IFile]] object is returned. The file can then be
-   * downloaded via the link
-   * `https://api.telegram.org/file/bot<token>/<file_path>`, where
-   * `<file_path>` is taken from the response. It is guaranteed that the
-   * link will be valid for at least 1 hour. When the link expires, a new
-   * one can be requested by calling [[getFile]] again.
+   * Use this method to get a (new) [[File]] object for the passed file
+   * identifier.
+   *
+   * This [[File]] object always contains a `file_path` attribute, but may
+   * not preserve the original file name and MIME type. You should save the
+   * file's MIME type and name if received.
+   *
+   * It's not necessary to use this method to download files, see
+   * [[streamFile]] and [[loadFile]].
    *
    * **Note:** This function may not preserve the original file name and
    * MIME type. You should save the file's MIME type and name (if
@@ -6530,6 +6580,41 @@ export class FileContext extends Context {
    */
   public get (): BluebirdPromise<File> {
     return this.__getClient().getFile(this.file_id)
+  }
+
+  /**
+   * This method starts downloading a file from Telegram servers. If the
+   * passed `file` doesn't contain the `file_path` attribute, [[getFile]]
+   * will be called first to obtain it.
+   *
+   * **Note:** For the moment, bots can download files of up to 20MB in
+   * size.
+   *
+   * **Note:** Telegram only guarantees that download links will be valid
+   * for 1 hour. If the passed `file` was received a long time ago, the
+   * download may fail. You can first call [[getFile]] manually to get a
+   * fresh one.
+   *
+   * This is equivalent to calling [[Client.streamFile]].
+   *
+   * @returns Promise that resolves with the HTTP response (readable
+   * stream). If you want the full body, see [[loadFile]].
+   */
+  public stream (): BluebirdPromise<IncomingMessage> {
+    return this.__getClient().streamFile(this.file_id)
+  }
+
+  /**
+   * Convenience method that calls [[streamFile]], collects the file
+   * contents into memory and returns them. This is discouraged for big
+   * files.
+   *
+   * This is equivalent to calling [[Client.loadFile]].
+   *
+   * @returns Promise that resolves with the binary contents of the file.
+   */
+  public load (): BluebirdPromise<Buffer> {
+    return this.__getClient().loadFile(this.file_id)
   }
 
 }
