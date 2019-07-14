@@ -212,7 +212,7 @@ export class Client extends ClientBase {
     options.method = 'POST'
     options.headers = { ...options.headers, ...form.getHeaders() }
     if (form.hasKnownLength()) {
-      options.headers['content-type'] = form.getLengthSync()
+      options.headers['content-length'] = form.getLengthSync()
     }
     const req = (options.protocol === 'https' ? https : http).request(uri, options)
     return new BluebirdPromise((resolve, reject, onCancel) => {

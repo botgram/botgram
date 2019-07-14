@@ -4753,12 +4753,12 @@ export abstract class ClientBase {
    * MIME type. You should save the file's MIME type and name (if
    * available) when the File object is received.
    *
-   * @param file_id - File identifier to get info about
+   * @param file - File identifier to get info about
    */
-  public getFile (file_id: string): BluebirdPromise<File> {
+  public getFile (file: FileId): BluebirdPromise<File> {
     const parameters: any = {}
     const fdata: FormatData = { parameters, fileId: 0 }
-    parameters.file_id = file_id
+    parameters.file_id = resolveFileId(file)
     return this.callMethod('getFile', parameters)
         .then((x: any) => new File(x, this))
   }
@@ -9856,16 +9856,16 @@ export class ChatMember implements IChatMember {
  * @param fdata - Formatting data structure
  */
 export function formatInputMedia (result: any, x: IInputMedia, fdata: FormatData): object {
-  if (x.type === 'photo') {
-    return formatInputMediaPhoto(result, x, fdata)
-  } else if (x.type === 'document') {
-    return formatInputMediaDocument(result, x, fdata)
+  if (x.type === 'animation') {
+    return formatInputMediaAnimation(result, x, fdata)
   } else if (x.type === 'audio') {
     return formatInputMediaAudio(result, x, fdata)
+  } else if (x.type === 'document') {
+    return formatInputMediaDocument(result, x, fdata)
+  } else if (x.type === 'photo') {
+    return formatInputMediaPhoto(result, x, fdata)
   } else if (x.type === 'video') {
     return formatInputMediaVideo(result, x, fdata)
-  } else if (x.type === 'animation') {
-    return formatInputMediaAnimation(result, x, fdata)
   } else {
     throw new ValidationError('No subtype matched')
   }

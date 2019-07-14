@@ -8,3 +8,5 @@ import { Bot, BotOptions } from './bot'
 export default function botgram (authToken: string, options?: BotOptions): Bot {
   return new Bot(authToken, options)
 }
+
+export * from './bot'

@@ -14,6 +14,7 @@
     "@types/bluebird": "^3.5.26",
     "@types/form-data": "^2.2.1",
     "@types/node": "^11.12.2",
+    "bluebird": "^3.5.5",
     "form-data": "botgram/form-data#update-combined-stream"
   },
   "devDependencies": {
@@ -21,7 +22,7 @@
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.14.2",
     "typescript": "^3.4.1",
-    "sslkeylog": "^0.1.1"
+    "sslkeylog": "^0.2.2"
   },
   "scripts": {
     "build": "tsc",
@@ -38,6 +39,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/botgram/botgram"
+  },
+  "engines": {
+    "node": ">= 10.9"
   },
   "license": "MIT",
   "author": "Alba Mendez <me@alba.sh>"
