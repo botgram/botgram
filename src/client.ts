@@ -1,14 +1,9 @@
 /**
  * This module defines the API client, the part of Botgram
  * that handles the communication with Telegram's REST API.
- *
- * It also provides
- * some convenience methods for common API operations, such as
- * downloading a file.
  */
 
 import * as util from 'util'
-import * as url from 'url'
 import * as querystring from 'querystring'
 import * as stream from 'stream'
 import * as http from 'http'
@@ -209,8 +204,21 @@ export class Client extends ClientBase {
   }
 
   protected _streamFile (path: string): BluebirdPromise<http.IncomingMessage> {
+    const reqInfo: RequestInfo = { method: '<file download request>', parameters: {} }
+    if (this.options.captureStack && Error.captureStackTrace) {
+      Error.captureStackTrace(reqInfo, this.callMethod)
+    }
+
     const uri = this.options.apiBase + `file/bot${this.authToken}/${path}`
-    return this._sendGet(uri, { agent: this.options.agent })
+    return this._sendGet(uri, { agent: this.options.agent }).then((response) => {
+      if (response.statusCode !== 200) {
+        response.resume() // Discard data
+        throw new NetworkError(`File download request got status ${response.statusCode}`, reqInfo)
+      }
+      return response
+    }, (error) => {
+      throw new NetworkError(error, reqInfo)
+    })
   }
 
   private _submitForm (form: FormData, uri: string, options: http.RequestOptions): BluebirdPromise<http.IncomingMessage> {
