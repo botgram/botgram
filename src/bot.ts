@@ -111,49 +111,103 @@ export class Bot extends EventEmitter {
 
   // Generic handlers
 
-  public message (handler: Handler<this, IncomingMessage>): void {
+  public onMessage (handler: Handler<this, IncomingMessage>): void {
     return this.use(filterHandler(info => info.type === 'message', handler))
   }
 
-  public editedMessage (handler: Handler<this, IncomingEditedMessage>): void {
+  public onEditedMessage (handler: Handler<this, IncomingEditedMessage>): void {
     return this.use(filterHandler(info => info.type === 'edited_message', handler))
   }
 
-  public channelPost (handler: Handler<this, IncomingChannelPost>): void {
+  public onChannelPost (handler: Handler<this, IncomingChannelPost>): void {
     return this.use(filterHandler(info => info.type === 'channel_post', handler))
   }
 
-  public editedChannelPost (handler: Handler<this, IncomingEditedChannelPost>): void {
+  public onEditedChannelPost (handler: Handler<this, IncomingEditedChannelPost>): void {
     return this.use(filterHandler(info => info.type === 'edited_channel_post', handler))
   }
 
-  public inlineQuery (handler: Handler<this, IncomingInlineQuery>): void {
+  public onInlineQuery (handler: Handler<this, IncomingInlineQuery>): void {
     return this.use(filterHandler(info => info.type === 'inline_query', handler))
   }
 
-  public chosenInlineResult (handler: Handler<this, IncomingChosenInlineResult>): void {
+  public onChosenInlineResult (handler: Handler<this, IncomingChosenInlineResult>): void {
     return this.use(filterHandler(info => info.type === 'chosen_inline_result', handler))
   }
 
-  public callbackQuery (handler: Handler<this, IncomingCallbackQuery>): void {
+  public onCallbackQuery (handler: Handler<this, IncomingCallbackQuery>): void {
     return this.use(filterHandler(info => info.type === 'callback_query', handler))
   }
 
-  public shippingQuery (handler: Handler<this, IncomingShippingQuery>): void {
+  public onShippingQuery (handler: Handler<this, IncomingShippingQuery>): void {
     return this.use(filterHandler(info => info.type === 'shipping_query', handler))
   }
 
-  public preCheckoutQuery (handler: Handler<this, IncomingPreCheckoutQuery>): void {
+  public onPreCheckoutQuery (handler: Handler<this, IncomingPreCheckoutQuery>): void {
     return this.use(filterHandler(info => info.type === 'pre_checkout_query', handler))
   }
 
-  public pollUpdate (handler: Handler<this, IncomingPoll>): void {
+  public onPollUpdate (handler: Handler<this, IncomingPoll>): void {
     return this.use(filterHandler(info => info.type === 'poll', handler))
   }
 
   // Message handlers
 
-  
+  public onText (handler: Handler<this, IncomingTextMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.text !== undefined, handler))
+  }
+
+  public onAudio (handler: Handler<this, IncomingAudioMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.audio !== undefined, handler))
+  }
+
+  public onDocument (handler: Handler<this, IncomingDocumentMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.document !== undefined, handler))
+  }
+
+  public onAnimation (handler: Handler<this, IncomingAnimationMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.animation !== undefined, handler))
+  }
+
+  public onGame (handler: Handler<this, IncomingGameMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.game !== undefined, handler))
+  }
+
+  public onPhoto (handler: Handler<this, IncomingPhotoMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.photo !== undefined, handler))
+  }
+
+  public onSticker (handler: Handler<this, IncomingStickerMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.sticker !== undefined, handler))
+  }
+
+  public onVideo (handler: Handler<this, IncomingVideoMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.video !== undefined, handler))
+  }
+
+  public onVoice (handler: Handler<this, IncomingVoiceMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.voice !== undefined, handler))
+  }
+
+  public onVideoNote (handler: Handler<this, IncomingVideoNoteMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.video_note !== undefined, handler))
+  }
+
+  public onContact (handler: Handler<this, IncomingContactMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.contact !== undefined, handler))
+  }
+
+  public onLocation (handler: Handler<this, IncomingLocationMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.location !== undefined, handler))
+  }
+
+  public onVenue (handler: Handler<this, IncomingVenueMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.venue !== undefined, handler))
+  }
+
+  public onPoll (handler: Handler<this, IncomingPollMessage>): void {
+    return this.onMessage(filterHandler(info => info.msg.poll !== undefined, handler))
+  }
 
 }
 
@@ -260,4 +314,60 @@ export interface IncomingPreCheckoutQuery extends IncomingUpdateBase {
 export interface IncomingPoll extends IncomingUpdateBase {
   type: 'poll'
   poll: telegram.IPoll
+}
+
+export interface IncomingTextMessage extends IncomingMessage {
+  msg: Message & { text: string }
+}
+
+export interface IncomingAudioMessage extends IncomingMessage {
+  msg: Message & { audio: telegram.Audio }
+}
+
+export interface IncomingDocumentMessage extends IncomingMessage {
+  msg: Message & { document: telegram.Document }
+}
+
+export interface IncomingAnimationMessage extends IncomingMessage {
+  msg: Message & { animation: telegram.Animation }
+}
+
+export interface IncomingGameMessage extends IncomingMessage {
+  msg: Message & { game: telegram.Game }
+}
+
+export interface IncomingPhotoMessage extends IncomingMessage {
+  msg: Message & { photo: telegram.PhotoSize[] }
+}
+
+export interface IncomingStickerMessage extends IncomingMessage {
+  msg: Message & { sticker: telegram.Sticker }
+}
+
+export interface IncomingVideoMessage extends IncomingMessage {
+  msg: Message & { video: telegram.Video }
+}
+
+export interface IncomingVoiceMessage extends IncomingMessage {
+  msg: Message & { voice: telegram.Voice }
+}
+
+export interface IncomingVideoNoteMessage extends IncomingMessage {
+  msg: Message & { video_note: telegram.VideoNote }
+}
+
+export interface IncomingContactMessage extends IncomingMessage {
+  msg: Message & { contact: telegram.IContact }
+}
+
+export interface IncomingLocationMessage extends IncomingMessage {
+  msg: Message & { location: telegram.ILocation }
+}
+
+export interface IncomingVenueMessage extends IncomingMessage {
+  msg: Message & { venue: telegram.IVenue }
+}
+
+export interface IncomingPollMessage extends IncomingMessage {
+  msg: Message & { poll: telegram.IPoll }
 }
