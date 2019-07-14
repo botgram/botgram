@@ -7,7 +7,7 @@
   ],
   "description": "Microframework to build Telegram bots.",
   "homepage": "https://github.com/botgram/botgram",
-  "telegramApiVersion": "4.1",
+  "telegramApiVersion": "4.3",
   "main": "dist/lib/index.js",
   "types": "dist/types/index.d.ts",
   "dependencies": {

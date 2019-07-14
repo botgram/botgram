@@ -7,14 +7,14 @@
     <meta property="description" content="The Bot API is an HTTP-based interface created for developers keen on building bots for Telegram.
 To learn how to create…">
     <meta property="og:title" content="Telegram Bot API">
-    <meta property="og:image" content="">
+    <meta property="og:image" content="https://telegram.org/file/811140459/1bdb/rl5NwUNbBzM.26909.gif/0ecbc461e020d4bc3a">
     <meta property="og:description" content="The Bot API is an HTTP-based interface created for developers keen on building bots for Telegram.
 To learn how to create…">
     <link rel="shortcut icon" href="/favicon.ico?3" type="image/x-icon" />
 
     <link href="/css/bootstrap.min.css?3" rel="stylesheet">
     
-    <link href="/css/telegram.css?158" rel="stylesheet" media="screen">
+    <link href="/css/telegram.css?164" rel="stylesheet" media="screen">
     <style>
     </style>
   </head>
@@ -43,10 +43,41 @@ To learn how to create…">
   
   <div id="dev_page_content" dir="auto"><!-- scroll_nav -->
 
+
+
 <blockquote>
 <p>The Bot API is an HTTP-based interface created for developers keen on building bots for Telegram.<br>To learn how to create and set up a bot, please consult our <a href="https://core.telegram.org/bots"><strong>Introduction to Bots</strong></a> and <a href="/bots/faq"><strong>Bot FAQ</strong></a>.</p>
 </blockquote>
 <h3><a class="anchor" name="recent-changes" href="#recent-changes"><i class="anchor-icon"></i></a>Recent changes</h3>
+<h4><a class="anchor" name="may-31-2019" href="#may-31-2019"><i class="anchor-icon"></i></a>May 31, 2019</h4>
+<p><strong>Bot API 4.3</strong></p>
+<ul>
+<li>Added support for <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots"><strong>Seamless Telegram Login</strong></a> on external websites (needs Telegram 5.7 or higher).</li>
+<li>Added the new object <a href="#loginurl">LoginUrl</a> and the new field <em>login_url</em> to the <a href="#inlinekeyboardbutton">InlineKeyboardButton</a> object which allows to <strong>automatically authorize</strong> users before they go to a URL specified by the bot. Users will be asked to confirm authorization in their Telegram app (needs version 5.7 or higher) when they press the button:</li>
+</ul>
+<div class="blog_image_wrap">
+  <a href="/file/811140015/1734/8VZFkwWXalM.97872/6127fa62d8a0bf2b3c" target="_blank"><img src="/file/811140909/1631/20k1Z53eiyY.23995/c541e89b74253623d9" title="TITLE" alt="TITLE" srcset="/file/811140015/1734/8VZFkwWXalM.97872/6127fa62d8a0bf2b3c , 2x" /></a>
+</div>
+
+<p><strong>Also in this update:</strong></p>
+<ul>
+<li>Added the field <code>reply_markup</code> to the <a href="#message">Message</a> object, containing the inline keyboard attached to the message.</li>
+<li>If a message with an inline keyboard is forwarded, the forwarded message will now have an inline keyboard if the keyboard contained only <em>url</em> and <em>login_url</em> buttons or if the message was sent via a bot and the keyboard contained only <em>url</em>, <em>login_url</em>, <em>switch_inline_query</em> or <em>switch_inline_query_current_chat</em> buttons. In the latter case, <em>switch_inline_query_current_chat</em> buttons are replaced with <em>switch_inline_query</em> buttons.</li>
+<li>Bots now receive the <em>edited_message</em> <a href="#update">Update</a> even if only <em>Message.reply_markup</em> has changed.</li>
+<li>Bots that have the <em>can_edit_messages</em> right in a channel can now use the method <a href="#editmessagereplymarkup">editMessageReplyMarkup</a> for messages written by other administrators forever without the 48 hours limit.</li>
+<li>Don&#39;t forget that starting in <strong>July 2019</strong>, <strong>webhook requests</strong> from Bot API will be coming from the subnets <code>149.154.160.0/20</code> and <code>91.108.4.0/22</code>. Most users won&#39;t need to do anything to continue receiving webhooks. If you control inbound access with a firewall, you may need to update your configuration. You can always find the list of actual IP addresses of servers used to send webhooks there: <a href="/bots/webhooks"><a href="https://core.telegram.org/bots/webhooks">https://core.telegram.org/bots/webhooks</a></a>.</li>
+</ul>
+<h4><a class="anchor" name="april-14-2019" href="#april-14-2019"><i class="anchor-icon"></i></a>April 14, 2019</h4>
+<p><strong>Bot API 4.2</strong></p>
+<ul>
+<li>Added support for native polls: added the object <a href="#poll">Poll</a>, the methods <a href="#sendpoll">sendPoll</a> and <a href="#stoppoll">stopPoll</a> and the field <em>poll</em> in the <a href="#message">Message</a> and <a href="#update">Update</a> objects.</li>
+<li>The method <a href="#deletemessage">deleteMessage</a> can now be used to delete messages sent by a user to the bot in private chats within 48 hours.</li>
+<li>Added support for pinned messages in basic groups in addition to supergroups and channel chats: you can pass group&#39;s chat_id to <a href="#pinchatmessage">pinChatMessage</a> and <a href="#unpinchatmessage">unpinChatMessage</a>, and receive the pinned group message in <a href="#chat">Chat</a> object.</li>
+<li>Added the field <em>is_member</em> to the <a href="#chatmember">ChatMember</a> object, which can be used to find whether a restricted user is a member of the chat.</li>
+<li>Added the field <em>forward_sender_name</em> to the <a href="#message">Message</a> object, containing name of the sender who has opted to hide their account.</li>
+<li>Starting in July 2019, webhook requests from Bot API will be coming from the subnets <code>149.154.160.0/20</code> and <code>91.108.4.0/22</code>. Most users won&#39;t need to do anything to continue receiving webhooks. If you control inbound access with a firewall, you may need to update your configuration. You can always find the list of actual IP addresses of servers used to send webhooks there: <a href="/bots/webhooks"><a href="https://core.telegram.org/bots/webhooks">https://core.telegram.org/bots/webhooks</a></a>.</li>
+<li>Document thumbnails now should be inscribed in a 320x320 square instead of 90x90.</li>
+</ul>
 <h4><a class="anchor" name="august-27-2018" href="#august-27-2018"><i class="anchor-icon"></i></a>August 27, 2018</h4>
 <p><strong>Bot API 4.1</strong></p>
 <ul>
@@ -60,7 +91,7 @@ To learn how to create…">
 <li>Added support for <strong>editing the media content of messages</strong>: added the method <a href="#editmessagemedia">editMessageMedia</a> and new types <a href="#inputmediaanimation">InputMediaAnimation</a>, <a href="#inputmediaaudio">InputMediaAudio</a>, and <a href="#inputmediadocument">InputMediaDocument</a>.</li>
 <li>Added the field <em>thumb</em> to the <a href="#audio">Audio</a> object to contain the thumbnail of the album cover to which the music file belongs.</li>
 <li>Added support for attaching custom thumbnails to uploaded files. For animations, audios, videos and video notes, which are less than 10 MB in size, thumbnails are generated automatically.</li>
-<li><code>tg://</code> URLs now can be used in inline keyboard url buttons and <code>text_link</code> message entities. </li>
+<li><code>tg://</code> URLs now can be used in inline keyboard url buttons and <code>text_link</code> message entities.</li>
 <li>Added the method <a href="#sendanimation">sendAnimation</a>, which can be used instead of <a href="#senddocument">sendDocument</a> to send animations, specifying their duration, width and height.</li>
 <li>Added the field <a href="#animation">animation</a> to the <a href="#message">Message</a> object. For backward compatibility, when this field is set, the <em>document</em> field will be also set.</li>
 <li>Added two new <a href="#messageentity">MessageEntity</a> types: <em>cashtag</em> and <em>phone_number</em>.</li>
@@ -156,6 +187,11 @@ To learn how to create…">
 <td>pre_checkout_query</td>
 <td><a href="#precheckoutquery">PreCheckoutQuery</a></td>
 <td><em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout</td>
+</tr>
+<tr>
+<td>poll</td>
+<td><a href="#poll">Poll</a></td>
+<td><em>Optional</em>. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot</td>
 </tr>
 </tbody>
 </table>
@@ -408,7 +444,7 @@ To learn how to create…">
 <tr>
 <td>pinned_message</td>
 <td><a href="#message">Message</a></td>
-<td><em>Optional</em>. Pinned message, for supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.</td>
+<td><em>Optional</em>. Pinned message, for groups, supergroups and channels. Returned only in <a href="#getchat">getChat</a>.</td>
 </tr>
 <tr>
 <td>sticker_set_name</td>
@@ -472,6 +508,11 @@ To learn how to create…">
 <td>forward_signature</td>
 <td>String</td>
 <td><em>Optional</em>. For messages forwarded from channels, signature of the post author if present</td>
+</tr>
+<tr>
+<td>forward_sender_name</td>
+<td>String</td>
+<td><em>Optional</em>. Sender&#39;s name for messages forwarded from users who disallow adding a link to their account in forwarded messages</td>
 </tr>
 <tr>
 <td>forward_date</td>
@@ -579,6 +620,11 @@ To learn how to create…">
 <td><em>Optional</em>. Message is a venue, information about the venue</td>
 </tr>
 <tr>
+<td>poll</td>
+<td><a href="#poll">Poll</a></td>
+<td><em>Optional</em>. Message is a native poll, information about the poll</td>
+</tr>
+<tr>
 <td>new_chat_members</td>
 <td>Array of <a href="#user">User</a></td>
 <td><em>Optional</em>. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)</td>
@@ -653,10 +699,15 @@ To learn how to create…">
 <td><a href="#passportdata">PassportData</a></td>
 <td><em>Optional</em>. Telegram Passport data</td>
 </tr>
+<tr>
+<td>reply_markup</td>
+<td><a href="#inlinekeyboardmarkup">InlineKeyboardMarkup</a></td>
+<td><em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.</td>
+</tr>
 </tbody>
 </table>
 <h4><a class="anchor" name="messageentity" href="#messageentity"><i class="anchor-icon"></i></a>MessageEntity</h4>
-<p>This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc. </p>
+<p>This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.</p>
 <table class="table">
 <thead>
 <tr>
@@ -1083,6 +1134,62 @@ To learn how to create…">
 </tr>
 </tbody>
 </table>
+<h4><a class="anchor" name="polloption" href="#polloption"><i class="anchor-icon"></i></a>PollOption</h4>
+<p>This object contains information about one answer option in a poll.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td>String</td>
+<td>Option text, 1-100 characters</td>
+</tr>
+<tr>
+<td>voter_count</td>
+<td>Integer</td>
+<td>Number of users that voted for this option</td>
+</tr>
+</tbody>
+</table>
+<h4><a class="anchor" name="poll" href="#poll"><i class="anchor-icon"></i></a>Poll</h4>
+<p>This object contains information about a poll.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>Unique poll identifier</td>
+</tr>
+<tr>
+<td>question</td>
+<td>String</td>
+<td>Poll question, 1-255 characters</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Array of <a href="#polloption">PollOption</a></td>
+<td>List of poll options</td>
+</tr>
+<tr>
+<td>is_closed</td>
+<td>Boolean</td>
+<td>True, if the poll is closed</td>
+</tr>
+</tbody>
+</table>
 <h4><a class="anchor" name="userprofilephotos" href="#userprofilephotos"><i class="anchor-icon"></i></a>UserProfilePhotos</h4>
 <p>This object represent a user&#39;s profile pictures.</p>
 <table class="table">
@@ -1263,6 +1370,11 @@ To learn how to create…">
 <td><em>Optional</em>. HTTP or tg:// url to be opened when button is pressed</td>
 </tr>
 <tr>
+<td>login_url</td>
+<td><a href="#loginurl">LoginUrl</a></td>
+<td><em>Optional</em>. An HTTP URL used to automatically authorize the user. Can be used as a replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a>.</td>
+</tr>
+<tr>
 <td>callback_data</td>
 <td>String</td>
 <td><em>Optional</em>. Data to be sent in a <a href="#callbackquery">callback query</a> to the bot when button is pressed, 1-64 bytes</td>
@@ -1286,6 +1398,47 @@ To learn how to create…">
 <td>pay</td>
 <td>Boolean</td>
 <td><em>Optional</em>. Specify True, to send a <a href="#payments">Pay button</a>.<br><br><strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.</td>
+</tr>
+</tbody>
+</table>
+<h4><a class="anchor" name="loginurl" href="#loginurl"><i class="anchor-icon"></i></a>LoginUrl</h4>
+<p>This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the <a href="https://core.telegram.org/widgets/login">Telegram Login Widget</a> when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:</p>
+<div class="blog_image_wrap">
+  <a href="/file/811140015/1734/8VZFkwWXalM.97872/6127fa62d8a0bf2b3c" target="_blank"><img src="/file/811140909/1631/20k1Z53eiyY.23995/c541e89b74253623d9" title="TITLE" alt="TITLE" srcset="/file/811140015/1734/8VZFkwWXalM.97872/6127fa62d8a0bf2b3c , 2x" /></a>
+</div>
+
+<p>Telegram apps support these buttons as of <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots">version 5.7</a>.</p>
+<blockquote>
+<p>Sample bot: <a href="https://t.me/discussbot">@discussbot</a></p>
+</blockquote>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td>String</td>
+<td>An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in <a href="https://core.telegram.org/widgets/login#receiving-authorization-data">Receiving authorization data</a>.<br><br><strong>NOTE:</strong> You <strong>must</strong> always check the hash of the received data to verify the authentication and the integrity of the data as described in <a href="https://core.telegram.org/widgets/login#checking-authorization">Checking authorization</a>.</td>
+</tr>
+<tr>
+<td>forward_text</td>
+<td>String</td>
+<td><em>Optional</em>. New text of the button in forwarded messages.</td>
+</tr>
+<tr>
+<td>bot_username</td>
+<td>String</td>
+<td><em>Optional</em>. Username of a bot, which will be used for user authorization. See <a href="https://core.telegram.org/widgets/login#setting-up-a-bot">Setting up a bot</a> for more details. If not specified, the current bot&#39;s username will be assumed. The <em>url</em>&#39;s domain must be the same as the domain linked with the bot. See <a href="https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot">Linking your domain to the bot</a> for more details.</td>
+</tr>
+<tr>
+<td>request_write_access</td>
+<td>Boolean</td>
+<td><em>Optional</em>. Pass True to request the permission for your bot to send messages to the user.</td>
 </tr>
 </tbody>
 </table>
@@ -1458,12 +1611,17 @@ To learn how to create…">
 <tr>
 <td>can_pin_messages</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Administrators only. True, if the administrator can pin messages, supergroups only</td>
+<td><em>Optional</em>. Administrators only. True, if the administrator can pin messages, groups and supergroups only</td>
 </tr>
 <tr>
 <td>can_promote_members</td>
 <td>Boolean</td>
 <td><em>Optional</em>. Administrators only. True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>
+</tr>
+<tr>
+<td>is_member</td>
+<td>Boolean</td>
+<td><em>Optional</em>. Restricted only. True, if the user is a member of the chat at the moment of the request</td>
 </tr>
 <tr>
 <td>can_send_messages</td>
@@ -1576,7 +1734,7 @@ To learn how to create…">
 <tr>
 <td>thumb</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
-<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
+<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>caption</td>
@@ -1634,7 +1792,7 @@ To learn how to create…">
 <tr>
 <td>thumb</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
-<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
+<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>caption</td>
@@ -1687,7 +1845,7 @@ To learn how to create…">
 <tr>
 <td>thumb</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
-<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
+<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>caption</td>
@@ -1740,7 +1898,7 @@ To learn how to create…">
 <tr>
 <td>thumb</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
-<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
+<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>caption</td>
@@ -1767,13 +1925,13 @@ To learn how to create…">
 <ul>
 <li>It is not possible to change the file type when resending by <strong>file_id</strong>. I.e. a <a href="#video">video</a> can&#39;t be <a href="#sendphoto">sent as a photo</a>, a <a href="#photosize">photo</a> can&#39;t be <a href="#senddocument">sent as a document</a>, etc.</li>
 <li>It is not possible to resend thumbnails.</li>
-<li>Resending a photo by <strong>file_id</strong> will send all of its <a href="#photosize">sizes</a>. </li>
+<li>Resending a photo by <strong>file_id</strong> will send all of its <a href="#photosize">sizes</a>.</li>
 <li><strong>file_id</strong> is unique for each individual bot and can&#39;t be transferred from one bot to another.</li>
 </ul>
 <p><strong>Sending by URL</strong></p>
 <ul>
 <li>When sending by URL the target file must have the correct MIME type (e.g., audio/mpeg for <a href="#sendaudio">sendAudio</a>, etc.).</li>
-<li>In <a href="#senddocument">sendDocument</a>, sending by URL will currently only work for <strong>gif</strong>, <strong>pdf</strong> and <strong>zip</strong> files. </li>
+<li>In <a href="#senddocument">sendDocument</a>, sending by URL will currently only work for <strong>gif</strong>, <strong>pdf</strong> and <strong>zip</strong> files.</li>
 <li>To use <a href="#sendvoice">sendVoice</a>, the file must have the type audio/ogg and be no more than 1MB in size. 1–20MB voice notes will be sent as files.</li>
 <li>Other configurations may work but we can&#39;t guarantee that they will.</li>
 </ul>
@@ -1781,7 +1939,7 @@ To learn how to create…">
 <p>Objects and methods used in the inline mode are described in the <a href="#inline-mode">Inline mode section</a>.</p>
 <h3><a class="anchor" name="available-methods" href="#available-methods"><i class="anchor-icon"></i></a>Available methods</h3>
 <blockquote>
-<p>All methods in the Bot API are case-insensitive. We support <strong>GET</strong> and <strong>POST</strong> HTTP methods. Use either <a href="https://en.wikipedia.org/wiki/Query_string">URL query string</a> or <em>application/json</em> or <em>application/x-www-form-urlencoded</em> or <em>multipart/form-data</em> for passing parameters in Bot API requests.<br>On successful call, a JSON-object containing the result will be returned. </p>
+<p>All methods in the Bot API are case-insensitive. We support <strong>GET</strong> and <strong>POST</strong> HTTP methods. Use either <a href="https://en.wikipedia.org/wiki/Query_string">URL query string</a> or <em>application/json</em> or <em>application/x-www-form-urlencoded</em> or <em>multipart/form-data</em> for passing parameters in Bot API requests.<br>On successful call, a JSON-object containing the result will be returned.</p>
 </blockquote>
 <h4><a class="anchor" name="getme" href="#getme"><i class="anchor-icon"></i></a>getMe</h4>
 <p>A simple method for testing your bot&#39;s auth token. Requires no parameters. Returns basic information about the bot in form of a <a href="#user">User</a> object.</p>
@@ -2028,7 +2186,7 @@ pre-formatted fixed-width code block
 <td>thumb</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
 <td>Optional</td>
-<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
+<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>disable_notification</td>
@@ -2078,7 +2236,7 @@ pre-formatted fixed-width code block
 <td>thumb</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
 <td>Optional</td>
-<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
+<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>caption</td>
@@ -2158,7 +2316,7 @@ pre-formatted fixed-width code block
 <td>thumb</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
 <td>Optional</td>
-<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
+<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>caption</td>
@@ -2244,7 +2402,7 @@ pre-formatted fixed-width code block
 <td>thumb</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
 <td>Optional</td>
-<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
+<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>caption</td>
@@ -2380,7 +2538,7 @@ pre-formatted fixed-width code block
 <td>thumb</td>
 <td><a href="#inputfile">InputFile</a> or String</td>
 <td>Optional</td>
-<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 90. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
+<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can’t be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More info on Sending Files »</a></td>
 </tr>
 <tr>
 <td>disable_notification</td>
@@ -2497,7 +2655,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="editmessagelivelocation" href="#editmessagelivelocation"><i class="anchor-icon"></i></a>editMessageLiveLocation</h4>
-<p>Use this method to edit live location messages sent by the bot or via the bot (for <a href="#inline-mode">inline bots</a>). A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href="#stopmessagelivelocation">stopMessageLiveLocation</a>. On success, if the edited message was sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 <table class="table">
 <thead>
 <tr>
@@ -2518,7 +2676,7 @@ pre-formatted fixed-width code block
 <td>message_id</td>
 <td>Integer</td>
 <td>Optional</td>
-<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message</td>
+<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>
 </tr>
 <tr>
 <td>inline_message_id</td>
@@ -2547,7 +2705,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="stopmessagelivelocation" href="#stopmessagelivelocation"><i class="anchor-icon"></i></a>stopMessageLiveLocation</h4>
-<p>Use this method to stop updating a live location message sent by the bot or via the bot (for <a href="#inline-mode">inline bots</a>) before <em>live_period</em> expires. On success, if the message was sent by the bot, the sent <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message was sent by the bot, the sent <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 <table class="table">
 <thead>
 <tr>
@@ -2568,7 +2726,7 @@ pre-formatted fixed-width code block
 <td>message_id</td>
 <td>Integer</td>
 <td>Optional</td>
-<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message</td>
+<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop</td>
 </tr>
 <tr>
 <td>inline_message_id</td>
@@ -2717,6 +2875,56 @@ pre-formatted fixed-width code block
 <td><a href="#inlinekeyboardmarkup">InlineKeyboardMarkup</a> or <a href="#replykeyboardmarkup">ReplyKeyboardMarkup</a> or <a href="#replykeyboardremove">ReplyKeyboardRemove</a> or <a href="#forcereply">ForceReply</a></td>
 <td>Optional</td>
 <td>Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove keyboard or to force a reply from the user.</td>
+</tr>
+</tbody>
+</table>
+<h4><a class="anchor" name="sendpoll" href="#sendpoll"><i class="anchor-icon"></i></a>sendPoll</h4>
+<p>Use this method to send a native poll. A native poll can&#39;t be sent to a private chat. On success, the sent <a href="#message">Message</a> is returned.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>chat_id</td>
+<td>Integer or String</td>
+<td>Yes</td>
+<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). A native poll can&#39;t be sent to a private chat.</td>
+</tr>
+<tr>
+<td>question</td>
+<td>String</td>
+<td>Yes</td>
+<td>Poll question, 1-255 characters</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Array of String</td>
+<td>Yes</td>
+<td>List of answer options, 2-10 strings 1-100 characters each</td>
+</tr>
+<tr>
+<td>disable_notification</td>
+<td>Boolean</td>
+<td>Optional</td>
+<td>Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound.</td>
+</tr>
+<tr>
+<td>reply_to_message_id</td>
+<td>Integer</td>
+<td>Optional</td>
+<td>If the message is a reply, ID of the original message</td>
+</tr>
+<tr>
+<td>reply_markup</td>
+<td><a href="#inlinekeyboardmarkup">InlineKeyboardMarkup</a> or <a href="#replykeyboardmarkup">ReplyKeyboardMarkup</a> or <a href="#replykeyboardremove">ReplyKeyboardRemove</a> or <a href="#forcereply">ForceReply</a></td>
+<td>Optional</td>
+<td>Additional interface options. A JSON-serialized object for an <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>, <a href="https://core.telegram.org/bots#keyboards">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.</td>
 </tr>
 </tbody>
 </table>
@@ -3018,7 +3226,7 @@ pre-formatted fixed-width code block
 <p>Note: Each administrator in a chat generates their own invite links. Bots can&#39;t use invite links generated by other administrators. If you want your bot to work with invite links, it will need to generate its own link using <a href="#exportchatinvitelink">exportChatInviteLink</a> – after this the link will become available to the bot via the <a href="#getchat">getChat</a> method. If your bot needs to generate a new invite link replacing its previous one, use <a href="#exportchatinvitelink">exportChatInviteLink</a> again.</p>
 </blockquote>
 <h4><a class="anchor" name="setchatphoto" href="#setchatphoto"><i class="anchor-icon"></i></a>setChatPhoto</h4>
-<p>Use this method to set a new profile photo for the chat. Photos can&#39;t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success. </p>
+<p>Use this method to set a new profile photo for the chat. Photos can&#39;t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
 <blockquote>
 <p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.</p>
 </blockquote>
@@ -3047,7 +3255,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="deletechatphoto" href="#deletechatphoto"><i class="anchor-icon"></i></a>deleteChatPhoto</h4>
-<p>Use this method to delete a chat photo. Photos can&#39;t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success. </p>
+<p>Use this method to delete a chat photo. Photos can&#39;t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
 <blockquote>
 <p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.</p>
 </blockquote>
@@ -3070,7 +3278,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="setchattitle" href="#setchattitle"><i class="anchor-icon"></i></a>setChatTitle</h4>
-<p>Use this method to change the title of a chat. Titles can&#39;t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success. </p>
+<p>Use this method to change the title of a chat. Titles can&#39;t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
 <blockquote>
 <p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.</p>
 </blockquote>
@@ -3099,7 +3307,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="setchatdescription" href="#setchatdescription"><i class="anchor-icon"></i></a>setChatDescription</h4>
-<p>Use this method to change the description of a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success. </p>
+<p>Use this method to change the description of a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -3125,7 +3333,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="pinchatmessage" href="#pinchatmessage"><i class="anchor-icon"></i></a>pinChatMessage</h4>
-<p>Use this method to pin a message in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success.</p>
+<p>Use this method to pin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -3157,7 +3365,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="unpinchatmessage" href="#unpinchatmessage"><i class="anchor-icon"></i></a>unpinChatMessage</h4>
-<p>Use this method to unpin a message in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success. </p>
+<p>Use this method to unpin a message in a group, a supergroup, or a channel. The bot must be an administrator in the chat for this to work and must have the ‘can_pin_messages’ admin right in the supergroup or ‘can_edit_messages’ admin right in the channel. Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -3381,7 +3589,7 @@ pre-formatted fixed-width code block
 <p>The following methods allow you to change an existing message in the message history instead of sending a new one with a result of an action. This is most useful for messages with <a href="/bots#inline-keyboards-and-on-the-fly-updating">inline keyboards</a> using callback queries, but can also help reduce clutter in conversations with regular chat bots.</p>
 <p>Please note, that it is currently only possible to edit messages without <em>reply_markup</em> or with <a href="/bots#inline-keyboards-and-on-the-fly-updating">inline keyboards</a>.</p>
 <h4><a class="anchor" name="editmessagetext" href="#editmessagetext"><i class="anchor-icon"></i></a>editMessageText</h4>
-<p>Use this method to edit text and <a href="#games">game</a> messages sent by the bot or via the bot (for <a href="#inline-mode">inline bots</a>). On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit text and <a href="#games">game</a> messages. On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 <table class="table">
 <thead>
 <tr>
@@ -3402,7 +3610,7 @@ pre-formatted fixed-width code block
 <td>message_id</td>
 <td>Integer</td>
 <td>Optional</td>
-<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message</td>
+<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>
 </tr>
 <tr>
 <td>inline_message_id</td>
@@ -3437,7 +3645,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="editmessagecaption" href="#editmessagecaption"><i class="anchor-icon"></i></a>editMessageCaption</h4>
-<p>Use this method to edit captions of messages sent by the bot or via the bot (for <a href="#inline-mode">inline bots</a>). On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit captions of messages. On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 <table class="table">
 <thead>
 <tr>
@@ -3458,7 +3666,7 @@ pre-formatted fixed-width code block
 <td>message_id</td>
 <td>Integer</td>
 <td>Optional</td>
-<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message</td>
+<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>
 </tr>
 <tr>
 <td>inline_message_id</td>
@@ -3508,7 +3716,7 @@ pre-formatted fixed-width code block
 <td>message_id</td>
 <td>Integer</td>
 <td>Optional</td>
-<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message</td>
+<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>
 </tr>
 <tr>
 <td>inline_message_id</td>
@@ -3531,7 +3739,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="editmessagereplymarkup" href="#editmessagereplymarkup"><i class="anchor-icon"></i></a>editMessageReplyMarkup</h4>
-<p>Use this method to edit only the reply markup of messages sent by the bot or via the bot (for <a href="#inline-mode">inline bots</a>).  On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
+<p>Use this method to edit only the reply markup of messages. On success, if edited message is sent by the bot, the edited <a href="#message">Message</a> is returned, otherwise <em>True</em> is returned.</p>
 <table class="table">
 <thead>
 <tr>
@@ -3552,7 +3760,7 @@ pre-formatted fixed-width code block
 <td>message_id</td>
 <td>Integer</td>
 <td>Optional</td>
-<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message</td>
+<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>
 </tr>
 <tr>
 <td>inline_message_id</td>
@@ -3568,8 +3776,40 @@ pre-formatted fixed-width code block
 </tr>
 </tbody>
 </table>
+<h4><a class="anchor" name="stoppoll" href="#stoppoll"><i class="anchor-icon"></i></a>stopPoll</h4>
+<p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href="#poll">Poll</a> with the final results is returned.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>chat_id</td>
+<td>Integer or String</td>
+<td>Yes</td>
+<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>
+</tr>
+<tr>
+<td>message_id</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>Identifier of the original message with the poll</td>
+</tr>
+<tr>
+<td>reply_markup</td>
+<td><a href="#inlinekeyboardmarkup">InlineKeyboardMarkup</a></td>
+<td>Optional</td>
+<td>A JSON-serialized object for a new message <a href="https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating">inline keyboard</a>.</td>
+</tr>
+</tbody>
+</table>
 <h4><a class="anchor" name="deletemessage" href="#deletemessage"><i class="anchor-icon"></i></a>deleteMessage</h4>
-<p>Use this method to delete a message, including service messages, with the following limitations:<br>- A message can only be deleted if it was sent less than 48 hours ago.<br>- Bots can delete outgoing messages in private chats, groups, and supergroups.<br>- Bots granted <em>can_post_messages</em> permissions can delete outgoing messages in channels.<br>- If the bot is an administrator of a group, it can delete any message there.<br>- If the bot has <em>can_delete_messages</em> permission in a supergroup or a channel, it can delete any message there.<br>Returns <em>True</em> on success.</p>
+<p>Use this method to delete a message, including service messages, with the following limitations:<br>- A message can only be deleted if it was sent less than 48 hours ago.<br>- Bots can delete outgoing messages in private chats, groups, and supergroups.<br>- Bots can delete incoming messages in private chats.<br>- Bots granted <em>can_post_messages</em> permissions can delete outgoing messages in channels.<br>- If the bot is an administrator of a group, it can delete any message there.<br>- If the bot has <em>can_delete_messages</em> permission in a supergroup or a channel, it can delete any message there.<br>Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -5330,7 +5570,7 @@ pre-formatted fixed-width code block
 <li><a href="#inputcontactmessagecontent">InputContactMessageContent</a></li>
 </ul>
 <h4><a class="anchor" name="inputtextmessagecontent" href="#inputtextmessagecontent"><i class="anchor-icon"></i></a>InputTextMessageContent</h4>
-<p>Represents the <a href="#inputmessagecontent">content</a> of a text message to be sent as the result of an inline query. </p>
+<p>Represents the <a href="#inputmessagecontent">content</a> of a text message to be sent as the result of an inline query.</p>
 <table class="table">
 <thead>
 <tr>
@@ -5358,7 +5598,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="inputlocationmessagecontent" href="#inputlocationmessagecontent"><i class="anchor-icon"></i></a>InputLocationMessageContent</h4>
-<p>Represents the <a href="#inputmessagecontent">content</a> of a location message to be sent as the result of an inline query. </p>
+<p>Represents the <a href="#inputmessagecontent">content</a> of a location message to be sent as the result of an inline query.</p>
 <table class="table">
 <thead>
 <tr>
@@ -5386,7 +5626,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="inputvenuemessagecontent" href="#inputvenuemessagecontent"><i class="anchor-icon"></i></a>InputVenueMessageContent</h4>
-<p>Represents the <a href="#inputmessagecontent">content</a> of a venue message to be sent as the result of an inline query. </p>
+<p>Represents the <a href="#inputmessagecontent">content</a> of a venue message to be sent as the result of an inline query.</p>
 <table class="table">
 <thead>
 <tr>
@@ -5429,7 +5669,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="inputcontactmessagecontent" href="#inputcontactmessagecontent"><i class="anchor-icon"></i></a>InputContactMessageContent</h4>
-<p>Represents the <a href="#inputmessagecontent">content</a> of a contact message to be sent as the result of an inline query. </p>
+<p>Represents the <a href="#inputmessagecontent">content</a> of a contact message to be sent as the result of an inline query.</p>
 <table class="table">
 <thead>
 <tr>
@@ -5462,7 +5702,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="choseninlineresult" href="#choseninlineresult"><i class="anchor-icon"></i></a>ChosenInlineResult</h4>
-<p>Represents a <a href="#inlinequeryresult">result</a> of an inline query that was chosen by the user and sent to their chat partner. </p>
+<p>Represents a <a href="#inlinequeryresult">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p>
 <table class="table">
 <thead>
 <tr>
@@ -6505,7 +6745,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h3><a class="anchor" name="games" href="#games"><i class="anchor-icon"></i></a>Games</h3>
-<p>Your bot can offer users <strong>HTML5 games</strong> to play solo or to compete against each other in groups and one-on-one chats. Create games via <a href="https://tme/botfather">@BotFather</a> using the <em>/newgame</em> command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering.</p>
+<p>Your bot can offer users <strong>HTML5 games</strong> to play solo or to compete against each other in groups and one-on-one chats. Create games via <a href="https://t.me/botfather">@BotFather</a> using the <em>/newgame</em> command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering.</p>
 <ul>
 <li>Games are a new type of content on Telegram, represented by the <a href="#game">Game</a> and <a href="#inlinequeryresultgame">InlineQueryResultGame</a> objects.</li>
 <li>Once you&#39;ve created a game via <a href="https://t.me/botfather">BotFather</a>, you can send games to chats as regular messages using the <a href="#sendgame">sendGame</a> method, or use <a href="#inline-mode">inline mode</a> with <a href="#inlinequeryresultgame">InlineQueryResultGame</a>.</li>
@@ -6799,11 +7039,10 @@ pre-formatted fixed-width code block
   </div>
 </div>
     </div>
-    <script src="/js/main.js?26"></script>
+    <script src="/js/main.js?27"></script>
     <script src="/js/jquery.min.js?1"></script>
 <script src="/js/bootstrap.min.js"></script>
 
-    
     <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -6816,4 +7055,4 @@ backToTopInit();
 </script>
   </body>
 </html>
-<!-- page generated in 30.75ms -->
+<!-- page generated in 29.01ms -->

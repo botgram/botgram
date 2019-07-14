@@ -245,7 +245,8 @@ export type UpdateKind =
     'chosen_inline_result' |
     'callback_query' |
     'shipping_query' |
-    'pre_checkout_query'
+    'pre_checkout_query' |
+    'poll'
 
 /**
  * This object represents an incoming update.  
@@ -303,6 +304,12 @@ export interface IUpdate {
    * checkout
    */
   pre_checkout_query?: IPreCheckoutQuery
+
+  /**
+   * New poll state. Bots receive only updates about stopped polls and
+   * polls, which are sent by the bot
+   */
+  poll?: IPoll
 }
 
 /**
@@ -428,7 +435,7 @@ export interface IChat {
   invite_link?: string
 
   /**
-   * Pinned message, for supergroups and channel chats. Returned only in
+   * Pinned message, for groups, supergroups and channels. Returned only in
    * [[getChat]].
    */
   pinned_message?: IMessage
@@ -482,6 +489,12 @@ export interface IMessage {
    * present
    */
   forward_signature?: string
+
+  /**
+   * Sender's name for messages forwarded from users who disallow adding a
+   * link to their account in forwarded messages
+   */
+  forward_sender_name?: string
 
   /**
    * For forwarded messages, date the original message was sent in Unix
@@ -573,6 +586,9 @@ export interface IMessage {
   /** Message is a venue, information about the venue */
   venue?: IVenue
 
+  /** Message is a native poll, information about the poll */
+  poll?: IPoll
+
   /**
    * New members that were added to the group or supergroup and information
    * about them (the bot itself may be one of these members)
@@ -660,6 +676,12 @@ export interface IMessage {
 
   /** Telegram Passport data */
   passport_data?: IPassportData
+
+  /**
+   * Inline keyboard attached to the message. `login_url` buttons are
+   * represented as ordinary `url` buttons.
+   */
+  reply_markup?: IInlineKeyboardMarkup
 }
 
 /**
@@ -917,6 +939,34 @@ export interface IVenue {
 }
 
 /**
+ * This object contains information about one answer option in a poll.
+ */
+export interface IPollOption {
+  /** Option text, 1-100 characters */
+  text: string
+
+  /** Number of users that voted for this option */
+  voter_count: integer
+}
+
+/**
+ * This object contains information about a poll.
+ */
+export interface IPoll {
+  /** Unique poll identifier */
+  id: string
+
+  /** Poll question, 1-255 characters */
+  question: string
+
+  /** List of poll options */
+  options: IPollOption[]
+
+  /** True, if the poll is closed */
+  is_closed: boolean
+}
+
+/**
  * This object represent a user's profile pictures.
  */
 export interface IUserProfilePhotos {
@@ -1080,6 +1130,13 @@ export interface IInlineKeyboardButton {
   url?: string
 
   /**
+   * An HTTP URL used to automatically authorize the user. Can be used as a
+   * replacement for the [Telegram Login
+   * Widget](https://core.telegram.org/widgets/login).
+   */
+  login_url?: ILoginUrl
+
+  /**
    * Data to be sent in a [[ICallbackQuery]] to the bot when button is
    * pressed, 1-64 bytes
    */
@@ -1127,6 +1184,58 @@ export interface IInlineKeyboardButton {
    * the first row.
    */
   pay?: boolean
+}
+
+/**
+ * This object represents a parameter of the inline keyboard button used
+ * to automatically authorize a user. Serves as a great replacement for
+ * the [Telegram Login Widget](https://core.telegram.org/widgets/login)
+ * when the user is coming from Telegram. All the user needs to do is
+ * tap/click a button and confirm that they want to log in:
+ *
+ *
+ *
+ * Telegram apps support these buttons as of [version
+ * 5.7](https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots).
+ *
+ * > Sample bot: [@discussbot](https://t.me/discussbot)
+ */
+export interface ILoginUrl {
+  /**
+   * An HTTP URL to be opened with user authorization data added to the
+   * query string when the button is pressed. If the user refuses to
+   * provide authorization data, the original URL without information about
+   * the user will be opened. The data added is the same as described in
+   * [Receiving authorization
+   * data](https://core.telegram.org/widgets/login#receiving-authorization-data).  
+   *   
+   * **NOTE:** You **must** always check the hash of the received data to
+   * verify the authentication and the integrity of the data as described
+   * in [Checking
+   * authorization](https://core.telegram.org/widgets/login#checking-authorization).
+   */
+  url: string
+
+  /** New text of the button in forwarded messages. */
+  forward_text?: string
+
+  /**
+   * Username of a bot, which will be used for user authorization. See
+   * [Setting up a
+   * bot](https://core.telegram.org/widgets/login#setting-up-a-bot) for
+   * more details. If not specified, the current bot's username will be
+   * assumed. The *url*'s domain must be the same as the domain linked with
+   * the bot. See [Linking your domain to the
+   * bot](https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot)
+   * for more details.
+   */
+  bot_username?: string
+
+  /**
+   * Pass True to request the permission for your bot to send messages to
+   * the user.
+   */
+  request_write_access?: boolean
 }
 
 /**
@@ -1306,7 +1415,7 @@ export interface IChatMember {
 
   /**
    * Administrators only. True, if the administrator can pin messages,
-   * supergroups only
+   * groups and supergroups only
    */
   can_pin_messages?: boolean
 
@@ -1317,6 +1426,12 @@ export interface IChatMember {
    * by administrators that were appointed by the user)
    */
   can_promote_members?: boolean
+
+  /**
+   * Restricted only. True, if the user is a member of the chat at the
+   * moment of the request
+   */
+  is_member?: boolean
 
   /**
    * Restricted only. True, if the user can send text messages, contacts,
@@ -1412,7 +1527,7 @@ export interface IInputMediaVideo {
    * Thumbnail of the file sent; can be ignored if thumbnail generation for
    * the file is supported server-side. The thumbnail should be in JPEG
    * format and less than 200 kB in size. A thumbnail‘s width and height
-   * should not exceed 90. Ignored if the file is not uploaded using
+   * should not exceed 320. Ignored if the file is not uploaded using
    * multipart/form-data. Thumbnails can’t be reused and can be only
    * uploaded as a new file, so you can pass “attach://<file_attach_name>”
    * if the thumbnail was uploaded using multipart/form-data under
@@ -1460,7 +1575,7 @@ export interface IInputMediaAnimation {
    * Thumbnail of the file sent; can be ignored if thumbnail generation for
    * the file is supported server-side. The thumbnail should be in JPEG
    * format and less than 200 kB in size. A thumbnail‘s width and height
-   * should not exceed 90. Ignored if the file is not uploaded using
+   * should not exceed 320. Ignored if the file is not uploaded using
    * multipart/form-data. Thumbnails can’t be reused and can be only
    * uploaded as a new file, so you can pass “attach://<file_attach_name>”
    * if the thumbnail was uploaded using multipart/form-data under
@@ -1504,7 +1619,7 @@ export interface IInputMediaAudio {
    * Thumbnail of the file sent; can be ignored if thumbnail generation for
    * the file is supported server-side. The thumbnail should be in JPEG
    * format and less than 200 kB in size. A thumbnail‘s width and height
-   * should not exceed 90. Ignored if the file is not uploaded using
+   * should not exceed 320. Ignored if the file is not uploaded using
    * multipart/form-data. Thumbnails can’t be reused and can be only
    * uploaded as a new file, so you can pass “attach://<file_attach_name>”
    * if the thumbnail was uploaded using multipart/form-data under
@@ -1548,7 +1663,7 @@ export interface IInputMediaDocument {
    * Thumbnail of the file sent; can be ignored if thumbnail generation for
    * the file is supported server-side. The thumbnail should be in JPEG
    * format and less than 200 kB in size. A thumbnail‘s width and height
-   * should not exceed 90. Ignored if the file is not uploaded using
+   * should not exceed 320. Ignored if the file is not uploaded using
    * multipart/form-data. Thumbnails can’t be reused and can be only
    * uploaded as a new file, so you can pass “attach://<file_attach_name>”
    * if the thumbnail was uploaded using multipart/form-data under
@@ -3851,7 +3966,7 @@ export abstract class ClientBase {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -3930,7 +4045,7 @@ export abstract class ClientBase {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -4025,7 +4140,7 @@ export abstract class ClientBase {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -4135,7 +4250,7 @@ export abstract class ClientBase {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -4312,7 +4427,7 @@ export abstract class ClientBase {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -4464,10 +4579,8 @@ export abstract class ClientBase {
   }
 
   /**
-   * Use this method to edit live location messages sent by the bot or via
-   * the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). A location can
-   * be edited until its *live_period* expires or editing is explicitly
+   * Use this method to edit live location messages. A location can be
+   * edited until its *live_period* expires or editing is explicitly
    * disabled by a call to [[stopMessageLiveLocation]]. On success, if the
    * edited message was sent by the bot, the edited [[IMessage]] is
    * returned, otherwise *True* is returned.
@@ -4505,9 +4618,7 @@ export abstract class ClientBase {
   }
 
   /**
-   * Use this method to stop updating a live location message sent by the
-   * bot or via the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)) before
+   * Use this method to stop updating a live location message before
    * *live_period* expires. On success, if the message was sent by the bot,
    * the sent [[IMessage]] is returned, otherwise *True* is returned.
    *
@@ -4670,6 +4781,55 @@ export abstract class ClientBase {
       parameters.reply_markup = options.reply_markup
     }
     return this.callMethod('sendContact', parameters)
+        .then((x: any) => new Message(x, this))
+  }
+
+  /**
+   * Use this method to send a native poll. A native poll can't be sent to
+   * a private chat. On success, the sent [[IMessage]] is returned.
+   *
+   * @param chat - Unique identifier for the target chat or username of the
+   * target channel (in the format `@channelusername`). A native poll can't
+   * be sent to a private chat.
+   * @param question - Poll question, 1-255 characters
+   * @param pollOptions - List of answer options, 2-10 strings 1-100
+   * characters each
+   * @param options - Optional parameters
+   */
+  public sendPoll (chat: ChatId | string, question: string, pollOptions: string[], options?: {
+    /**
+     * Sends the message
+     * [silently](https://telegram.org/blog/channels-2-0#silent-messages).
+     * Users will receive a notification with no sound.
+     */
+    disable_notification?: boolean
+
+    /** If the message is a reply, ID of the original message */
+    reply_to_message?: MessageId | integer
+
+    /**
+     * Additional interface options. An [inline
+     * keyboard](https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating),
+     * [custom reply keyboard](https://core.telegram.org/bots#keyboards),
+     * instructions to remove reply keyboard or to force a reply from the
+     * user.
+     */
+    reply_markup?: IReplyMarkup
+  }): BluebirdPromise<Message> {
+    const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
+    options = options || {}
+    parameters.chat_id = resolveChatId(chat)
+    parameters.question = question
+    parameters.options = pollOptions
+    if (typeof options.disable_notification !== 'undefined') {
+      parameters.disable_notification = options.disable_notification
+    }
+    parameters.reply_to_message_id = (typeof options.reply_to_message === 'object') ? options.reply_to_message.message_id : options.reply_to_message
+    if (typeof options.reply_markup !== 'undefined') {
+      parameters.reply_markup = options.reply_markup
+    }
+    return this.callMethod('sendPoll', parameters)
         .then((x: any) => new Message(x, this))
   }
 
@@ -5121,9 +5281,9 @@ export abstract class ClientBase {
   }
 
   /**
-   * Use this method to pin a message in a supergroup or a channel. The bot
-   * must be an administrator in the chat for this to work and must have
-   * the ‘can_pin_messages’ admin right in the supergroup or
+   * Use this method to pin a message in a group, a supergroup, or a
+   * channel. The bot must be an administrator in the chat for this to work
+   * and must have the ‘can_pin_messages’ admin right in the supergroup or
    * ‘can_edit_messages’ admin right in the channel. Returns *True* on
    * success.
    *
@@ -5150,9 +5310,9 @@ export abstract class ClientBase {
   }
 
   /**
-   * Use this method to unpin a message in a supergroup or a channel. The
-   * bot must be an administrator in the chat for this to work and must
-   * have the ‘can_pin_messages’ admin right in the supergroup or
+   * Use this method to unpin a message in a group, a supergroup, or a
+   * channel. The bot must be an administrator in the chat for this to work
+   * and must have the ‘can_pin_messages’ admin right in the supergroup or
    * ‘can_edit_messages’ admin right in the channel. Returns *True* on
    * success.
    *
@@ -5355,10 +5515,8 @@ export abstract class ClientBase {
 
   /**
    * Use this method to edit text and
-   * [game](https://core.telegram.org/bots/api#games) messages sent by the
-   * bot or via the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). On success, if
-   * edited message is sent by the bot, the edited [[IMessage]] is
+   * [game](https://core.telegram.org/bots/api#games) messages. On success,
+   * if edited message is sent by the bot, the edited [[IMessage]] is
    * returned, otherwise *True* is returned.
    *
    * @param message - Specify the message to operate on, with either a
@@ -5410,11 +5568,9 @@ export abstract class ClientBase {
   }
 
   /**
-   * Use this method to edit captions of messages sent by the bot or via
-   * the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). On success, if
-   * edited message is sent by the bot, the edited [[IMessage]] is
-   * returned, otherwise *True* is returned.
+   * Use this method to edit captions of messages. On success, if edited
+   * message is sent by the bot, the edited [[IMessage]] is returned,
+   * otherwise *True* is returned.
    *
    * @param message - Specify the message to operate on, with either a
    * [[MessageId]] pair or a [[Message]] object. For inline messages, pass
@@ -5502,10 +5658,8 @@ export abstract class ClientBase {
   }
 
   /**
-   * Use this method to edit only the reply markup of messages sent by the
-   * bot or via the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). On success, if
-   * edited message is sent by the bot, the edited [[IMessage]] is
+   * Use this method to edit only the reply markup of messages. On success,
+   * if edited message is sent by the bot, the edited [[IMessage]] is
    * returned, otherwise *True* is returned.
    *
    * @param message - Specify the message to operate on, with either a
@@ -5537,11 +5691,37 @@ export abstract class ClientBase {
   }
 
   /**
+   * Use this method to stop a poll which was sent by the bot. On success,
+   * the stopped [[IPoll]] with the final results is returned.
+   *
+   * @param message - Identifier of the original message with the poll
+   * @param options - Optional parameters
+   */
+  public stopPoll (message: MessageId, options?: {
+    /**
+     * A new message [inline
+     * keyboard](https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating).
+     */
+    reply_markup?: IInlineKeyboardMarkup
+  }): BluebirdPromise<IPoll> {
+    const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
+    options = options || {}
+    parameters.chat_id = resolveChatId(message.chat)
+    parameters.message_id = message.message_id
+    if (typeof options.reply_markup !== 'undefined') {
+      parameters.reply_markup = options.reply_markup
+    }
+    return this.callMethod('stopPoll', parameters)
+  }
+
+  /**
    * Use this method to delete a message, including service messages, with
    * the following limitations:  
    * - A message can only be deleted if it was sent less than 48 hours ago.  
    * - Bots can delete outgoing messages in private chats, groups, and
    * supergroups.  
+   * - Bots can delete incoming messages in private chats.  
    * - Bots granted *can_post_messages* permissions can delete outgoing
    * messages in channels.  
    * - If the bot is an administrator of a group, it can delete any message
@@ -6290,10 +6470,8 @@ export class MessageContext extends Context {
   }
 
   /**
-   * Use this method to edit live location messages sent by the bot or via
-   * the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). A location can
-   * be edited until its *live_period* expires or editing is explicitly
+   * Use this method to edit live location messages. A location can be
+   * edited until its *live_period* expires or editing is explicitly
    * disabled by a call to [[stopMessageLiveLocation]]. On success, if the
    * edited message was sent by the bot, the edited [[IMessage]] is
    * returned, otherwise *True* is returned.
@@ -6315,9 +6493,7 @@ export class MessageContext extends Context {
   }
 
   /**
-   * Use this method to stop updating a live location message sent by the
-   * bot or via the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)) before
+   * Use this method to stop updating a live location message before
    * *live_period* expires. On success, if the message was sent by the bot,
    * the sent [[IMessage]] is returned, otherwise *True* is returned.
    *
@@ -6336,9 +6512,9 @@ export class MessageContext extends Context {
   }
 
   /**
-   * Use this method to pin a message in a supergroup or a channel. The bot
-   * must be an administrator in the chat for this to work and must have
-   * the ‘can_pin_messages’ admin right in the supergroup or
+   * Use this method to pin a message in a group, a supergroup, or a
+   * channel. The bot must be an administrator in the chat for this to work
+   * and must have the ‘can_pin_messages’ admin right in the supergroup or
    * ‘can_edit_messages’ admin right in the channel. Returns *True* on
    * success.
    *
@@ -6359,10 +6535,8 @@ export class MessageContext extends Context {
 
   /**
    * Use this method to edit text and
-   * [game](https://core.telegram.org/bots/api#games) messages sent by the
-   * bot or via the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). On success, if
-   * edited message is sent by the bot, the edited [[IMessage]] is
+   * [game](https://core.telegram.org/bots/api#games) messages. On success,
+   * if edited message is sent by the bot, the edited [[IMessage]] is
    * returned, otherwise *True* is returned.
    *
    * This is equivalent to calling [[Client.editMessageText]].
@@ -6393,11 +6567,9 @@ export class MessageContext extends Context {
   }
 
   /**
-   * Use this method to edit captions of messages sent by the bot or via
-   * the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). On success, if
-   * edited message is sent by the bot, the edited [[IMessage]] is
-   * returned, otherwise *True* is returned.
+   * Use this method to edit captions of messages. On success, if edited
+   * message is sent by the bot, the edited [[IMessage]] is returned,
+   * otherwise *True* is returned.
    *
    * This is equivalent to calling [[Client.editMessageCaption]].
    *
@@ -6450,10 +6622,8 @@ export class MessageContext extends Context {
   }
 
   /**
-   * Use this method to edit only the reply markup of messages sent by the
-   * bot or via the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). On success, if
-   * edited message is sent by the bot, the edited [[IMessage]] is
+   * Use this method to edit only the reply markup of messages. On success,
+   * if edited message is sent by the bot, the edited [[IMessage]] is
    * returned, otherwise *True* is returned.
    *
    * This is equivalent to calling [[Client.editMessageReplyMarkup]].
@@ -6471,11 +6641,30 @@ export class MessageContext extends Context {
   }
 
   /**
+   * Use this method to stop a poll which was sent by the bot. On success,
+   * the stopped [[IPoll]] with the final results is returned.
+   *
+   * This is equivalent to calling [[Client.stopPoll]].
+   *
+   * @param options - Optional parameters
+   */
+  public stopPoll (options?: {
+    /**
+     * A new message [inline
+     * keyboard](https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating).
+     */
+    reply_markup?: IInlineKeyboardMarkup
+  }): BluebirdPromise<IPoll> {
+    return this.__getClient().stopPoll(this, options)
+  }
+
+  /**
    * Use this method to delete a message, including service messages, with
    * the following limitations:  
    * - A message can only be deleted if it was sent less than 48 hours ago.  
    * - Bots can delete outgoing messages in private chats, groups, and
    * supergroups.  
+   * - Bots can delete incoming messages in private chats.  
    * - Bots granted *can_post_messages* permissions can delete outgoing
    * messages in channels.  
    * - If the bot is an administrator of a group, it can delete any message
@@ -6579,7 +6768,7 @@ export class FileContext extends Context {
    * This is equivalent to calling [[Client.getFile]].
    */
   public get (): BluebirdPromise<File> {
-    return this.__getClient().getFile(this.file_id)
+    return this.__getClient().getFile(this)
   }
 
   /**
@@ -6601,7 +6790,7 @@ export class FileContext extends Context {
    * stream). If you want the full body, see [[loadFile]].
    */
   public stream (): BluebirdPromise<IncomingMessage> {
-    return this.__getClient().streamFile(this.file_id)
+    return this.__getClient().streamFile(this)
   }
 
   /**
@@ -6614,7 +6803,7 @@ export class FileContext extends Context {
    * @returns Promise that resolves with the binary contents of the file.
    */
   public load (): BluebirdPromise<Buffer> {
-    return this.__getClient().loadFile(this.file_id)
+    return this.__getClient().loadFile(this)
   }
 
 }
@@ -6804,7 +6993,7 @@ export class ChatContext extends Context {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -6852,7 +7041,7 @@ export class ChatContext extends Context {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -6925,7 +7114,7 @@ export class ChatContext extends Context {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -7001,7 +7190,7 @@ export class ChatContext extends Context {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -7125,7 +7314,7 @@ export class ChatContext extends Context {
      * Thumbnail of the file sent; can be ignored if thumbnail generation for
      * the file is supported server-side. The thumbnail should be in JPEG
      * format and less than 200 kB in size. A thumbnail‘s width and height
-     * should not exceed 90. Ignored if the file is not uploaded using
+     * should not exceed 320. Ignored if the file is not uploaded using
      * multipart/form-data. Thumbnails can’t be reused and can be only
      * uploaded as a new file, so you can pass “attach://<file_attach_name>”
      * if the thumbnail was uploaded using multipart/form-data under
@@ -7311,6 +7500,40 @@ export class ChatContext extends Context {
     reply_markup?: IReplyMarkup
   }): BluebirdPromise<Message> {
     return this.__getClient().sendContact(this.id, options)
+  }
+
+  /**
+   * Use this method to send a native poll. A native poll can't be sent to
+   * a private chat. On success, the sent [[IMessage]] is returned.
+   *
+   * This is equivalent to calling [[Client.sendPoll]].
+   *
+   * @param question - Poll question, 1-255 characters
+   * @param pollOptions - List of answer options, 2-10 strings 1-100
+   * characters each
+   * @param options - Optional parameters
+   */
+  public sendPoll (question: string, pollOptions: string[], options?: {
+    /**
+     * Sends the message
+     * [silently](https://telegram.org/blog/channels-2-0#silent-messages).
+     * Users will receive a notification with no sound.
+     */
+    disable_notification?: boolean
+
+    /** If the message is a reply, ID of the original message */
+    reply_to_message?: MessageId | integer
+
+    /**
+     * Additional interface options. An [inline
+     * keyboard](https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating),
+     * [custom reply keyboard](https://core.telegram.org/bots#keyboards),
+     * instructions to remove reply keyboard or to force a reply from the
+     * user.
+     */
+    reply_markup?: IReplyMarkup
+  }): BluebirdPromise<Message> {
+    return this.__getClient().sendPoll(this.id, question, pollOptions, options)
   }
 
   /**
@@ -7570,9 +7793,9 @@ export class ChatContext extends Context {
   }
 
   /**
-   * Use this method to unpin a message in a supergroup or a channel. The
-   * bot must be an administrator in the chat for this to work and must
-   * have the ‘can_pin_messages’ admin right in the supergroup or
+   * Use this method to unpin a message in a group, a supergroup, or a
+   * channel. The bot must be an administrator in the chat for this to work
+   * and must have the ‘can_pin_messages’ admin right in the supergroup or
    * ‘can_edit_messages’ admin right in the channel. Returns *True* on
    * success.
    *
@@ -8132,10 +8355,8 @@ export class InlineMessageContext extends Context {
   }
 
   /**
-   * Use this method to edit live location messages sent by the bot or via
-   * the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). A location can
-   * be edited until its *live_period* expires or editing is explicitly
+   * Use this method to edit live location messages. A location can be
+   * edited until its *live_period* expires or editing is explicitly
    * disabled by a call to [[stopMessageLiveLocation]]. On success, if the
    * edited message was sent by the bot, the edited [[IMessage]] is
    * returned, otherwise *True* is returned.
@@ -8157,9 +8378,7 @@ export class InlineMessageContext extends Context {
   }
 
   /**
-   * Use this method to stop updating a live location message sent by the
-   * bot or via the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)) before
+   * Use this method to stop updating a live location message before
    * *live_period* expires. On success, if the message was sent by the bot,
    * the sent [[IMessage]] is returned, otherwise *True* is returned.
    *
@@ -8179,10 +8398,8 @@ export class InlineMessageContext extends Context {
 
   /**
    * Use this method to edit text and
-   * [game](https://core.telegram.org/bots/api#games) messages sent by the
-   * bot or via the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). On success, if
-   * edited message is sent by the bot, the edited [[IMessage]] is
+   * [game](https://core.telegram.org/bots/api#games) messages. On success,
+   * if edited message is sent by the bot, the edited [[IMessage]] is
    * returned, otherwise *True* is returned.
    *
    * This is equivalent to calling [[Client.editMessageText]].
@@ -8213,11 +8430,9 @@ export class InlineMessageContext extends Context {
   }
 
   /**
-   * Use this method to edit captions of messages sent by the bot or via
-   * the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). On success, if
-   * edited message is sent by the bot, the edited [[IMessage]] is
-   * returned, otherwise *True* is returned.
+   * Use this method to edit captions of messages. On success, if edited
+   * message is sent by the bot, the edited [[IMessage]] is returned,
+   * otherwise *True* is returned.
    *
    * This is equivalent to calling [[Client.editMessageCaption]].
    *
@@ -8270,10 +8485,8 @@ export class InlineMessageContext extends Context {
   }
 
   /**
-   * Use this method to edit only the reply markup of messages sent by the
-   * bot or via the bot (for [inline
-   * bots](https://core.telegram.org/bots/api#inline-mode)). On success, if
-   * edited message is sent by the bot, the edited [[IMessage]] is
+   * Use this method to edit only the reply markup of messages. On success,
+   * if edited message is sent by the bot, the edited [[IMessage]] is
    * returned, otherwise *True* is returned.
    *
    * This is equivalent to calling [[Client.editMessageReplyMarkup]].
@@ -8653,6 +8866,12 @@ export class Update implements IUpdate {
   pre_checkout_query?: PreCheckoutQuery
 
   /**
+   * New poll state. Bots receive only updates about stopped polls and
+   * polls, which are sent by the bot
+   */
+  poll?: IPoll
+
+  /**
    * Parses a raw [[IUpdate]] object received from Telegram, into Botgram's
    * representation.
    *
@@ -8689,6 +8908,9 @@ export class Update implements IUpdate {
     }
     if (typeof x.pre_checkout_query !== 'undefined') {
       this.pre_checkout_query = new PreCheckoutQuery(x.pre_checkout_query, client)
+    }
+    if (typeof x.poll !== 'undefined') {
+      this.poll = x.poll
     }
   }
 }
@@ -8851,7 +9073,7 @@ export class Chat extends ChatContext implements IChat {
   invite_link?: string
 
   /**
-   * Pinned message, for supergroups and channel chats. Returned only in
+   * Pinned message, for groups, supergroups and channels. Returned only in
    * [[getChat]].
    */
   pinned_message?: Message
@@ -8951,6 +9173,12 @@ export class Message extends MessageContext implements IMessage {
   forward_signature?: string
 
   /**
+   * Sender's name for messages forwarded from users who disallow adding a
+   * link to their account in forwarded messages
+   */
+  forward_sender_name?: string
+
+  /**
    * For forwarded messages, date the original message was sent in Unix
    * time
    */
@@ -9039,6 +9267,9 @@ export class Message extends MessageContext implements IMessage {
 
   /** Message is a venue, information about the venue */
   venue?: IVenue
+
+  /** Message is a native poll, information about the poll */
+  poll?: IPoll
 
   /**
    * New members that were added to the group or supergroup and information
@@ -9129,6 +9360,12 @@ export class Message extends MessageContext implements IMessage {
   passport_data?: PassportData
 
   /**
+   * Inline keyboard attached to the message. `login_url` buttons are
+   * represented as ordinary `url` buttons.
+   */
+  reply_markup?: IInlineKeyboardMarkup
+
+  /**
    * Parses a raw [[IMessage]] object received from Telegram, into
    * Botgram's representation.
    *
@@ -9155,6 +9392,9 @@ export class Message extends MessageContext implements IMessage {
     }
     if (typeof x.forward_signature !== 'undefined') {
       this.forward_signature = x.forward_signature
+    }
+    if (typeof x.forward_sender_name !== 'undefined') {
+      this.forward_sender_name = x.forward_sender_name
     }
     if (typeof x.forward_date !== 'undefined') {
       this.forward_date = new Date(x.forward_date * 1000)
@@ -9219,6 +9459,9 @@ export class Message extends MessageContext implements IMessage {
     if (typeof x.venue !== 'undefined') {
       this.venue = x.venue
     }
+    if (typeof x.poll !== 'undefined') {
+      this.poll = x.poll
+    }
     if (typeof x.new_chat_members !== 'undefined') {
       this.new_chat_members = x.new_chat_members.map((x: any) => new User(x, client))
     }
@@ -9263,6 +9506,9 @@ export class Message extends MessageContext implements IMessage {
     }
     if (typeof x.passport_data !== 'undefined') {
       this.passport_data = new PassportData(x.passport_data, client)
+    }
+    if (typeof x.reply_markup !== 'undefined') {
+      this.reply_markup = x.reply_markup
     }
   }
 }
@@ -9837,7 +10083,7 @@ export class ChatMember implements IChatMember {
 
   /**
    * Administrators only. True, if the administrator can pin messages,
-   * supergroups only
+   * groups and supergroups only
    */
   can_pin_messages?: boolean
 
@@ -9848,6 +10094,12 @@ export class ChatMember implements IChatMember {
    * by administrators that were appointed by the user)
    */
   can_promote_members?: boolean
+
+  /**
+   * Restricted only. True, if the user is a member of the chat at the
+   * moment of the request
+   */
+  is_member?: boolean
 
   /**
    * Restricted only. True, if the user can send text messages, contacts,
@@ -9914,6 +10166,9 @@ export class ChatMember implements IChatMember {
     }
     if (typeof x.can_promote_members !== 'undefined') {
       this.can_promote_members = x.can_promote_members
+    }
+    if (typeof x.is_member !== 'undefined') {
+      this.is_member = x.is_member
     }
     if (typeof x.can_send_messages !== 'undefined') {
       this.can_send_messages = x.can_send_messages
