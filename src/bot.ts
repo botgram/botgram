@@ -26,7 +26,7 @@ export class Bot extends EventEmitter {
 
   private loop?: UpdateLoop
 
-  public listen (): void {
+  public listen (): this {
     if (!this.loop) {
       this.loop = new UpdateLoop(this.client, this.options.updateLoopOptions)
       this.loop.on('sync', () => this.emit('sync'))
@@ -34,13 +34,15 @@ export class Bot extends EventEmitter {
       this.loop.on('error', (error, retry) =>
         this.emit(retry ? 'updateError' : 'error', error))
     }
+    return this
   }
 
-  public stop (): void {
+  public stop (): this {
     if (this.loop) {
       this.loop.stop()
       this.loop = undefined
     }
+    return this
   }
 
   private handleBatch (updates: Update[], queued: boolean): void {
@@ -105,107 +107,108 @@ export class Bot extends EventEmitter {
     }
   }
 
-  public use (handler: Handler<this, IncomingUpdate>): void {
+  public use (handler: Handler<this, IncomingUpdate>): this {
     this.handlers.push(handler)
+    return this
   }
 
   // Generic handlers
 
-  public onMessage (handler: Handler<this, IncomingMessage>): void {
+  public onMessage (handler: Handler<this, IncomingMessage>): this {
     return this.use(filterHandler(info => info.type === 'message', handler))
   }
 
-  public onEditedMessage (handler: Handler<this, IncomingEditedMessage>): void {
+  public onEditedMessage (handler: Handler<this, IncomingEditedMessage>): this {
     return this.use(filterHandler(info => info.type === 'edited_message', handler))
   }
 
-  public onChannelPost (handler: Handler<this, IncomingChannelPost>): void {
+  public onChannelPost (handler: Handler<this, IncomingChannelPost>): this {
     return this.use(filterHandler(info => info.type === 'channel_post', handler))
   }
 
-  public onEditedChannelPost (handler: Handler<this, IncomingEditedChannelPost>): void {
+  public onEditedChannelPost (handler: Handler<this, IncomingEditedChannelPost>): this {
     return this.use(filterHandler(info => info.type === 'edited_channel_post', handler))
   }
 
-  public onInlineQuery (handler: Handler<this, IncomingInlineQuery>): void {
+  public onInlineQuery (handler: Handler<this, IncomingInlineQuery>): this {
     return this.use(filterHandler(info => info.type === 'inline_query', handler))
   }
 
-  public onChosenInlineResult (handler: Handler<this, IncomingChosenInlineResult>): void {
+  public onChosenInlineResult (handler: Handler<this, IncomingChosenInlineResult>): this {
     return this.use(filterHandler(info => info.type === 'chosen_inline_result', handler))
   }
 
-  public onCallbackQuery (handler: Handler<this, IncomingCallbackQuery>): void {
+  public onCallbackQuery (handler: Handler<this, IncomingCallbackQuery>): this {
     return this.use(filterHandler(info => info.type === 'callback_query', handler))
   }
 
-  public onShippingQuery (handler: Handler<this, IncomingShippingQuery>): void {
+  public onShippingQuery (handler: Handler<this, IncomingShippingQuery>): this {
     return this.use(filterHandler(info => info.type === 'shipping_query', handler))
   }
 
-  public onPreCheckoutQuery (handler: Handler<this, IncomingPreCheckoutQuery>): void {
+  public onPreCheckoutQuery (handler: Handler<this, IncomingPreCheckoutQuery>): this {
     return this.use(filterHandler(info => info.type === 'pre_checkout_query', handler))
   }
 
-  public onPollUpdate (handler: Handler<this, IncomingPoll>): void {
+  public onPollUpdate (handler: Handler<this, IncomingPoll>): this {
     return this.use(filterHandler(info => info.type === 'poll', handler))
   }
 
   // Message handlers
 
-  public onText (handler: Handler<this, IncomingTextMessage>): void {
+  public onText (handler: Handler<this, IncomingTextMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.text !== undefined, handler))
   }
 
-  public onAudio (handler: Handler<this, IncomingAudioMessage>): void {
+  public onAudio (handler: Handler<this, IncomingAudioMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.audio !== undefined, handler))
   }
 
-  public onDocument (handler: Handler<this, IncomingDocumentMessage>): void {
+  public onDocument (handler: Handler<this, IncomingDocumentMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.document !== undefined, handler))
   }
 
-  public onAnimation (handler: Handler<this, IncomingAnimationMessage>): void {
+  public onAnimation (handler: Handler<this, IncomingAnimationMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.animation !== undefined, handler))
   }
 
-  public onGame (handler: Handler<this, IncomingGameMessage>): void {
+  public onGame (handler: Handler<this, IncomingGameMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.game !== undefined, handler))
   }
 
-  public onPhoto (handler: Handler<this, IncomingPhotoMessage>): void {
+  public onPhoto (handler: Handler<this, IncomingPhotoMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.photo !== undefined, handler))
   }
 
-  public onSticker (handler: Handler<this, IncomingStickerMessage>): void {
+  public onSticker (handler: Handler<this, IncomingStickerMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.sticker !== undefined, handler))
   }
 
-  public onVideo (handler: Handler<this, IncomingVideoMessage>): void {
+  public onVideo (handler: Handler<this, IncomingVideoMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.video !== undefined, handler))
   }
 
-  public onVoice (handler: Handler<this, IncomingVoiceMessage>): void {
+  public onVoice (handler: Handler<this, IncomingVoiceMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.voice !== undefined, handler))
   }
 
-  public onVideoNote (handler: Handler<this, IncomingVideoNoteMessage>): void {
+  public onVideoNote (handler: Handler<this, IncomingVideoNoteMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.video_note !== undefined, handler))
   }
 
-  public onContact (handler: Handler<this, IncomingContactMessage>): void {
+  public onContact (handler: Handler<this, IncomingContactMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.contact !== undefined, handler))
   }
 
-  public onLocation (handler: Handler<this, IncomingLocationMessage>): void {
+  public onLocation (handler: Handler<this, IncomingLocationMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.location !== undefined, handler))
   }
 
-  public onVenue (handler: Handler<this, IncomingVenueMessage>): void {
+  public onVenue (handler: Handler<this, IncomingVenueMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.venue !== undefined, handler))
   }
 
-  public onPoll (handler: Handler<this, IncomingPollMessage>): void {
+  public onPoll (handler: Handler<this, IncomingPollMessage>): this {
     return this.onMessage(filterHandler(info => info.msg.poll !== undefined, handler))
   }
 
