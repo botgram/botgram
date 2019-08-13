@@ -7,14 +7,14 @@
     <meta property="description" content="The Bot API is an HTTP-based interface created for developers keen on building bots for Telegram.
 To learn how to create…">
     <meta property="og:title" content="Telegram Bot API">
-    <meta property="og:image" content="https://telegram.org/file/811140459/1bdb/rl5NwUNbBzM.26909.gif/0ecbc461e020d4bc3a">
+    <meta property="og:image" content="30f729d4f304e41659">
     <meta property="og:description" content="The Bot API is an HTTP-based interface created for developers keen on building bots for Telegram.
 To learn how to create…">
     <link rel="shortcut icon" href="/favicon.ico?3" type="image/x-icon" />
 
     <link href="/css/bootstrap.min.css?3" rel="stylesheet">
     
-    <link href="/css/telegram.css?164" rel="stylesheet" media="screen">
+    <link href="/css/telegram.css?172" rel="stylesheet" media="screen">
     <style>
     </style>
   </head>
@@ -49,6 +49,20 @@ To learn how to create…">
 <p>The Bot API is an HTTP-based interface created for developers keen on building bots for Telegram.<br>To learn how to create and set up a bot, please consult our <a href="https://core.telegram.org/bots"><strong>Introduction to Bots</strong></a> and <a href="/bots/faq"><strong>Bot FAQ</strong></a>.</p>
 </blockquote>
 <h3><a class="anchor" name="recent-changes" href="#recent-changes"><i class="anchor-icon"></i></a>Recent changes</h3>
+<h4><a class="anchor" name="july-29-2019" href="#july-29-2019"><i class="anchor-icon"></i></a>July 29, 2019</h4>
+<p><strong>Bot API 4.4</strong></p>
+<ul>
+<li>Added support for <a href="https://telegram.org/blog/animated-stickers"><strong>animated stickers</strong></a>. New field <em>is_animated</em> in <a href="#sticker">Sticker</a> and <a href="#stickerset">StickerSet</a> objects, animated stickers can now be used in <a href="#sendsticker">sendSticker</a> and <a href="#inlinequeryresultcachedsticker">InlineQueryResultCachedSticker</a>.</li>
+<li>Added support for <a href="https://telegram.org/blog/permissions-groups-undo"><strong>default permissions</strong></a> in groups. New object <a href="#chatpermissions">ChatPermissions</a>, containing actions which a member can take in a chat. New field <em>permissions</em> in the <a href="#chat">Chat</a> object; new method <a href="#setchatpermissions">setChatPermissions</a>.</li>
+<li>The field <em>all_members_are_administrators</em> has been removed from the documentation for the <a href="#chat">Chat</a> object. The field is still returned in the object for backward compatibility, but new bots should use the <em>permissions</em> field instead.</li>
+<li>Added support for more permissions for group and supergroup members: added the new field <em>can_send_polls</em> to <a href="#chatmember">ChatMember</a> object, added <em>can_change_info</em>, <em>can_invite_users</em>, <em>can_pin_messages</em> in <a href="#chatmember">ChatMember</a> object for restricted users (previously available only for administrators).</li>
+<li>The method <a href="#restrictchatmember">restrictChatMember</a> now takes the new user permissions in a single argument of the type <a href="#chatpermissions">ChatPermissions</a>. The old way of passing parameters will keep working for a while for backward compatibility.</li>
+<li>Added <em>description</em> support for basic groups (previously available in supergroups and channel chats). You can pass a group&#39;s chat_id to <a href="#setchatdescription">setChatDescription</a> and receive the group&#39;s description in the <a href="#chat">Chat</a> object in the response to <a href="#getChat">getChat</a> method.</li>
+<li>Added <em>invite_link</em> support for basic groups (previously available in supergroups and channel chats). You can pass a group&#39;s chat_id to <a href="#exportchatinvitelink">exportChatInviteLink</a> and receive the group&#39;s invite link in the <a href="#chat">Chat</a> object in the response to <a href="#getChat">getChat</a> method.</li>
+<li>File identifiers from the <a href="#chatphoto">ChatPhoto</a> object are now invalidated and can no longer be used whenever the photo is changed.</li>
+<li>All <strong>webhook requests</strong> from the Bot API are now coming from the subnets <code>149.154.160.0/20</code> and <code>91.108.4.0/22</code>. Most users won&#39;t need to do anything to continue receiving webhooks. If you control inbound access with a firewall, you may need to update your configuration. You can always find the list of actual IP addresses of servers used to send webhooks there: <a href="/bots/webhooks"><a href="https://core.telegram.org/bots/webhooks">https://core.telegram.org/bots/webhooks</a></a>.</li>
+<li>As of the <strong>next Bot API</strong> update (<strong>version 4.5</strong>), nested <a href="#messageentity">MessageEntity</a> objects will be allowed in message texts and captions. Please make sure that your code can correctly handle such entities.</li>
+</ul>
 <h4><a class="anchor" name="may-31-2019" href="#may-31-2019"><i class="anchor-icon"></i></a>May 31, 2019</h4>
 <p><strong>Bot API 4.3</strong></p>
 <ul>
@@ -77,29 +91,6 @@ To learn how to create…">
 <li>Added the field <em>forward_sender_name</em> to the <a href="#message">Message</a> object, containing name of the sender who has opted to hide their account.</li>
 <li>Starting in July 2019, webhook requests from Bot API will be coming from the subnets <code>149.154.160.0/20</code> and <code>91.108.4.0/22</code>. Most users won&#39;t need to do anything to continue receiving webhooks. If you control inbound access with a firewall, you may need to update your configuration. You can always find the list of actual IP addresses of servers used to send webhooks there: <a href="/bots/webhooks"><a href="https://core.telegram.org/bots/webhooks">https://core.telegram.org/bots/webhooks</a></a>.</li>
 <li>Document thumbnails now should be inscribed in a 320x320 square instead of 90x90.</li>
-</ul>
-<h4><a class="anchor" name="august-27-2018" href="#august-27-2018"><i class="anchor-icon"></i></a>August 27, 2018</h4>
-<p><strong>Bot API 4.1</strong></p>
-<ul>
-<li>Added support for translated versions of documents in <a href="/passport">Telegram Passport</a>. New field <em>translation</em> in <a href="#encryptedpassportelement">EncryptedPassportElement</a>.</li>
-<li>New errors: <a href="#passportelementerrortranslationfile">PassportElementErrorTranslationFile</a> and <a href="#passportelementerrortranslationfile">PassportElementErrorTranslationFiles</a>, <a href="#passportelementerrorunspecified">PassportElementErrorUnspecified</a>.</li>
-</ul>
-<h4><a class="anchor" name="july-26-2018" href="#july-26-2018"><i class="anchor-icon"></i></a>July 26, 2018</h4>
-<p><strong>Bot API 4.0</strong>.</p>
-<ul>
-<li>Added support for <a href="https://telegram.org/blog/passport"><strong>Telegram Passport</strong></a>. See the official announcement on the <a href="https://telegram.org/blog">blog</a> and the <a href="https://core.telegram.org/passport">manual</a> for details.</li>
-<li>Added support for <strong>editing the media content of messages</strong>: added the method <a href="#editmessagemedia">editMessageMedia</a> and new types <a href="#inputmediaanimation">InputMediaAnimation</a>, <a href="#inputmediaaudio">InputMediaAudio</a>, and <a href="#inputmediadocument">InputMediaDocument</a>.</li>
-<li>Added the field <em>thumb</em> to the <a href="#audio">Audio</a> object to contain the thumbnail of the album cover to which the music file belongs.</li>
-<li>Added support for attaching custom thumbnails to uploaded files. For animations, audios, videos and video notes, which are less than 10 MB in size, thumbnails are generated automatically.</li>
-<li><code>tg://</code> URLs now can be used in inline keyboard url buttons and <code>text_link</code> message entities.</li>
-<li>Added the method <a href="#sendanimation">sendAnimation</a>, which can be used instead of <a href="#senddocument">sendDocument</a> to send animations, specifying their duration, width and height.</li>
-<li>Added the field <a href="#animation">animation</a> to the <a href="#message">Message</a> object. For backward compatibility, when this field is set, the <em>document</em> field will be also set.</li>
-<li>Added two new <a href="#messageentity">MessageEntity</a> types: <em>cashtag</em> and <em>phone_number</em>.</li>
-<li>Added support for Foursquare venues: added the new field <em>foursquare_type</em> to the objects <a href="#venue">Venue</a>, <a href="#inlinequeryresultvenue">InlineQueryResultVenue</a> and <a href="#inputvenuemessagecontent">InputVenueMessageContent</a>, and the parameter <em>foursquare_type</em> to the <a href="#sendvenue">sendVenue</a> method.</li>
-<li>You can now create inline mentions of users, who have pressed your bot&#39;s callback buttons.</li>
-<li>You can now use the <code>Retry-After</code> response header to configure the delay after which the Bot API will retry the request after an unsuccessful response from a webhook.</li>
-<li>If a webhook returns the HTTP error <code>410 Gone</code> for all requests for more than 23 hours successively, it can be automatically removed.</li>
-<li>Added <a href="https://en.wikipedia.org/wiki/VCard">vCard</a> support when sharing contacts: added the field <em>vcard</em> to the objects <a href="#contact">Contact</a>, <a href="#inlinequeryresultcontact">InlineQueryResultContact</a>, <a href="#inputcontactmessagecontent">InputContactMessageContent</a> and the method <a href="#sendcontact">sendContact</a>.</li>
 </ul>
 <p><strong><a href="/bots/api-changelog">See earlier changes »</a></strong></p>
 <h3><a class="anchor" name="authorizing-your-bot" href="#authorizing-your-bot"><i class="anchor-icon"></i></a>Authorizing your bot</h3>
@@ -422,11 +413,6 @@ To learn how to create…">
 <td><em>Optional</em>. Last name of the other party in a private chat</td>
 </tr>
 <tr>
-<td>all_members_are_administrators</td>
-<td>Boolean</td>
-<td><em>Optional</em>. True if a group has ‘All Members Are Admins’ enabled.</td>
-</tr>
-<tr>
 <td>photo</td>
 <td><a href="#chatphoto">ChatPhoto</a></td>
 <td><em>Optional</em>. Chat photo. Returned only in <a href="#getchat">getChat</a>.</td>
@@ -434,17 +420,22 @@ To learn how to create…">
 <tr>
 <td>description</td>
 <td>String</td>
-<td><em>Optional</em>. Description, for supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.</td>
+<td><em>Optional</em>. Description, for groups, supergroups and channel chats. Returned only in <a href="#getchat">getChat</a>.</td>
 </tr>
 <tr>
 <td>invite_link</td>
 <td>String</td>
-<td><em>Optional</em>. Chat invite link, for supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using <a href="#exportchatinvitelink">exportChatInviteLink</a>. Returned only in <a href="#getchat">getChat</a>.</td>
+<td><em>Optional</em>. Chat invite link, for groups, supergroups and channel chats. Each administrator in a chat generates their own invite links, so the bot must first generate the link using <a href="#exportchatinvitelink">exportChatInviteLink</a>. Returned only in <a href="#getchat">getChat</a>.</td>
 </tr>
 <tr>
 <td>pinned_message</td>
 <td><a href="#message">Message</a></td>
 <td><em>Optional</em>. Pinned message, for groups, supergroups and channels. Returned only in <a href="#getchat">getChat</a>.</td>
+</tr>
+<tr>
+<td>permissions</td>
+<td><a href="#chatpermissions">ChatPermissions</a></td>
+<td><em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>.</td>
 </tr>
 <tr>
 <td>sticker_set_name</td>
@@ -758,7 +749,7 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique identifier for this file</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>width</td>
@@ -791,7 +782,7 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique identifier for this file</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>duration</td>
@@ -839,7 +830,7 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique file identifier</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>thumb</td>
@@ -877,7 +868,7 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique identifier for this file</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>width</td>
@@ -925,7 +916,7 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique file identifier</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>width</td>
@@ -978,7 +969,7 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique identifier for this file</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>duration</td>
@@ -1011,7 +1002,7 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique identifier for this file</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>length</td>
@@ -1230,7 +1221,7 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique identifier for this file</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>file_size</td>
@@ -1518,12 +1509,12 @@ To learn how to create…">
 </table>
 <blockquote>
 <p><strong>Example:</strong> A <a href="https://t.me/PollBot">poll bot</a> for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:</p>
-</blockquote>
 <ul>
 <li>Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.</li>
 <li>Guide the user through a step-by-step process. ‘Please send me your question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep adding answer options, then send /done when you‘re ready’.</li>
 </ul>
 <p>The last option is definitely more attractive. And if you use <a href="#forcereply">ForceReply</a> in your bot‘s questions, it will receive the user’s answers even if it only receives replies, commands and mentions — without any extra work for the user.</p>
+</blockquote>
 <h4><a class="anchor" name="chatphoto" href="#chatphoto"><i class="anchor-icon"></i></a>ChatPhoto</h4>
 <p>This object represents a chat photo.</p>
 <table class="table">
@@ -1538,12 +1529,12 @@ To learn how to create…">
 <tr>
 <td>small_file_id</td>
 <td>String</td>
-<td>Unique file identifier of small (160x160) chat photo. This file_id can be used only for photo download.</td>
+<td>File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.</td>
 </tr>
 <tr>
 <td>big_file_id</td>
 <td>String</td>
-<td>Unique file identifier of big (640x640) chat photo. This file_id can be used only for photo download.</td>
+<td>File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.</td>
 </tr>
 </tbody>
 </table>
@@ -1571,7 +1562,7 @@ To learn how to create…">
 <tr>
 <td>until_date</td>
 <td>Integer</td>
-<td><em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user, unix time</td>
+<td><em>Optional</em>. Restricted and kicked only. Date when restrictions will be lifted for this user; unix time</td>
 </tr>
 <tr>
 <td>can_be_edited</td>
@@ -1581,17 +1572,17 @@ To learn how to create…">
 <tr>
 <td>can_change_info</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Administrators only. True, if the administrator can change the chat title, photo and other settings</td>
+<td><em>Optional</em>. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings</td>
 </tr>
 <tr>
 <td>can_post_messages</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Administrators only. True, if the administrator can post in the channel, channels only</td>
+<td><em>Optional</em>. Administrators only. True, if the administrator can post in the channel; channels only</td>
 </tr>
 <tr>
 <td>can_edit_messages</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Administrators only. True, if the administrator can edit messages of other users and can pin messages, channels only</td>
+<td><em>Optional</em>. Administrators only. True, if the administrator can edit messages of other users and can pin messages; channels only</td>
 </tr>
 <tr>
 <td>can_delete_messages</td>
@@ -1601,7 +1592,7 @@ To learn how to create…">
 <tr>
 <td>can_invite_users</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Administrators only. True, if the administrator can invite new users to the chat</td>
+<td><em>Optional</em>. Administrators and restricted only. True, if the user is allowed to invite new users to the chat</td>
 </tr>
 <tr>
 <td>can_restrict_members</td>
@@ -1611,7 +1602,7 @@ To learn how to create…">
 <tr>
 <td>can_pin_messages</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Administrators only. True, if the administrator can pin messages, groups and supergroups only</td>
+<td><em>Optional</em>. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only</td>
 </tr>
 <tr>
 <td>can_promote_members</td>
@@ -1626,23 +1617,42 @@ To learn how to create…">
 <tr>
 <td>can_send_messages</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Restricted only. True, if the user can send text messages, contacts, locations and venues</td>
+<td><em>Optional</em>. Restricted only. True, if the user is allowed to send text messages, contacts, locations and venues</td>
 </tr>
 <tr>
 <td>can_send_media_messages</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Restricted only. True, if the user can send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages</td>
+<td><em>Optional</em>. Restricted only. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes</td>
+</tr>
+<tr>
+<td>can_send_polls</td>
+<td>Boolean</td>
+<td><em>Optional</em>. Restricted only. True, if the user is allowed to send polls</td>
 </tr>
 <tr>
 <td>can_send_other_messages</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Restricted only. True, if the user can send animations, games, stickers and use inline bots, implies can_send_media_messages</td>
+<td><em>Optional</em>. Restricted only. True, if the user is allowed to send animations, games, stickers and use inline bots</td>
 </tr>
 <tr>
 <td>can_add_web_page_previews</td>
 <td>Boolean</td>
-<td><em>Optional</em>. Restricted only. True, if user may add web page previews to his messages, implies can_send_media_messages</td>
+<td><em>Optional</em>. Restricted only. True, if the user is allowed to add web page previews to their messages</td>
 </tr>
+</tbody>
+</table>
+
+<h4><a class="anchor" name="chatpermissions" href="#chatpermissions"><i class="anchor-icon"></i></a>ChatPermissions</h4>
+<p>Describes actions that a non-administrator user is allowed to take in a chat.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
 </tbody>
 </table>
 <h4><a class="anchor" name="responseparameters" href="#responseparameters"><i class="anchor-icon"></i></a>ResponseParameters</h4>
@@ -3073,7 +3083,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="restrictchatmember" href="#restrictchatmember"><i class="anchor-icon"></i></a>restrictChatMember</h4>
-<p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass <em>True</em> for all boolean parameters to lift restrictions from a user. Returns <em>True</em> on success.</p>
+<p>Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate admin rights. Pass <em>True</em> for all permissions to lift restrictions from a user. Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -3097,34 +3107,16 @@ pre-formatted fixed-width code block
 <td>Unique identifier of the target user</td>
 </tr>
 <tr>
+<td>permissions</td>
+<td><a href="#chatpermissions">ChatPermissions</a></td>
+<td>Yes</td>
+<td>New user permissions</td>
+</tr>
+<tr>
 <td>until_date</td>
 <td>Integer</td>
 <td>Optional</td>
 <td>Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever</td>
-</tr>
-<tr>
-<td>can_send_messages</td>
-<td>Boolean</td>
-<td>Optional</td>
-<td>Pass True, if the user can send text messages, contacts, locations and venues</td>
-</tr>
-<tr>
-<td>can_send_media_messages</td>
-<td>Boolean</td>
-<td>Optional</td>
-<td>Pass True, if the user can send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages</td>
-</tr>
-<tr>
-<td>can_send_other_messages</td>
-<td>Boolean</td>
-<td>Optional</td>
-<td>Pass True, if the user can send animations, games, stickers and use inline bots, implies can_send_media_messages</td>
-</tr>
-<tr>
-<td>can_add_web_page_previews</td>
-<td>Boolean</td>
-<td>Optional</td>
-<td>Pass True, if the user may add web page previews to their messages, implies can_send_media_messages</td>
 </tr>
 </tbody>
 </table>
@@ -3199,6 +3191,32 @@ pre-formatted fixed-width code block
 <td>Boolean</td>
 <td>Optional</td>
 <td>Pass True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)</td>
+</tr>
+</tbody>
+</table>
+<h4><a class="anchor" name="setchatpermissions" href="#setchatpermissions"><i class="anchor-icon"></i></a>setChatPermissions</h4>
+<p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> admin rights. Returns <em>True</em> on success.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>chat_id</td>
+<td>Integer or String</td>
+<td>Yes</td>
+<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>
+</tr>
+<tr>
+<td>permissions</td>
+<td><a href="#chatpermissions">ChatPermissions</a></td>
+<td>Yes</td>
+<td>New default chat permissions</td>
 </tr>
 </tbody>
 </table>
@@ -3307,7 +3325,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="setchatdescription" href="#setchatdescription"><i class="anchor-icon"></i></a>setChatDescription</h4>
-<p>Use this method to change the description of a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
+<p>Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
 <table class="table">
 <thead>
 <tr>
@@ -3850,7 +3868,7 @@ pre-formatted fixed-width code block
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique identifier for this file</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>width</td>
@@ -3861,6 +3879,11 @@ pre-formatted fixed-width code block
 <td>height</td>
 <td>Integer</td>
 <td>Sticker height</td>
+</tr>
+<tr>
+<td>is_animated</td>
+<td>Boolean</td>
+<td><em>True</em>, if the sticker is <a href="https://telegram.org/blog/animated-stickers">animated</a></td>
 </tr>
 <tr>
 <td>thumb</td>
@@ -3911,6 +3934,11 @@ pre-formatted fixed-width code block
 <td>Sticker set title</td>
 </tr>
 <tr>
+<td>is_animated</td>
+<td>Boolean</td>
+<td><em>True</em>, if the sticker set contains <a href="https://telegram.org/blog/animated-stickers">animated stickers</a></td>
+</tr>
+<tr>
 <td>contains_masks</td>
 <td>Boolean</td>
 <td><em>True</em>, if the sticker set contains masks</td>
@@ -3956,7 +3984,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="sendsticker" href="#sendsticker"><i class="anchor-icon"></i></a>sendSticker</h4>
-<p>Use this method to send .webp stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
+<p>Use this method to send static .WEBP or <a href="https://telegram.org/blog/animated-stickers">animated</a> .TGS stickers. On success, the sent <a href="#message">Message</a> is returned.</p>
 <table class="table">
 <thead>
 <tr>
@@ -5340,7 +5368,7 @@ pre-formatted fixed-width code block
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>
+<p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for <a href="https://telegram.org/blog/animated-stickers">animated stickers</a>. Older clients will ignore them.</p>
 <h4><a class="anchor" name="inlinequeryresultcacheddocument" href="#inlinequeryresultcacheddocument"><i class="anchor-icon"></i></a>InlineQueryResultCachedDocument</h4>
 <p>Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the file.</p>
 <table class="table">
@@ -6297,7 +6325,7 @@ pre-formatted fixed-width code block
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Unique identifier for this file</td>
+<td>Identifier for this file</td>
 </tr>
 <tr>
 <td>file_size</td>
@@ -7055,4 +7083,4 @@ backToTopInit();
 </script>
   </body>
 </html>
-<!-- page generated in 29.01ms -->
+<!-- page generated in 42.9ms -->

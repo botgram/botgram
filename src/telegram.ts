@@ -414,20 +414,17 @@ export interface IChat {
   /** Last name of the other party in a private chat */
   last_name?: string
 
-  /** True if a group has ‘All Members Are Admins’ enabled. */
-  all_members_are_administrators?: boolean
-
   /** Chat photo. Returned only in [[getChat]]. */
   photo?: IChatPhoto
 
   /**
-   * Description, for supergroups and channel chats. Returned only in
-   * [[getChat]].
+   * Description, for groups, supergroups and channel chats. Returned only
+   * in [[getChat]].
    */
   description?: string
 
   /**
-   * Chat invite link, for supergroups and channel chats. Each
+   * Chat invite link, for groups, supergroups and channel chats. Each
    * administrator in a chat generates their own invite links, so the bot
    * must first generate the link using [[exportChatInviteLink]]. Returned
    * only in [[getChat]].
@@ -439,6 +436,12 @@ export interface IChat {
    * [[getChat]].
    */
   pinned_message?: IMessage
+
+  /**
+   * Default chat member permissions, for groups and supergroups. Returned
+   * only in [[getChat]].
+   */
+  permissions?: IChatPermissions
 
   /**
    * For supergroups, name of group sticker set. Returned only in
@@ -720,7 +723,7 @@ export interface IMessageEntity {
  * [[ISticker]] thumbnail.
  */
 export interface IPhotoSize {
-  /** Unique identifier for this file */
+  /** Identifier for this file */
   file_id: string
 
   /** Photo width */
@@ -738,7 +741,7 @@ export interface IPhotoSize {
  * Telegram clients.
  */
 export interface IAudio {
-  /** Unique identifier for this file */
+  /** Identifier for this file */
   file_id: string
 
   /** Duration of the audio in seconds as defined by sender */
@@ -765,7 +768,7 @@ export interface IAudio {
  * [[IVoice]] and [[IAudio]]).
  */
 export interface IDocument {
-  /** Unique file identifier */
+  /** Identifier for this file */
   file_id: string
 
   /** Document thumbnail as defined by sender */
@@ -785,7 +788,7 @@ export interface IDocument {
  * This object represents a video file.
  */
 export interface IVideo {
-  /** Unique identifier for this file */
+  /** Identifier for this file */
   file_id: string
 
   /** Video width as defined by sender */
@@ -812,7 +815,7 @@ export interface IVideo {
  * video without sound).
  */
 export interface IAnimation {
-  /** Unique file identifier */
+  /** Identifier for this file */
   file_id: string
 
   /** Video width as defined by sender */
@@ -841,7 +844,7 @@ export interface IAnimation {
  * This object represents a voice note.
  */
 export interface IVoice {
-  /** Unique identifier for this file */
+  /** Identifier for this file */
   file_id: string
 
   /** Duration of the audio in seconds as defined by sender */
@@ -861,7 +864,7 @@ export interface IVoice {
  * [v.4.0](https://telegram.org/blog/video-messages-and-telescope)).
  */
 export interface IVideoNote {
-  /** Unique identifier for this file */
+  /** Identifier for this file */
   file_id: string
 
   /**
@@ -987,7 +990,7 @@ export interface IUserProfilePhotos {
  * > Maximum file size to download is 20 MB
  */
 export interface IFile {
-  /** Unique identifier for this file */
+  /** Identifier for this file */
   file_id: string
 
   /** File size, if known */
@@ -1306,18 +1309,18 @@ export interface ICallbackQuery {
  * > **Example:** A [poll bot](https://t.me/PollBot) for groups runs in
  * > privacy mode (only receives commands, replies to its messages and
  * > mentions). There could be two ways to create a new poll:
- *
- *  - Explain the user how to send a command with parameters (e.g. /newpoll
- *    question answer1 answer2). May be appealing for hardcore users but
- *    lacks modern day polish.
- *  - Guide the user through a step-by-step process. ‘Please send me your
- *    question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep
- *    adding answer options, then send /done when you‘re ready’.
- *
- * The last option is definitely more attractive. And if you use
- * [[IForceReply]] in your bot‘s questions, it will receive the user’s
- * answers even if it only receives replies, commands and mentions —
- * without any extra work for the user.
+ * > 
+ * >  - Explain the user how to send a command with parameters (e.g. /newpoll
+ * >    question answer1 answer2). May be appealing for hardcore users but
+ * >    lacks modern day polish.
+ * >  - Guide the user through a step-by-step process. ‘Please send me your
+ * >    question’, ‘Cool, now let’s add the first answer option‘, ’Great. Keep
+ * >    adding answer options, then send /done when you‘re ready’.
+ * > 
+ * > The last option is definitely more attractive. And if you use
+ * > [[IForceReply]] in your bot‘s questions, it will receive the user’s
+ * > answers even if it only receives replies, commands and mentions —
+ * > without any extra work for the user.
  */
 export interface IForceReply {
   /**
@@ -1340,14 +1343,16 @@ export interface IForceReply {
  */
 export interface IChatPhoto {
   /**
-   * Unique file identifier of small (160x160) chat photo. This file_id can
-   * be used only for photo download.
+   * File identifier of small (160x160) chat photo. This file_id can be
+   * used only for photo download and only for as long as the photo is not
+   * changed.
    */
   small_file_id: string
 
   /**
-   * Unique file identifier of big (640x640) chat photo. This file_id can
-   * be used only for photo download.
+   * File identifier of big (640x640) chat photo. This file_id can be used
+   * only for photo download and only for as long as the photo is not
+   * changed.
    */
   big_file_id: string
 }
@@ -1367,7 +1372,7 @@ export interface IChatMember {
 
   /**
    * Restricted and kicked only. Date when restrictions will be lifted for
-   * this user, unix time
+   * this user; unix time
    */
   until_date?: Date
 
@@ -1378,20 +1383,20 @@ export interface IChatMember {
   can_be_edited?: boolean
 
   /**
-   * Administrators only. True, if the administrator can change the chat
-   * title, photo and other settings
+   * Administrators and restricted only. True, if the user is allowed to
+   * change the chat title, photo and other settings
    */
   can_change_info?: boolean
 
   /**
    * Administrators only. True, if the administrator can post in the
-   * channel, channels only
+   * channel; channels only
    */
   can_post_messages?: boolean
 
   /**
    * Administrators only. True, if the administrator can edit messages of
-   * other users and can pin messages, channels only
+   * other users and can pin messages; channels only
    */
   can_edit_messages?: boolean
 
@@ -1402,8 +1407,8 @@ export interface IChatMember {
   can_delete_messages?: boolean
 
   /**
-   * Administrators only. True, if the administrator can invite new users
-   * to the chat
+   * Administrators and restricted only. True, if the user is allowed to
+   * invite new users to the chat
    */
   can_invite_users?: boolean
 
@@ -1414,8 +1419,8 @@ export interface IChatMember {
   can_restrict_members?: boolean
 
   /**
-   * Administrators only. True, if the administrator can pin messages,
-   * groups and supergroups only
+   * Administrators and restricted only. True, if the user is allowed to
+   * pin messages; groups and supergroups only
    */
   can_pin_messages?: boolean
 
@@ -1434,28 +1439,38 @@ export interface IChatMember {
   is_member?: boolean
 
   /**
-   * Restricted only. True, if the user can send text messages, contacts,
-   * locations and venues
+   * Restricted only. True, if the user is allowed to send text messages,
+   * contacts, locations and venues
    */
   can_send_messages?: boolean
 
   /**
-   * Restricted only. True, if the user can send audios, documents, photos,
-   * videos, video notes and voice notes, implies can_send_messages
+   * Restricted only. True, if the user is allowed to send audios,
+   * documents, photos, videos, video notes and voice notes
    */
   can_send_media_messages?: boolean
 
+  /** Restricted only. True, if the user is allowed to send polls */
+  can_send_polls?: boolean
+
   /**
-   * Restricted only. True, if the user can send animations, games,
-   * stickers and use inline bots, implies can_send_media_messages
+   * Restricted only. True, if the user is allowed to send animations,
+   * games, stickers and use inline bots
    */
   can_send_other_messages?: boolean
 
   /**
-   * Restricted only. True, if user may add web page previews to his
-   * messages, implies can_send_media_messages
+   * Restricted only. True, if the user is allowed to add web page previews
+   * to their messages
    */
   can_add_web_page_previews?: boolean
+}
+
+/**
+ * Describes actions that a non-administrator user is allowed to take in
+ * a chat.
+ */
+export interface IChatPermissions {
 }
 
 /**
@@ -1730,7 +1745,7 @@ export type ChatAction =
  * This object represents a sticker.
  */
 export interface ISticker {
-  /** Unique identifier for this file */
+  /** Identifier for this file */
   file_id: string
 
   /** Sticker width */
@@ -1738,6 +1753,12 @@ export interface ISticker {
 
   /** Sticker height */
   height: integer
+
+  /**
+   * *True*, if the sticker is
+   * [animated](https://telegram.org/blog/animated-stickers)
+   */
+  is_animated: boolean
 
   /** Sticker thumbnail in the .webp or .jpg format */
   thumb?: IPhotoSize
@@ -1764,6 +1785,12 @@ export interface IStickerSet {
 
   /** Sticker set title */
   title: string
+
+  /**
+   * *True*, if the sticker set contains [animated
+   * stickers](https://telegram.org/blog/animated-stickers)
+   */
+  is_animated: boolean
 
   /** *True*, if the sticker set contains masks */
   contains_masks: boolean
@@ -2610,7 +2637,9 @@ export interface IInlineQueryResultCachedMpeg4Gif {
  * content instead of the sticker.
  *
  * **Note:** This will only work in Telegram versions released after 9
- * April, 2016. Older clients will ignore them.
+ * April, 2016 for static stickers and after 06 July, 2019 for [animated
+ * stickers](https://telegram.org/blog/animated-stickers). Older clients
+ * will ignore them.
  */
 export interface IInlineQueryResultCachedSticker {
   /** Type of the result */
@@ -3171,7 +3200,7 @@ export interface IPassportData {
  * don't exceed 10MB.
  */
 export interface IPassportFile {
-  /** Unique identifier for this file */
+  /** Identifier for this file */
   file_id: string
 
   /** File size */
@@ -5030,65 +5059,31 @@ export abstract class ClientBase {
   /**
    * Use this method to restrict a user in a supergroup. The bot must be an
    * administrator in the supergroup for this to work and must have the
-   * appropriate admin rights. Pass *True* for all boolean parameters to
-   * lift restrictions from a user. Returns *True* on success.
+   * appropriate admin rights. Pass *True* for all permissions to lift
+   * restrictions from a user. Returns *True* on success.
    *
    * @param chat - Unique identifier for the target chat or username of the
    * target supergroup (in the format `@supergroupusername`)
    * @param user - Unique identifier of the target user
+   * @param permissions - New user permissions
    * @param options - Optional parameters
    */
-  public restrictChatMember (chat: ChatId | string, user: UserId, options?: {
+  public restrictChatMember (chat: ChatId | string, user: UserId, permissions: IChatPermissions, options?: {
     /**
      * Date when restrictions will be lifted for the user, unix time. If user
      * is restricted for more than 366 days or less than 30 seconds from the
      * current time, they are considered to be restricted forever
      */
     until_date?: Date
-
-    /**
-     * Pass True, if the user can send text messages, contacts, locations and
-     * venues
-     */
-    can_send_messages?: boolean
-
-    /**
-     * Pass True, if the user can send audios, documents, photos, videos,
-     * video notes and voice notes, implies can_send_messages
-     */
-    can_send_media_messages?: boolean
-
-    /**
-     * Pass True, if the user can send animations, games, stickers and use
-     * inline bots, implies can_send_media_messages
-     */
-    can_send_other_messages?: boolean
-
-    /**
-     * Pass True, if the user may add web page previews to their messages,
-     * implies can_send_media_messages
-     */
-    can_add_web_page_previews?: boolean
   }): BluebirdPromise<true> {
     const parameters: any = {}
     const fdata: FormatData = { parameters, fileId: 0 }
     options = options || {}
     parameters.chat_id = resolveChatId(chat)
     parameters.user_id = resolveUserId(user)
+    parameters.permissions = permissions
     if (typeof options.until_date !== 'undefined') {
       parameters.until_date = Math.round(options.until_date.getTime() / 1000)
-    }
-    if (typeof options.can_send_messages !== 'undefined') {
-      parameters.can_send_messages = options.can_send_messages
-    }
-    if (typeof options.can_send_media_messages !== 'undefined') {
-      parameters.can_send_media_messages = options.can_send_media_messages
-    }
-    if (typeof options.can_send_other_messages !== 'undefined') {
-      parameters.can_send_other_messages = options.can_send_other_messages
-    }
-    if (typeof options.can_add_web_page_previews !== 'undefined') {
-      parameters.can_add_web_page_previews = options.can_add_web_page_previews
     }
     return this.callMethod('restrictChatMember', parameters)
   }
@@ -5179,6 +5174,24 @@ export abstract class ClientBase {
   }
 
   /**
+   * Use this method to set default chat permissions for all members. The
+   * bot must be an administrator in the group or a supergroup for this to
+   * work and must have the *can_restrict_members* admin rights. Returns
+   * *True* on success.
+   *
+   * @param chat - Unique identifier for the target chat or username of the
+   * target supergroup (in the format `@supergroupusername`)
+   * @param permissions - New default chat permissions
+   */
+  public setChatPermissions (chat: ChatId | string, permissions: IChatPermissions): BluebirdPromise<true> {
+    const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
+    parameters.chat_id = resolveChatId(chat)
+    parameters.permissions = permissions
+    return this.callMethod('setChatPermissions', parameters)
+  }
+
+  /**
    * Use this method to generate a new invite link for a chat; any
    * previously generated link is revoked. The bot must be an administrator
    * in the chat for this to work and must have the appropriate admin
@@ -5264,9 +5277,10 @@ export abstract class ClientBase {
   }
 
   /**
-   * Use this method to change the description of a supergroup or a
-   * channel. The bot must be an administrator in the chat for this to work
-   * and must have the appropriate admin rights. Returns *True* on success.
+   * Use this method to change the description of a group, a supergroup or
+   * a channel. The bot must be an administrator in the chat for this to
+   * work and must have the appropriate admin rights. Returns *True* on
+   * success.
    *
    * @param chat - Unique identifier for the target chat or username of the
    * target channel (in the format `@channelusername`)
@@ -5745,8 +5759,9 @@ export abstract class ClientBase {
   // --------
 
   /**
-   * Use this method to send .webp stickers. On success, the sent
-   * [[IMessage]] is returned.
+   * Use this method to send static .WEBP or
+   * [animated](https://telegram.org/blog/animated-stickers) .TGS stickers.
+   * On success, the sent [[IMessage]] is returned.
    *
    * @param chat - Unique identifier for the target chat or username of the
    * target channel (in the format `@channelusername`)
@@ -6734,7 +6749,7 @@ export class MessageContext extends Context {
  */
 export class FileContext extends Context {
 
-  /** Unique identifier for this file */
+  /** Identifier for this file */
   file_id: string
 
   /**
@@ -7611,47 +7626,24 @@ export class ChatContext extends Context {
   /**
    * Use this method to restrict a user in a supergroup. The bot must be an
    * administrator in the supergroup for this to work and must have the
-   * appropriate admin rights. Pass *True* for all boolean parameters to
-   * lift restrictions from a user. Returns *True* on success.
+   * appropriate admin rights. Pass *True* for all permissions to lift
+   * restrictions from a user. Returns *True* on success.
    *
    * This is equivalent to calling [[Client.restrictChatMember]].
    *
    * @param user - Unique identifier of the target user
+   * @param permissions - New user permissions
    * @param options - Optional parameters
    */
-  public restrictMember (user: UserId, options?: {
+  public restrictMember (user: UserId, permissions: IChatPermissions, options?: {
     /**
      * Date when restrictions will be lifted for the user, unix time. If user
      * is restricted for more than 366 days or less than 30 seconds from the
      * current time, they are considered to be restricted forever
      */
     until_date?: Date
-
-    /**
-     * Pass True, if the user can send text messages, contacts, locations and
-     * venues
-     */
-    can_send_messages?: boolean
-
-    /**
-     * Pass True, if the user can send audios, documents, photos, videos,
-     * video notes and voice notes, implies can_send_messages
-     */
-    can_send_media_messages?: boolean
-
-    /**
-     * Pass True, if the user can send animations, games, stickers and use
-     * inline bots, implies can_send_media_messages
-     */
-    can_send_other_messages?: boolean
-
-    /**
-     * Pass True, if the user may add web page previews to their messages,
-     * implies can_send_media_messages
-     */
-    can_add_web_page_previews?: boolean
   }): BluebirdPromise<true> {
-    return this.__getClient().restrictChatMember(this.id, user, options)
+    return this.__getClient().restrictChatMember(this.id, user, permissions, options)
   }
 
   /**
@@ -7708,6 +7700,20 @@ export class ChatContext extends Context {
     can_promote_members?: boolean
   }): BluebirdPromise<true> {
     return this.__getClient().promoteChatMember(this.id, user, options)
+  }
+
+  /**
+   * Use this method to set default chat permissions for all members. The
+   * bot must be an administrator in the group or a supergroup for this to
+   * work and must have the *can_restrict_members* admin rights. Returns
+   * *True* on success.
+   *
+   * This is equivalent to calling [[Client.setChatPermissions]].
+   *
+   * @param permissions - New default chat permissions
+   */
+  public setPermissions (permissions: IChatPermissions): BluebirdPromise<true> {
+    return this.__getClient().setChatPermissions(this.id, permissions)
   }
 
   /**
@@ -7780,9 +7786,10 @@ export class ChatContext extends Context {
   }
 
   /**
-   * Use this method to change the description of a supergroup or a
-   * channel. The bot must be an administrator in the chat for this to work
-   * and must have the appropriate admin rights. Returns *True* on success.
+   * Use this method to change the description of a group, a supergroup or
+   * a channel. The bot must be an administrator in the chat for this to
+   * work and must have the appropriate admin rights. Returns *True* on
+   * success.
    *
    * This is equivalent to calling [[Client.setChatDescription]].
    *
@@ -7891,8 +7898,9 @@ export class ChatContext extends Context {
   }
 
   /**
-   * Use this method to send .webp stickers. On success, the sent
-   * [[IMessage]] is returned.
+   * Use this method to send static .WEBP or
+   * [animated](https://telegram.org/blog/animated-stickers) .TGS stickers.
+   * On success, the sent [[IMessage]] is returned.
    *
    * This is equivalent to calling [[Client.sendSticker]].
    *
@@ -9052,20 +9060,17 @@ export class Chat extends ChatContext implements IChat {
   /** Last name of the other party in a private chat */
   last_name?: string
 
-  /** True if a group has ‘All Members Are Admins’ enabled. */
-  all_members_are_administrators?: boolean
-
   /** Chat photo. Returned only in [[getChat]]. */
   photo?: IChatPhoto
 
   /**
-   * Description, for supergroups and channel chats. Returned only in
-   * [[getChat]].
+   * Description, for groups, supergroups and channel chats. Returned only
+   * in [[getChat]].
    */
   description?: string
 
   /**
-   * Chat invite link, for supergroups and channel chats. Each
+   * Chat invite link, for groups, supergroups and channel chats. Each
    * administrator in a chat generates their own invite links, so the bot
    * must first generate the link using [[exportChatInviteLink]]. Returned
    * only in [[getChat]].
@@ -9077,6 +9082,12 @@ export class Chat extends ChatContext implements IChat {
    * [[getChat]].
    */
   pinned_message?: Message
+
+  /**
+   * Default chat member permissions, for groups and supergroups. Returned
+   * only in [[getChat]].
+   */
+  permissions?: IChatPermissions
 
   /**
    * For supergroups, name of group sticker set. Returned only in
@@ -9114,9 +9125,6 @@ export class Chat extends ChatContext implements IChat {
     if (typeof x.last_name !== 'undefined') {
       this.last_name = x.last_name
     }
-    if (typeof x.all_members_are_administrators !== 'undefined') {
-      this.all_members_are_administrators = x.all_members_are_administrators
-    }
     if (typeof x.photo !== 'undefined') {
       this.photo = x.photo
     }
@@ -9128,6 +9136,9 @@ export class Chat extends ChatContext implements IChat {
     }
     if (typeof x.pinned_message !== 'undefined') {
       this.pinned_message = new Message(x.pinned_message, client)
+    }
+    if (typeof x.permissions !== 'undefined') {
+      this.permissions = x.permissions
     }
     if (typeof x.sticker_set_name !== 'undefined') {
       this.sticker_set_name = x.sticker_set_name
@@ -10035,7 +10046,7 @@ export class ChatMember implements IChatMember {
 
   /**
    * Restricted and kicked only. Date when restrictions will be lifted for
-   * this user, unix time
+   * this user; unix time
    */
   until_date?: Date
 
@@ -10046,20 +10057,20 @@ export class ChatMember implements IChatMember {
   can_be_edited?: boolean
 
   /**
-   * Administrators only. True, if the administrator can change the chat
-   * title, photo and other settings
+   * Administrators and restricted only. True, if the user is allowed to
+   * change the chat title, photo and other settings
    */
   can_change_info?: boolean
 
   /**
    * Administrators only. True, if the administrator can post in the
-   * channel, channels only
+   * channel; channels only
    */
   can_post_messages?: boolean
 
   /**
    * Administrators only. True, if the administrator can edit messages of
-   * other users and can pin messages, channels only
+   * other users and can pin messages; channels only
    */
   can_edit_messages?: boolean
 
@@ -10070,8 +10081,8 @@ export class ChatMember implements IChatMember {
   can_delete_messages?: boolean
 
   /**
-   * Administrators only. True, if the administrator can invite new users
-   * to the chat
+   * Administrators and restricted only. True, if the user is allowed to
+   * invite new users to the chat
    */
   can_invite_users?: boolean
 
@@ -10082,8 +10093,8 @@ export class ChatMember implements IChatMember {
   can_restrict_members?: boolean
 
   /**
-   * Administrators only. True, if the administrator can pin messages,
-   * groups and supergroups only
+   * Administrators and restricted only. True, if the user is allowed to
+   * pin messages; groups and supergroups only
    */
   can_pin_messages?: boolean
 
@@ -10102,26 +10113,29 @@ export class ChatMember implements IChatMember {
   is_member?: boolean
 
   /**
-   * Restricted only. True, if the user can send text messages, contacts,
-   * locations and venues
+   * Restricted only. True, if the user is allowed to send text messages,
+   * contacts, locations and venues
    */
   can_send_messages?: boolean
 
   /**
-   * Restricted only. True, if the user can send audios, documents, photos,
-   * videos, video notes and voice notes, implies can_send_messages
+   * Restricted only. True, if the user is allowed to send audios,
+   * documents, photos, videos, video notes and voice notes
    */
   can_send_media_messages?: boolean
 
+  /** Restricted only. True, if the user is allowed to send polls */
+  can_send_polls?: boolean
+
   /**
-   * Restricted only. True, if the user can send animations, games,
-   * stickers and use inline bots, implies can_send_media_messages
+   * Restricted only. True, if the user is allowed to send animations,
+   * games, stickers and use inline bots
    */
   can_send_other_messages?: boolean
 
   /**
-   * Restricted only. True, if user may add web page previews to his
-   * messages, implies can_send_media_messages
+   * Restricted only. True, if the user is allowed to add web page previews
+   * to their messages
    */
   can_add_web_page_previews?: boolean
 
@@ -10175,6 +10189,9 @@ export class ChatMember implements IChatMember {
     }
     if (typeof x.can_send_media_messages !== 'undefined') {
       this.can_send_media_messages = x.can_send_media_messages
+    }
+    if (typeof x.can_send_polls !== 'undefined') {
+      this.can_send_polls = x.can_send_polls
     }
     if (typeof x.can_send_other_messages !== 'undefined') {
       this.can_send_other_messages = x.can_send_other_messages
@@ -10373,6 +10390,12 @@ export class Sticker extends FileContext implements ISticker {
   /** Sticker height */
   height: integer
 
+  /**
+   * *True*, if the sticker is
+   * [animated](https://telegram.org/blog/animated-stickers)
+   */
+  is_animated: boolean
+
   /** Sticker thumbnail in the .webp or .jpg format */
   thumb?: PhotoSize
 
@@ -10401,6 +10424,7 @@ export class Sticker extends FileContext implements ISticker {
     super(client, x.file_id)
     this.width = x.width
     this.height = x.height
+    this.is_animated = x.is_animated
     if (typeof x.thumb !== 'undefined') {
       this.thumb = new PhotoSize(x.thumb, client)
     }
@@ -10429,6 +10453,12 @@ export class StickerSet implements IStickerSet {
   /** Sticker set title */
   title: string
 
+  /**
+   * *True*, if the sticker set contains [animated
+   * stickers](https://telegram.org/blog/animated-stickers)
+   */
+  is_animated: boolean
+
   /** *True*, if the sticker set contains masks */
   contains_masks: boolean
 
@@ -10447,6 +10477,7 @@ export class StickerSet implements IStickerSet {
   constructor (x: any, client: ClientBase) {
     this.name = x.name
     this.title = x.title
+    this.is_animated = x.is_animated
     this.contains_masks = x.contains_masks
     this.stickers = x.stickers.map((x: any) => new Sticker(x, client))
   }

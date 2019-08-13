@@ -43,7 +43,7 @@ bot.listen()
 - Support for webhooks, and integration with [AWS Lambda][lambda],
   [Cloud Functions][cloudFunctions], [Express] and more.
 
-Bots API version implemented: **4.3**
+Bots API version implemented: **4.4**
 
 ### Install
 
