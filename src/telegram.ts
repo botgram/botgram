@@ -26,8 +26,8 @@ export type integer = number
  * and it'll be autodetected from the original file / URL.
  * 
  * **Note:** If you provide a stream, it'll always be fully read or
- * destroyed after the request is made. However if an error is thrown
- * when calling the request-making function, you must take care of it
+ * destroyed if a promise is returned. However if an error is thrown
+ * before the function returns the promise, you must take care of it
  * yourself.
  * 
  * For more information, and the full list of options that may
@@ -71,8 +71,10 @@ export function isAttachment (x: object): x is Attachment {
  *     can't be specified when sending a *photo* message.
  *   - It is not possible to resend thumbnails.
  *   - Passing the identifier of a photo size will send *all* of the sizes.
- *   - File identifiers are unique for each individual bot, and can't be transferred
- *     from one bot to another.
+ *   - File identifiers are unique for each individual bot, and **can't** be
+ *     transferred from one bot to another.
+ *   - File identifiers uniquely identify a file, but a file can have different
+ *     valid identifiers.
  *
  * **Limitations when passing a URL:**
  *
@@ -1383,12 +1385,6 @@ export interface IChatMember {
   can_be_edited?: boolean
 
   /**
-   * Administrators and restricted only. True, if the user is allowed to
-   * change the chat title, photo and other settings
-   */
-  can_change_info?: boolean
-
-  /**
    * Administrators only. True, if the administrator can post in the
    * channel; channels only
    */
@@ -1407,22 +1403,10 @@ export interface IChatMember {
   can_delete_messages?: boolean
 
   /**
-   * Administrators and restricted only. True, if the user is allowed to
-   * invite new users to the chat
-   */
-  can_invite_users?: boolean
-
-  /**
    * Administrators only. True, if the administrator can restrict, ban or
    * unban chat members
    */
   can_restrict_members?: boolean
-
-  /**
-   * Administrators and restricted only. True, if the user is allowed to
-   * pin messages; groups and supergroups only
-   */
-  can_pin_messages?: boolean
 
   /**
    * Administrators only. True, if the administrator can add new
@@ -1431,6 +1415,24 @@ export interface IChatMember {
    * by administrators that were appointed by the user)
    */
   can_promote_members?: boolean
+
+  /**
+   * Administrators and restricted only. True, if the user is allowed to
+   * change the chat title, photo and other settings
+   */
+  can_change_info?: boolean
+
+  /**
+   * Administrators and restricted only. True, if the user is allowed to
+   * invite new users to the chat
+   */
+  can_invite_users?: boolean
+
+  /**
+   * Administrators and restricted only. True, if the user is allowed to
+   * pin messages; groups and supergroups only
+   */
+  can_pin_messages?: boolean
 
   /**
    * Restricted only. True, if the user is a member of the chat at the
@@ -1471,6 +1473,47 @@ export interface IChatMember {
  * a chat.
  */
 export interface IChatPermissions {
+  /**
+   * True, if the user is allowed to send text messages, contacts,
+   * locations and venues
+   */
+  can_send_messages?: boolean
+
+  /**
+   * True, if the user is allowed to send audios, documents, photos,
+   * videos, video notes and voice notes, implies can_send_messages
+   */
+  can_send_media_messages?: boolean
+
+  /** True, if the user is allowed to send polls, implies can_send_messages */
+  can_send_polls?: boolean
+
+  /**
+   * True, if the user is allowed to send animations, games, stickers and
+   * use inline bots, implies can_send_media_messages
+   */
+  can_send_other_messages?: boolean
+
+  /**
+   * True, if the user is allowed to add web page previews to their
+   * messages, implies can_send_media_messages
+   */
+  can_add_web_page_previews?: boolean
+
+  /**
+   * True, if the user is allowed to change the chat title, photo and other
+   * settings. Ignored in public supergroups
+   */
+  can_change_info?: boolean
+
+  /** True, if the user is allowed to invite new users to the chat */
+  can_invite_users?: boolean
+
+  /**
+   * True, if the user is allowed to pin messages. Ignored in public
+   * supergroups
+   */
+  can_pin_messages?: boolean
 }
 
 /**
@@ -10057,12 +10100,6 @@ export class ChatMember implements IChatMember {
   can_be_edited?: boolean
 
   /**
-   * Administrators and restricted only. True, if the user is allowed to
-   * change the chat title, photo and other settings
-   */
-  can_change_info?: boolean
-
-  /**
    * Administrators only. True, if the administrator can post in the
    * channel; channels only
    */
@@ -10081,22 +10118,10 @@ export class ChatMember implements IChatMember {
   can_delete_messages?: boolean
 
   /**
-   * Administrators and restricted only. True, if the user is allowed to
-   * invite new users to the chat
-   */
-  can_invite_users?: boolean
-
-  /**
    * Administrators only. True, if the administrator can restrict, ban or
    * unban chat members
    */
   can_restrict_members?: boolean
-
-  /**
-   * Administrators and restricted only. True, if the user is allowed to
-   * pin messages; groups and supergroups only
-   */
-  can_pin_messages?: boolean
 
   /**
    * Administrators only. True, if the administrator can add new
@@ -10105,6 +10130,24 @@ export class ChatMember implements IChatMember {
    * by administrators that were appointed by the user)
    */
   can_promote_members?: boolean
+
+  /**
+   * Administrators and restricted only. True, if the user is allowed to
+   * change the chat title, photo and other settings
+   */
+  can_change_info?: boolean
+
+  /**
+   * Administrators and restricted only. True, if the user is allowed to
+   * invite new users to the chat
+   */
+  can_invite_users?: boolean
+
+  /**
+   * Administrators and restricted only. True, if the user is allowed to
+   * pin messages; groups and supergroups only
+   */
+  can_pin_messages?: boolean
 
   /**
    * Restricted only. True, if the user is a member of the chat at the
@@ -10157,9 +10200,6 @@ export class ChatMember implements IChatMember {
     if (typeof x.can_be_edited !== 'undefined') {
       this.can_be_edited = x.can_be_edited
     }
-    if (typeof x.can_change_info !== 'undefined') {
-      this.can_change_info = x.can_change_info
-    }
     if (typeof x.can_post_messages !== 'undefined') {
       this.can_post_messages = x.can_post_messages
     }
@@ -10169,17 +10209,20 @@ export class ChatMember implements IChatMember {
     if (typeof x.can_delete_messages !== 'undefined') {
       this.can_delete_messages = x.can_delete_messages
     }
-    if (typeof x.can_invite_users !== 'undefined') {
-      this.can_invite_users = x.can_invite_users
-    }
     if (typeof x.can_restrict_members !== 'undefined') {
       this.can_restrict_members = x.can_restrict_members
     }
-    if (typeof x.can_pin_messages !== 'undefined') {
-      this.can_pin_messages = x.can_pin_messages
-    }
     if (typeof x.can_promote_members !== 'undefined') {
       this.can_promote_members = x.can_promote_members
+    }
+    if (typeof x.can_change_info !== 'undefined') {
+      this.can_change_info = x.can_change_info
+    }
+    if (typeof x.can_invite_users !== 'undefined') {
+      this.can_invite_users = x.can_invite_users
+    }
+    if (typeof x.can_pin_messages !== 'undefined') {
+      this.can_pin_messages = x.can_pin_messages
     }
     if (typeof x.is_member !== 'undefined') {
       this.is_member = x.is_member

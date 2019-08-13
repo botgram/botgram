@@ -1570,11 +1570,6 @@ To learn how to create…">
 <td><em>Optional</em>. Administrators only. True, if the bot is allowed to edit administrator privileges of that user</td>
 </tr>
 <tr>
-<td>can_change_info</td>
-<td>Boolean</td>
-<td><em>Optional</em>. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings</td>
-</tr>
-<tr>
 <td>can_post_messages</td>
 <td>Boolean</td>
 <td><em>Optional</em>. Administrators only. True, if the administrator can post in the channel; channels only</td>
@@ -1590,24 +1585,29 @@ To learn how to create…">
 <td><em>Optional</em>. Administrators only. True, if the administrator can delete messages of other users</td>
 </tr>
 <tr>
-<td>can_invite_users</td>
-<td>Boolean</td>
-<td><em>Optional</em>. Administrators and restricted only. True, if the user is allowed to invite new users to the chat</td>
-</tr>
-<tr>
 <td>can_restrict_members</td>
 <td>Boolean</td>
 <td><em>Optional</em>. Administrators only. True, if the administrator can restrict, ban or unban chat members</td>
 </tr>
 <tr>
-<td>can_pin_messages</td>
-<td>Boolean</td>
-<td><em>Optional</em>. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only</td>
-</tr>
-<tr>
 <td>can_promote_members</td>
 <td>Boolean</td>
 <td><em>Optional</em>. Administrators only. True, if the administrator can add new administrators with a subset of his own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>
+</tr>
+<tr>
+<td>can_change_info</td>
+<td>Boolean</td>
+<td><em>Optional</em>. Administrators and restricted only. True, if the user is allowed to change the chat title, photo and other settings</td>
+</tr>
+<tr>
+<td>can_invite_users</td>
+<td>Boolean</td>
+<td><em>Optional</em>. Administrators and restricted only. True, if the user is allowed to invite new users to the chat</td>
+</tr>
+<tr>
+<td>can_pin_messages</td>
+<td>Boolean</td>
+<td><em>Optional</em>. Administrators and restricted only. True, if the user is allowed to pin messages; groups and supergroups only</td>
 </tr>
 <tr>
 <td>is_member</td>
@@ -1641,7 +1641,6 @@ To learn how to create…">
 </tr>
 </tbody>
 </table>
-
 <h4><a class="anchor" name="chatpermissions" href="#chatpermissions"><i class="anchor-icon"></i></a>ChatPermissions</h4>
 <p>Describes actions that a non-administrator user is allowed to take in a chat.</p>
 <table class="table">
@@ -1653,6 +1652,46 @@ To learn how to create…">
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>can_send_messages</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the user is allowed to send text messages, contacts, locations and venues</td>
+</tr>
+<tr>
+<td>can_send_media_messages</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages</td>
+</tr>
+<tr>
+<td>can_send_polls</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the user is allowed to send polls, implies can_send_messages</td>
+</tr>
+<tr>
+<td>can_send_other_messages</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages</td>
+</tr>
+<tr>
+<td>can_add_web_page_previews</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages</td>
+</tr>
+<tr>
+<td>can_change_info</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups</td>
+</tr>
+<tr>
+<td>can_invite_users</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the user is allowed to invite new users to the chat</td>
+</tr>
+<tr>
+<td>can_pin_messages</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the user is allowed to pin messages. Ignored in public supergroups</td>
+</tr>
 </tbody>
 </table>
 <h4><a class="anchor" name="responseparameters" href="#responseparameters"><i class="anchor-icon"></i></a>ResponseParameters</h4>
@@ -1936,7 +1975,8 @@ To learn how to create…">
 <li>It is not possible to change the file type when resending by <strong>file_id</strong>. I.e. a <a href="#video">video</a> can&#39;t be <a href="#sendphoto">sent as a photo</a>, a <a href="#photosize">photo</a> can&#39;t be <a href="#senddocument">sent as a document</a>, etc.</li>
 <li>It is not possible to resend thumbnails.</li>
 <li>Resending a photo by <strong>file_id</strong> will send all of its <a href="#photosize">sizes</a>.</li>
-<li><strong>file_id</strong> is unique for each individual bot and can&#39;t be transferred from one bot to another.</li>
+<li><strong>file_id</strong> is unique for each individual bot and <strong>can&#39;t</strong> be transferred from one bot to another.</li>
+<li><strong>file_id</strong> uniquely identifies a file, but a file can have different valid <strong>file_id</strong>s.</li>
 </ul>
 <p><strong>Sending by URL</strong></p>
 <ul>
