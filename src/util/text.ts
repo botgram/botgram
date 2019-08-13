@@ -1,3 +1,8 @@
+/**
+ * This module implements utilities for common text parsing and
+ * formatting for Telegram messages.
+ */
+
 import { Message, MessageEntity } from '../telegram'
 
 /**

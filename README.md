@@ -1,4 +1,4 @@
-[![Botgram](./docs/splash.png)](https://botgram.js.org)
+[![Botgram](https://botgram.js.org/docs/splash.png)](https://botgram.js.org)
 
 [Bots] are special Telegram users controlled with an HTTP API. Botgram
 aims to expose the capabilities of this API with a very clear and minimal
@@ -26,15 +26,24 @@ bot.listen()
 
 ### Features
 
- - Simple, intuitive API.
- - Quick setup; just put your auth token and you're in business.
- - Exposes all functionality in the Bot API 2.3.1, including custom
-   keyboards, inline keyboards, force reply, chat actions, deep
-   linking, kicking users, editing messages, notifications...
- - Ability to stream downloads and uploads.
- - Powerful, [connect]-style message handling and filtering.
+- Intuitive: Simple API and powerful introspection system with
+  Typescript typings for requests and input data, and useful
+  utilities like editable messages, templating and localization.
 
-Bots API version implemented: December 4, 2016
+- Efficient: Connections to Telegram servers are reused by default,
+  and an optimized version of `form-data` is employed, reducing
+  latency and resource usage.
+
+- Light: Has very few dependencies, weighting around 3MB in total.
+
+- Extensible: Powerful [Express]-style message handling allows
+  incorporating additional functionality through middleware such
+  as loggers, state-saving and more.
+
+- Support for webhooks, and integration with [AWS Lambda][lambda],
+  [Cloud Functions][cloudFunctions], [Express] and more.
+
+Bots API version implemented: **4.3**
 
 ### Install
 
@@ -48,7 +57,9 @@ or consult the [documentation].**
 
 
 [bots]: https://core.telegram.org/bots
-[connect]: https://github.com/senchalabs/connect
+[express]: https://expressjs.com
+[lambda]: https://aws.amazon.com/lambda
+[cloudFunctions]: https://cloud.google.com/functions
 
 [tutorial]: https://github.com/botgram/botgram/blob/master/docs/tutorial.md
 [examples]: https://github.com/botgram/botgram/tree/master/examples
