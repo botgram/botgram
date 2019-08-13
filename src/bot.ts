@@ -4,6 +4,7 @@ import { UpdateLoop, UpdateLoopOptions, defaultOptions as updateLoopOptions } fr
 import { integer, Update, Message, Chat } from './telegram'
 import * as telegram from './telegram'
 import { parseCommand, matchCommand, Command } from './util/text'
+import * as webhook from './util/webhook'
 
 /**
  * This is the main class, and probably the only one you need to
@@ -59,6 +60,17 @@ export class Bot extends EventEmitter {
 
   private loop?: UpdateLoop
 
+  /**
+   * Start receiving updates from Telegram, via the long-polling method.
+   * To stop receiving updates, use [[Bot.stop]].
+   * 
+   * **Important:** Make sure only one instance of your code is running
+   * at the same time.
+   * 
+   * This is the easiest way to run a bot. However, if you want to use
+   * a webhook (as with Serverless, for example) then don't call this
+   * method. See the [[Webhook guide]].
+   */
   public listen (): this {
     if (!this.loop) {
       this.loop = new UpdateLoop(this.client, this.options.updateLoopOptions)
@@ -70,6 +82,12 @@ export class Bot extends EventEmitter {
     return this
   }
 
+  /**
+   * Stop receiving updates. This allows the Node.JS process to finish
+   * when everything is done. After calling this, [[listen]] may be
+   * used to start reception again. Calling `stop` or `listen` many
+   * times has no effect.
+   */
   public stop (): this {
     if (this.loop) {
       this.loop.stop()
@@ -85,9 +103,36 @@ export class Bot extends EventEmitter {
 
   // Other methods for update reception
 
-  public processUpdate (u: string | object): any {
+  /**
+   * Parse a received update from Telegram (i.e. webhook body)
+   * and call the first matching handler. The update may be supplied
+   * as raw JSON (string / Buffer) or as a parsed object.
+   * 
+   * This method is useful if you want to use webhooks to get
+   * updates from Telegram, and the existing integrations
+   * aren't enough. Check out the [[Webhook guide]].
+   * 
+   * @param u Serialized update, as received from Telegram
+   * @returns Whatever was returned by the handler (usually a Promise)
+   */
+  public processUpdate (u: Buffer | string | object): any {
+    u = Buffer.isBuffer(u) ? u.toString('utf-8') : u
     u = (typeof u === 'string') ? JSON.parse(u) : u
     return this._processUpdate(new Update(u, this.client))
+  }
+
+  /**
+   * See the `util/webhook` module.
+   */
+  public makeLambdaHandler () {
+    return webhook.makeLambdaHandler(this)
+  }
+
+  /**
+   * See the `util/webhook` module.
+   */
+  public makeMiddleware () {
+    return webhook.makeMiddleware(this)
   }
 
   // Update processing
