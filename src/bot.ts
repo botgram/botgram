@@ -3,6 +3,7 @@ import { Client, ClientOptions, defaultOptions as clientOptions } from './client
 import { UpdateLoop, UpdateLoopOptions, defaultOptions as updateLoopOptions } from './update-loop'
 import { integer, Update, Message, Chat } from './telegram'
 import * as telegram from './telegram'
+import { parseCommand, matchCommand, Command } from './util/text'
 
 /**
  * This is the main class, and probably the only one you need to
@@ -244,6 +245,33 @@ export class Bot extends EventEmitter {
     return this.onMessage(filterHandler(info => info.msg.poll !== undefined, handler))
   }
 
+  // Command handler API
+
+  public onCommand (handler: Handler<this, IncomingCommandMessage>): this
+  public onCommand (name: (string | RegExp), handler: Handler<this, IncomingCommandMessage>): this
+  public onCommand (name1: (string | RegExp), name2: (string | RegExp), handler: Handler<this, IncomingCommandMessage>): this
+  public onCommand (name1: (string | RegExp), name2: (string | RegExp), name3: (string | RegExp), handler: Handler<this, IncomingCommandMessage>): this
+  public onCommand (...namesOrHandler: (string | RegExp | Handler<this, IncomingCommandMessage>)[]): this
+
+  public onCommand (...namesOrHandler: (string | RegExp | Handler<this, IncomingCommandMessage>)[]): this {
+    const names = namesOrHandler.slice(0, namesOrHandler.length - 1) as (string | RegExp)[]
+    const handler = namesOrHandler[namesOrHandler.length - 1]
+    if (typeof handler !== 'function') {
+      throw new Error('Invalid handler was passed')
+    }
+    return this.onMessage(filterHandler(info => {
+      const command = (info as IncomingCommandMessage).command || parseCommand(info.msg)
+      if (!command) {
+        return false
+      }
+      if (names.length && !matchCommand(command.name, names)) {
+        return false
+      }
+      (info as IncomingCommandMessage).command = command
+      return true
+    }, handler))
+  }
+
 }
 
 export type Handler<T, I extends IncomingUpdate> =
@@ -405,4 +433,9 @@ export interface IncomingVenueMessage extends IncomingMessage {
 
 export interface IncomingPollMessage extends IncomingMessage {
   msg: Message & { poll: telegram.IPoll }
+}
+
+export interface IncomingCommandMessage extends IncomingTextMessage {
+  msg: Message & { text: string, entities: telegram.MessageEntity[] }
+  command: Command
 }
