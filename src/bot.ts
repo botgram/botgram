@@ -4,6 +4,38 @@ import { UpdateLoop, UpdateLoopOptions, defaultOptions as updateLoopOptions } fr
 import { integer, Update, Message, Chat } from './telegram'
 import * as telegram from './telegram'
 
+/**
+ * This is the main class, and probably the only one you need to
+ * instantiate in most projects. It starts listening for incoming
+ * updates, and allows you to define **handlers** to process them.
+ *
+ * To use this class, you must:
+ *
+ *  - Create an instance, passing the authentication token.
+ *  - Register handlers by calling `on*` methods.
+ *  - Call [[Bot#listen]] to start receiving messages.
+ *    **Note:** This uses long-polling. If you prefer to use
+ *    webhooks or serverless, see the documentation.
+ *  - Throughout your code, use the API client in `bot.client`
+ *    if you need to, or call methods in the received objects.
+ * 
+ * When an update arrives, it is placed in an [[IncomingUpdate]]
+ * object (with enriched info and shortcuts for commonly accessed
+ * properties) and calls the first matching handler, in order of
+ * registration.
+ *
+ * Handlers may invoke the `next` argument to call the next matching
+ * handler, in a similar way to Connect or Express.
+ * 
+ * By convention, handlers should return promises for their work, and
+ * these will be returned by `next` and [[processUpdate]]. However
+ * Botgram doesn't actually enforce this, `next` will return whatever
+ * value was returned by the called handler.
+ *
+ * For more advanced use cases, you might want to directly
+ * use the API client ([[Client]]) and/or the update-receiving
+ * loop ([[UpdateLoop]]).
+ */
 export class Bot extends EventEmitter {
 
   /** The API client used by this bot */
