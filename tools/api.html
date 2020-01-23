@@ -49,52 +49,16 @@ To learn how to create…">
 <p>The Bot API is an HTTP-based interface created for developers keen on building bots for Telegram.<br>To learn how to create and set up a bot, please consult our <a href="https://core.telegram.org/bots"><strong>Introduction to Bots</strong></a> and <a href="/bots/faq"><strong>Bot FAQ</strong></a>.</p>
 </blockquote>
 <h3><a class="anchor" name="recent-changes" href="#recent-changes"><i class="anchor-icon"></i></a>Recent changes</h3>
-<h4><a class="anchor" name="july-29-2019" href="#july-29-2019"><i class="anchor-icon"></i></a>July 29, 2019</h4>
-<p><strong>Bot API 4.4</strong></p>
+<blockquote>
+<p>Subscribe to <a href="https://t.me/botnews">@BotNews</a> to be the first to know about the latest updates and join the discussion in <a href="https://t.me/bottalk">@BotTalk</a></p>
+</blockquote>
 <ul>
-<li>Added support for <a href="https://telegram.org/blog/animated-stickers"><strong>animated stickers</strong></a>. New field <em>is_animated</em> in <a href="#sticker">Sticker</a> and <a href="#stickerset">StickerSet</a> objects, animated stickers can now be used in <a href="#sendsticker">sendSticker</a> and <a href="#inlinequeryresultcachedsticker">InlineQueryResultCachedSticker</a>.</li>
-<li>Added support for <a href="https://telegram.org/blog/permissions-groups-undo"><strong>default permissions</strong></a> in groups. New object <a href="#chatpermissions">ChatPermissions</a>, containing actions which a member can take in a chat. New field <em>permissions</em> in the <a href="#chat">Chat</a> object; new method <a href="#setchatpermissions">setChatPermissions</a>.</li>
-<li>The field <em>all_members_are_administrators</em> has been removed from the documentation for the <a href="#chat">Chat</a> object. The field is still returned in the object for backward compatibility, but new bots should use the <em>permissions</em> field instead.</li>
-<li>Added support for more permissions for group and supergroup members: added the new field <em>can_send_polls</em> to <a href="#chatmember">ChatMember</a> object, added <em>can_change_info</em>, <em>can_invite_users</em>, <em>can_pin_messages</em> in <a href="#chatmember">ChatMember</a> object for restricted users (previously available only for administrators).</li>
-<li>The method <a href="#restrictchatmember">restrictChatMember</a> now takes the new user permissions in a single argument of the type <a href="#chatpermissions">ChatPermissions</a>. The old way of passing parameters will keep working for a while for backward compatibility.</li>
-<li>Added <em>description</em> support for basic groups (previously available in supergroups and channel chats). You can pass a group&#39;s chat_id to <a href="#setchatdescription">setChatDescription</a> and receive the group&#39;s description in the <a href="#chat">Chat</a> object in the response to <a href="#getChat">getChat</a> method.</li>
-<li>Added <em>invite_link</em> support for basic groups (previously available in supergroups and channel chats). You can pass a group&#39;s chat_id to <a href="#exportchatinvitelink">exportChatInviteLink</a> and receive the group&#39;s invite link in the <a href="#chat">Chat</a> object in the response to <a href="#getChat">getChat</a> method.</li>
-<li>File identifiers from the <a href="#chatphoto">ChatPhoto</a> object are now invalidated and can no longer be used whenever the photo is changed.</li>
-<li>All <strong>webhook requests</strong> from the Bot API are now coming from the subnets <code>149.154.160.0/20</code> and <code>91.108.4.0/22</code>. Most users won&#39;t need to do anything to continue receiving webhooks. If you control inbound access with a firewall, you may need to update your configuration. You can always find the list of actual IP addresses of servers used to send webhooks there: <a href="/bots/webhooks"><a href="https://core.telegram.org/bots/webhooks">https://core.telegram.org/bots/webhooks</a></a>.</li>
-<li>As of the <strong>next Bot API</strong> update (<strong>version 4.5</strong>), nested <a href="#messageentity">MessageEntity</a> objects will be allowed in message texts and captions. Please make sure that your code can correctly handle such entities.</li>
 </ul>
-<h4><a class="anchor" name="may-31-2019" href="#may-31-2019"><i class="anchor-icon"></i></a>May 31, 2019</h4>
-<p><strong>Bot API 4.3</strong></p>
 <ul>
-<li>Added support for <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots"><strong>Seamless Telegram Login</strong></a> on external websites (needs Telegram 5.7 or higher).</li>
-<li>Added the new object <a href="#loginurl">LoginUrl</a> and the new field <em>login_url</em> to the <a href="#inlinekeyboardbutton">InlineKeyboardButton</a> object which allows to <strong>automatically authorize</strong> users before they go to a URL specified by the bot. Users will be asked to confirm authorization in their Telegram app (needs version 5.7 or higher) when they press the button:</li>
-</ul>
-<div class="blog_image_wrap">
-  <a href="/file/811140015/1734/8VZFkwWXalM.97872/6127fa62d8a0bf2b3c" target="_blank"><img src="/file/811140909/1631/20k1Z53eiyY.23995/c541e89b74253623d9" title="TITLE" alt="TITLE" srcset="/file/811140015/1734/8VZFkwWXalM.97872/6127fa62d8a0bf2b3c , 2x" /></a>
-</div>
-
-<p><strong>Also in this update:</strong></p>
-<ul>
-<li>Added the field <code>reply_markup</code> to the <a href="#message">Message</a> object, containing the inline keyboard attached to the message.</li>
-<li>If a message with an inline keyboard is forwarded, the forwarded message will now have an inline keyboard if the keyboard contained only <em>url</em> and <em>login_url</em> buttons or if the message was sent via a bot and the keyboard contained only <em>url</em>, <em>login_url</em>, <em>switch_inline_query</em> or <em>switch_inline_query_current_chat</em> buttons. In the latter case, <em>switch_inline_query_current_chat</em> buttons are replaced with <em>switch_inline_query</em> buttons.</li>
-<li>Bots now receive the <em>edited_message</em> <a href="#update">Update</a> even if only <em>Message.reply_markup</em> has changed.</li>
-<li>Bots that have the <em>can_edit_messages</em> right in a channel can now use the method <a href="#editmessagereplymarkup">editMessageReplyMarkup</a> for messages written by other administrators forever without the 48 hours limit.</li>
-<li>Don&#39;t forget that starting in <strong>July 2019</strong>, <strong>webhook requests</strong> from Bot API will be coming from the subnets <code>149.154.160.0/20</code> and <code>91.108.4.0/22</code>. Most users won&#39;t need to do anything to continue receiving webhooks. If you control inbound access with a firewall, you may need to update your configuration. You can always find the list of actual IP addresses of servers used to send webhooks there: <a href="/bots/webhooks"><a href="https://core.telegram.org/bots/webhooks">https://core.telegram.org/bots/webhooks</a></a>.</li>
-</ul>
-<h4><a class="anchor" name="april-14-2019" href="#april-14-2019"><i class="anchor-icon"></i></a>April 14, 2019</h4>
-<p><strong>Bot API 4.2</strong></p>
-<ul>
-<li>Added support for native polls: added the object <a href="#poll">Poll</a>, the methods <a href="#sendpoll">sendPoll</a> and <a href="#stoppoll">stopPoll</a> and the field <em>poll</em> in the <a href="#message">Message</a> and <a href="#update">Update</a> objects.</li>
-<li>The method <a href="#deletemessage">deleteMessage</a> can now be used to delete messages sent by a user to the bot in private chats within 48 hours.</li>
-<li>Added support for pinned messages in basic groups in addition to supergroups and channel chats: you can pass group&#39;s chat_id to <a href="#pinchatmessage">pinChatMessage</a> and <a href="#unpinchatmessage">unpinChatMessage</a>, and receive the pinned group message in <a href="#chat">Chat</a> object.</li>
-<li>Added the field <em>is_member</em> to the <a href="#chatmember">ChatMember</a> object, which can be used to find whether a restricted user is a member of the chat.</li>
-<li>Added the field <em>forward_sender_name</em> to the <a href="#message">Message</a> object, containing name of the sender who has opted to hide their account.</li>
-<li>Starting in July 2019, webhook requests from Bot API will be coming from the subnets <code>149.154.160.0/20</code> and <code>91.108.4.0/22</code>. Most users won&#39;t need to do anything to continue receiving webhooks. If you control inbound access with a firewall, you may need to update your configuration. You can always find the list of actual IP addresses of servers used to send webhooks there: <a href="/bots/webhooks"><a href="https://core.telegram.org/bots/webhooks">https://core.telegram.org/bots/webhooks</a></a>.</li>
-<li>Document thumbnails now should be inscribed in a 320x320 square instead of 90x90.</li>
 </ul>
 <p><strong><a href="/bots/api-changelog">See earlier changes »</a></strong></p>
 <h3><a class="anchor" name="authorizing-your-bot" href="#authorizing-your-bot"><i class="anchor-icon"></i></a>Authorizing your bot</h3>
-<p>Each bot is given a unique authentication token <a href="/bots#botfather">when it is created</a>. The token looks something like <code>123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11</code>, but we&#39;ll use simply <strong>&lt;token&gt;</strong> in this document instead. You can learn about obtaining tokens and generating new ones in <a href="https://core.telegram.org/bots#botfather">this document</a>.</p>
+<p>Each bot is given a unique authentication token <a href="/bots#6-botfather">when it is created</a>. The token looks something like <code>123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11</code>, but we&#39;ll use simply <strong>&lt;token&gt;</strong> in this document instead. You can learn about obtaining tokens and generating new ones in <a href="https://core.telegram.org/bots#6-botfather">this document</a>.</p>
 <h3><a class="anchor" name="making-requests" href="#making-requests"><i class="anchor-icon"></i></a>Making requests</h3>
 <p>All queries to the Telegram Bot API must be served over HTTPS and need to be presented in this form: <code>https://api.telegram.org/bot&lt;token&gt;/METHOD_NAME</code>. Like this for example:</p>
 <pre><code>https://api.telegram.org/bot123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11/getMe</code></pre>
@@ -187,7 +151,7 @@ To learn how to create…">
 </tbody>
 </table>
 <h4><a class="anchor" name="getupdates" href="#getupdates"><i class="anchor-icon"></i></a>getUpdates</h4>
-<p>Use this method to receive incoming updates using long polling (<a href="http://en.wikipedia.org/wiki/Push_technology#Long_polling">wiki</a>). An Array of <a href="#update">Update</a> objects is returned.</p>
+<p>Use this method to receive incoming updates using long polling (<a href="https://en.wikipedia.org/wiki/Push_technology#Long_polling">wiki</a>). An Array of <a href="#update">Update</a> objects is returned.</p>
 <table class="table">
 <thead>
 <tr>
@@ -4754,7 +4718,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="inlinequeryresultaudio" href="#inlinequeryresultaudio"><i class="anchor-icon"></i></a>InlineQueryResultAudio</h4>
-<p>Represents a link to an mp3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p>
+<p>Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p>
 <table class="table">
 <thead>
 <tr>
