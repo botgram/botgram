@@ -12,10 +12,9 @@
   "types": "dist/types/index.d.ts",
   "dependencies": {
     "@types/bluebird": "^3.5.26",
-    "@types/form-data": "^2.2.1",
     "@types/node": "^10.9.0",
     "bluebird": "^3.5.5",
-    "form-data": "botgram/form-data#update-combined-stream"
+    "form-data": "^3.0.0"
   },
   "devDependencies": {
     "tslint": "^5.14.0",
