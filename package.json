@@ -19,8 +19,8 @@
   "devDependencies": {
     "tslint": "^5.14.0",
     "tslint-config-standard": "^8.0.1",
-    "typedoc": "^0.15.0",
-    "typescript": "^3.4.1",
+    "typedoc": "^0.15.8",
+    "typescript": "^3.7.5",
     "sslkeylog": "^0.2.2"
   },
   "scripts": {
