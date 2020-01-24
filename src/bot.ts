@@ -171,6 +171,8 @@ export class Bot extends EventEmitter {
       return { ...base, type: 'pre_checkout_query', query: update.pre_checkout_query }
     } else if (update.poll) {
       return { ...base, type: 'poll', poll: update.poll }
+    } else if (update.poll_answer) {
+      return { ...base, type: 'poll_answer', poll_answer: update.poll_answer }
     }
   }
 
@@ -234,6 +236,10 @@ export class Bot extends EventEmitter {
 
   public onPollUpdate (handler: Handler<this, IncomingPoll>): this {
     return this.use(filterHandler(info => info.type === 'poll', handler))
+  }
+
+  public onPollAnswer (handler: Handler<this, IncomingPollAnswer>): this {
+    return this.use(filterHandler(info => info.type === 'poll_answer', handler))
   }
 
   // Message handlers
@@ -368,7 +374,8 @@ export type IncomingUpdate =
   IncomingCallbackQuery |
   IncomingShippingQuery |
   IncomingPreCheckoutQuery |
-  IncomingPoll
+  IncomingPoll |
+  IncomingPollAnswer
 
 export interface IncomingMessage extends IncomingUpdateBase {
   type: 'message'
@@ -426,6 +433,11 @@ export interface IncomingPreCheckoutQuery extends IncomingUpdateBase {
 export interface IncomingPoll extends IncomingUpdateBase {
   type: 'poll'
   poll: telegram.IPoll
+}
+
+export interface IncomingPollAnswer extends IncomingUpdateBase {
+  type: 'poll_answer'
+  poll_answer: telegram.IPollAnswer
 }
 
 export interface IncomingTextMessage extends IncomingMessage {

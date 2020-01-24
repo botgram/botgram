@@ -74,7 +74,7 @@ export function isAttachment (x: object): x is Attachment {
  *   - File identifiers are unique for each individual bot, and **can't** be
  *     transferred from one bot to another.
  *   - File identifiers uniquely identify a file, but a file can have different
- *     valid identifiers.
+ *     valid identifiers even for the same bot.
  *
  * **Limitations when passing a URL:**
  *
@@ -248,7 +248,8 @@ export type UpdateKind =
     'callback_query' |
     'shipping_query' |
     'pre_checkout_query' |
-    'poll'
+    'poll' |
+    'poll_answer'
 
 /**
  * This object represents an incoming update.  
@@ -312,6 +313,12 @@ export interface IUpdate {
    * polls, which are sent by the bot
    */
   poll?: IPoll
+
+  /**
+   * A user changed their answer in a non-anonymous poll. Bots receive new
+   * votes only in polls that were sent by the bot itself.
+   */
+  poll_answer?: IPollAnswer
 }
 
 /**
@@ -383,6 +390,18 @@ export interface IUser {
    * of the user's language
    */
   language_code?: string
+
+  /** True, if the bot can be invited to groups. Returned only in [[getMe]]. */
+  can_join_groups?: boolean
+
+  /**
+   * True, if [privacy mode](https://core.telegram.org/bots#privacy-mode)
+   * is disabled for the bot. Returned only in [[getMe]].
+   */
+  can_read_all_group_messages?: boolean
+
+  /** True, if the bot supports inline queries. Returned only in [[getMe]]. */
+  supports_inline_queries?: boolean
 }
 
 /**
@@ -444,6 +463,13 @@ export interface IChat {
    * only in [[getChat]].
    */
   permissions?: IChatPermissions
+
+  /**
+   * For supergroups, the minimum allowed delay between consecutive
+   * messages sent by each unpriviledged user. Returned only in
+   * [[getChat]].
+   */
+  slow_mode_delay?: integer
 
   /**
    * For supergroups, name of group sticker set. Returned only in
@@ -695,14 +721,17 @@ export interface IMessage {
  */
 export interface IMessageEntity {
   /**
-   * Type of the entity. Can be *mention* (`@username`), *hashtag*,
-   * *cashtag*, *bot_command*, *url*, *email*, *phone_number*, *bold* (bold
-   * text), *italic* (italic text), *code* (monowidth string), *pre*
-   * (monowidth block), *text_link* (for clickable text URLs),
-   * *text_mention* (for users [without
+   * Type of the entity. Can be “mention” (`@username`), “hashtag”
+   * (`#hashtag`), “cashtag” (`$USD`), “bot_command” (`/start@jobs_bot`),
+   * “url” (`https://telegram.org`), “email” (`do-not-reply@telegram.org`),
+   * “phone_number” (`+1-212-555-0123`), “bold” (**bold text**), “italic”
+   * (*italic text*), “underline” (underlined text), “strikethrough”
+   * (strikethrough text), “code” (monowidth string), “pre” (monowidth
+   * block), “text_link” (for clickable text URLs), “text_mention” (for
+   * users [without
    * usernames](https://telegram.org/blog/edit#new-mentions))
    */
-  type: 'mention' | 'hashtag' | 'cashtag' | 'bot_command' | 'url' | 'email' | 'phone_number' | 'bold' | 'italic' | 'code' | 'pre' | 'text_link' | 'text_mention'
+  type: 'mention' | 'hashtag' | 'cashtag' | 'bot_command' | 'url' | 'email' | 'phone_number' | 'bold' | 'italic' | 'underline' | 'strikethrough' | 'code' | 'pre' | 'text_link' | 'text_mention'
 
   /** Offset in UTF-16 code units to the start of the entity */
   offset: integer
@@ -718,6 +747,9 @@ export interface IMessageEntity {
 
   /** For “text_mention” only, the mentioned user */
   user?: IUser
+
+  /** For “pre” only, the programming language of the entity text */
+  language?: string
 }
 
 /**
@@ -725,8 +757,18 @@ export interface IMessageEntity {
  * [[ISticker]] thumbnail.
  */
 export interface IPhotoSize {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /** Photo width */
   width: integer
@@ -743,8 +785,18 @@ export interface IPhotoSize {
  * Telegram clients.
  */
 export interface IAudio {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /** Duration of the audio in seconds as defined by sender */
   duration: integer
@@ -770,8 +822,18 @@ export interface IAudio {
  * [[IVoice]] and [[IAudio]]).
  */
 export interface IDocument {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /** Document thumbnail as defined by sender */
   thumb?: IPhotoSize
@@ -790,8 +852,18 @@ export interface IDocument {
  * This object represents a video file.
  */
 export interface IVideo {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /** Video width as defined by sender */
   width: integer
@@ -817,8 +889,18 @@ export interface IVideo {
  * video without sound).
  */
 export interface IAnimation {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /** Video width as defined by sender */
   width: integer
@@ -846,8 +928,18 @@ export interface IAnimation {
  * This object represents a voice note.
  */
 export interface IVoice {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /** Duration of the audio in seconds as defined by sender */
   duration: integer
@@ -866,8 +958,18 @@ export interface IVoice {
  * [v.4.0](https://telegram.org/blog/video-messages-and-telescope)).
  */
 export interface IVideoNote {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /**
    * Video width and height (diameter of the video message) as defined by
@@ -955,6 +1057,30 @@ export interface IPollOption {
 }
 
 /**
+ * This object represents an answer of a user in a non-anonymous poll.
+ */
+export interface IPollAnswer {
+  /** Unique poll identifier */
+  poll_id: string
+
+  /** The user, who changed the answer to the poll */
+  user: IUser
+
+  /**
+   * 0-based identifiers of answer options, chosen by the user. May be
+   * empty if the user retracted their vote.
+   */
+  option_ids: integer[]
+}
+
+/**
+ * Poll type, currently can be “regular” or “quiz”
+ */
+export type PollType =
+    'regular' |
+    'quiz'
+
+/**
  * This object contains information about a poll.
  */
 export interface IPoll {
@@ -967,8 +1093,27 @@ export interface IPoll {
   /** List of poll options */
   options: IPollOption[]
 
+  /** Total number of users that voted in the poll */
+  total_voter_count: integer
+
   /** True, if the poll is closed */
   is_closed: boolean
+
+  /** True, if the poll is anonymous */
+  is_anonymous: boolean
+
+  /** Poll type, currently can be “regular” or “quiz” */
+  type: PollType
+
+  /** True, if the poll allows multiple answers */
+  allows_multiple_answers: boolean
+
+  /**
+   * 0-based identifier of the correct answer option. Available only for
+   * polls in the quiz mode, which are closed, or was sent (not forwarded)
+   * by the bot or to the private chat with the bot.
+   */
+  correct_option_id?: integer
 }
 
 /**
@@ -992,8 +1137,18 @@ export interface IUserProfilePhotos {
  * > Maximum file size to download is 20 MB
  */
 export interface IFile {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /** File size, if known */
   file_size?: integer
@@ -1051,11 +1206,15 @@ export interface IReplyKeyboardMarkup {
 /**
  * This object represents one button of the reply keyboard. For simple
  * text buttons *String* can be used instead of this object to specify
- * text of the button. Optional fields are mutually exclusive.
+ * text of the button. Optional fields *request_contact*,
+ * *request_location*, and *request_poll* are mutually exclusive.
  *
  * **Note:** *request_contact* and *request_location* options will only
  * work in Telegram versions released after 9 April, 2016. Older clients
- * will ignore them.
+ * will receive unsupported message.  
+ * **Note:** *request_poll* option will only work in Telegram versions
+ * released after 23 January, 2020. Older clients will receive
+ * unsupported message.
  */
 export interface IKeyboardButton {
   /**
@@ -1075,6 +1234,26 @@ export interface IKeyboardButton {
    * pressed. Available in private chats only
    */
   request_location?: boolean
+
+  /**
+   * If specified, the user will be asked to create a poll and send it to
+   * the bot when the button is pressed. Available in private chats only
+   */
+  request_poll?: IKeyboardButtonPollType
+}
+
+/**
+ * This object represents type of a poll, which is allowed to be created
+ * and sent when the corresponding button is pressed.
+ */
+export interface IKeyboardButtonPollType {
+  /**
+   * If *quiz* is passed, the user will be allowed to create only polls in
+   * the quiz mode. If *regular* is passed, only regular polls will be
+   * allowed. Otherwise, the user will be allowed to create a poll of any
+   * type.
+   */
+  type?: PollType
 }
 
 /**
@@ -1352,11 +1531,25 @@ export interface IChatPhoto {
   small_file_id: string
 
   /**
+   * Unique file identifier of small (160x160) chat photo, which is
+   * supposed to be the same over time and for different bots. Can't be
+   * used to download or reuse the file.
+   */
+  small_file_unique_id: string
+
+  /**
    * File identifier of big (640x640) chat photo. This file_id can be used
    * only for photo download and only for as long as the photo is not
    * changed.
    */
   big_file_id: string
+
+  /**
+   * Unique file identifier of big (640x640) chat photo, which is supposed
+   * to be the same over time and for different bots. Can't be used to
+   * download or reuse the file.
+   */
+  big_file_unique_id: string
 }
 
 /**
@@ -1371,6 +1564,9 @@ export interface IChatMember {
    * “member”, “restricted”, “left” or “kicked”
    */
   status: 'creator' | 'administrator' | 'member' | 'restricted' | 'left' | 'kicked'
+
+  /** Owner and administrators only. Custom title for this user */
+  custom_title?: string
 
   /**
    * Restricted and kicked only. Date when restrictions will be lifted for
@@ -1788,8 +1984,18 @@ export type ChatAction =
  * This object represents a sticker.
  */
 export interface ISticker {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /** Sticker width */
   width: integer
@@ -2201,7 +2407,7 @@ export interface IInlineQueryResultVideo {
 }
 
 /**
- * Represents a link to an mp3 audio file. By default, this audio file
+ * Represents a link to an MP3 audio file. By default, this audio file
  * will be sent by the user. Alternatively, you can use
  * *input_message_content* to send a message with the specified content
  * instead of the audio.
@@ -2844,7 +3050,7 @@ export interface IInlineQueryResultCachedVoice {
 }
 
 /**
- * Represents a link to an mp3 audio file stored on the Telegram servers.
+ * Represents a link to an MP3 audio file stored on the Telegram servers.
  * By default, this audio file will be sent by the user. Alternatively,
  * you can use *input_message_content* to send a message with the
  * specified content instead of the audio.
@@ -3243,8 +3449,18 @@ export interface IPassportData {
  * don't exceed 10MB.
  */
 export interface IPassportFile {
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
+
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
 
   /** File size */
   file_size: integer
@@ -3647,7 +3863,7 @@ export abstract class ClientBase {
 
   /**
    * Use this method to receive incoming updates using long polling
-   * ([wiki](http://en.wikipedia.org/wiki/Push_technology#Long_polling)).
+   * ([wiki](https://en.wikipedia.org/wiki/Push_technology#Long_polling)).
    * An Array of [[IUpdate]] objects is returned.
    *
    * > **Notes**  
@@ -3997,8 +4213,8 @@ export abstract class ClientBase {
 
   /**
    * Use this method to send audio files, if you want Telegram clients to
-   * display them in the music player. Your audio must be in the .mp3
-   * format. On success, the sent [[IMessage]] is returned. Bots can
+   * display them in the music player. Your audio must be in the .MP3 or
+   * .M4A format. On success, the sent [[IMessage]] is returned. Bots can
    * currently send audio files of up to 50 MB in size, this limit may be
    * changed in the future.
    *
@@ -4857,18 +5073,38 @@ export abstract class ClientBase {
   }
 
   /**
-   * Use this method to send a native poll. A native poll can't be sent to
-   * a private chat. On success, the sent [[IMessage]] is returned.
+   * Use this method to send a native poll. On success, the sent
+   * [[IMessage]] is returned.
    *
    * @param chat - Unique identifier for the target chat or username of the
-   * target channel (in the format `@channelusername`). A native poll can't
-   * be sent to a private chat.
+   * target channel (in the format `@channelusername`)
    * @param question - Poll question, 1-255 characters
    * @param pollOptions - List of answer options, 2-10 strings 1-100
    * characters each
    * @param options - Optional parameters
    */
   public sendPoll (chat: ChatId | string, question: string, pollOptions: string[], options?: {
+    /** True, if the poll needs to be anonymous, defaults to *True* */
+    is_anonymous?: boolean
+
+    /** Poll type, “quiz” or “regular”, defaults to “regular” */
+    type?: PollType
+
+    /**
+     * True, if the poll allows multiple answers, ignored for polls in quiz
+     * mode, defaults to *False*
+     */
+    allows_multiple_answers?: boolean
+
+    /**
+     * 0-based identifier of the correct answer option, required for polls in
+     * quiz mode
+     */
+    correct_option_id?: integer
+
+    /** Pass *True*, if the poll needs to be immediately closed */
+    is_closed?: boolean
+
     /**
      * Sends the message
      * [silently](https://telegram.org/blog/channels-2-0#silent-messages).
@@ -4894,6 +5130,21 @@ export abstract class ClientBase {
     parameters.chat_id = resolveChatId(chat)
     parameters.question = question
     parameters.options = pollOptions
+    if (typeof options.is_anonymous !== 'undefined') {
+      parameters.is_anonymous = options.is_anonymous
+    }
+    if (typeof options.type !== 'undefined') {
+      parameters.type = options.type
+    }
+    if (typeof options.allows_multiple_answers !== 'undefined') {
+      parameters.allows_multiple_answers = options.allows_multiple_answers
+    }
+    if (typeof options.correct_option_id !== 'undefined') {
+      parameters.correct_option_id = options.correct_option_id
+    }
+    if (typeof options.is_closed !== 'undefined') {
+      parameters.is_closed = options.is_closed
+    }
     if (typeof options.disable_notification !== 'undefined') {
       parameters.disable_notification = options.disable_notification
     }
@@ -5051,11 +5302,6 @@ export abstract class ClientBase {
    * unless [[unbanChatMember]] first. The bot must be an administrator in
    * the chat for this to work and must have the appropriate admin rights.
    * Returns *True* on success.
-   *
-   * > Note: In regular groups (non-supergroups), this method will only work
-   * > if the ‘All Members Are Admins’ setting is off in the target group.
-   * > Otherwise members may only be removed by the group's creator or by the
-   * > member that added them.
    *
    * @param chat - Unique identifier for the target group or username of
    * the target supergroup or channel (in the format `@channelusername`)
@@ -5217,6 +5463,25 @@ export abstract class ClientBase {
   }
 
   /**
+   * Use this method to set a custom title for an administrator in a
+   * supergroup promoted by the bot. Returns *True* on success.
+   *
+   * @param chat - Unique identifier for the target chat or username of the
+   * target supergroup (in the format `@supergroupusername`)
+   * @param user - Unique identifier of the target user
+   * @param custom_title - New custom title for the administrator; 0-16
+   * characters, emoji are not allowed
+   */
+  public setChatAdministratorCustomTitle (chat: ChatId | string, user: UserId, custom_title: string): BluebirdPromise<true> {
+    const parameters: any = {}
+    const fdata: FormatData = { parameters, fileId: 0 }
+    parameters.chat_id = resolveChatId(chat)
+    parameters.user_id = resolveUserId(user)
+    parameters.custom_title = custom_title
+    return this.callMethod('setChatAdministratorCustomTitle', parameters)
+  }
+
+  /**
    * Use this method to set default chat permissions for all members. The
    * bot must be an administrator in the group or a supergroup for this to
    * work and must have the *can_restrict_members* admin rights. Returns
@@ -5264,9 +5529,6 @@ export abstract class ClientBase {
    * chat for this to work and must have the appropriate admin rights.
    * Returns *True* on success.
    *
-   * > Note: In regular groups (non-supergroups), this method will only work
-   * > if the ‘All Members Are Admins’ setting is off in the target group.
-   *
    * @param chat - Unique identifier for the target chat or username of the
    * target channel (in the format `@channelusername`)
    * @param photo - New chat photo, uploaded using multipart/form-data
@@ -5285,9 +5547,6 @@ export abstract class ClientBase {
    * to work and must have the appropriate admin rights. Returns *True* on
    * success.
    *
-   * > Note: In regular groups (non-supergroups), this method will only work
-   * > if the ‘All Members Are Admins’ setting is off in the target group.
-   *
    * @param chat - Unique identifier for the target chat or username of the
    * target channel (in the format `@channelusername`)
    */
@@ -5303,9 +5562,6 @@ export abstract class ClientBase {
    * for private chats. The bot must be an administrator in the chat for
    * this to work and must have the appropriate admin rights. Returns
    * *True* on success.
-   *
-   * > Note: In regular groups (non-supergroups), this method will only work
-   * > if the ‘All Members Are Admins’ setting is off in the target group.
    *
    * @param chat - Unique identifier for the target chat or username of the
    * target channel (in the format `@channelusername`)
@@ -6792,7 +7048,10 @@ export class MessageContext extends Context {
  */
 export class FileContext extends Context {
 
-  /** Identifier for this file */
+  /**
+   * Identifier for this file, which can be used to download or reuse the
+   * file
+   */
   file_id: string
 
   /**
@@ -7010,8 +7269,8 @@ export class ChatContext extends Context {
 
   /**
    * Use this method to send audio files, if you want Telegram clients to
-   * display them in the music player. Your audio must be in the .mp3
-   * format. On success, the sent [[IMessage]] is returned. Bots can
+   * display them in the music player. Your audio must be in the .MP3 or
+   * .M4A format. On success, the sent [[IMessage]] is returned. Bots can
    * currently send audio files of up to 50 MB in size, this limit may be
    * changed in the future.
    *
@@ -7561,8 +7820,8 @@ export class ChatContext extends Context {
   }
 
   /**
-   * Use this method to send a native poll. A native poll can't be sent to
-   * a private chat. On success, the sent [[IMessage]] is returned.
+   * Use this method to send a native poll. On success, the sent
+   * [[IMessage]] is returned.
    *
    * This is equivalent to calling [[Client.sendPoll]].
    *
@@ -7572,6 +7831,27 @@ export class ChatContext extends Context {
    * @param options - Optional parameters
    */
   public sendPoll (question: string, pollOptions: string[], options?: {
+    /** True, if the poll needs to be anonymous, defaults to *True* */
+    is_anonymous?: boolean
+
+    /** Poll type, “quiz” or “regular”, defaults to “regular” */
+    type?: PollType
+
+    /**
+     * True, if the poll allows multiple answers, ignored for polls in quiz
+     * mode, defaults to *False*
+     */
+    allows_multiple_answers?: boolean
+
+    /**
+     * 0-based identifier of the correct answer option, required for polls in
+     * quiz mode
+     */
+    correct_option_id?: integer
+
+    /** Pass *True*, if the poll needs to be immediately closed */
+    is_closed?: boolean
+
     /**
      * Sends the message
      * [silently](https://telegram.org/blog/channels-2-0#silent-messages).
@@ -7630,11 +7910,6 @@ export class ChatContext extends Context {
    * unless [[unbanChatMember]] first. The bot must be an administrator in
    * the chat for this to work and must have the appropriate admin rights.
    * Returns *True* on success.
-   *
-   * > Note: In regular groups (non-supergroups), this method will only work
-   * > if the ‘All Members Are Admins’ setting is off in the target group.
-   * > Otherwise members may only be removed by the group's creator or by the
-   * > member that added them.
    *
    * This is equivalent to calling [[Client.kickChatMember]].
    *
@@ -7746,6 +8021,21 @@ export class ChatContext extends Context {
   }
 
   /**
+   * Use this method to set a custom title for an administrator in a
+   * supergroup promoted by the bot. Returns *True* on success.
+   *
+   * This is equivalent to calling
+   * [[Client.setChatAdministratorCustomTitle]].
+   *
+   * @param user - Unique identifier of the target user
+   * @param custom_title - New custom title for the administrator; 0-16
+   * characters, emoji are not allowed
+   */
+  public setAdministratorCustomTitle (user: UserId, custom_title: string): BluebirdPromise<true> {
+    return this.__getClient().setChatAdministratorCustomTitle(this.id, user, custom_title)
+  }
+
+  /**
    * Use this method to set default chat permissions for all members. The
    * bot must be an administrator in the group or a supergroup for this to
    * work and must have the *can_restrict_members* admin rights. Returns
@@ -7785,9 +8075,6 @@ export class ChatContext extends Context {
    * chat for this to work and must have the appropriate admin rights.
    * Returns *True* on success.
    *
-   * > Note: In regular groups (non-supergroups), this method will only work
-   * > if the ‘All Members Are Admins’ setting is off in the target group.
-   *
    * This is equivalent to calling [[Client.setChatPhoto]].
    *
    * @param photo - New chat photo, uploaded using multipart/form-data
@@ -7802,9 +8089,6 @@ export class ChatContext extends Context {
    * to work and must have the appropriate admin rights. Returns *True* on
    * success.
    *
-   * > Note: In regular groups (non-supergroups), this method will only work
-   * > if the ‘All Members Are Admins’ setting is off in the target group.
-   *
    * This is equivalent to calling [[Client.deleteChatPhoto]].
    */
   public deletePhoto (): BluebirdPromise<true> {
@@ -7816,9 +8100,6 @@ export class ChatContext extends Context {
    * for private chats. The bot must be an administrator in the chat for
    * this to work and must have the appropriate admin rights. Returns
    * *True* on success.
-   *
-   * > Note: In regular groups (non-supergroups), this method will only work
-   * > if the ‘All Members Are Admins’ setting is off in the target group.
    *
    * This is equivalent to calling [[Client.setChatTitle]].
    *
@@ -8923,6 +9204,12 @@ export class Update implements IUpdate {
   poll?: IPoll
 
   /**
+   * A user changed their answer in a non-anonymous poll. Bots receive new
+   * votes only in polls that were sent by the bot itself.
+   */
+  poll_answer?: PollAnswer
+
+  /**
    * Parses a raw [[IUpdate]] object received from Telegram, into Botgram's
    * representation.
    *
@@ -8962,6 +9249,9 @@ export class Update implements IUpdate {
     }
     if (typeof x.poll !== 'undefined') {
       this.poll = x.poll
+    }
+    if (typeof x.poll_answer !== 'undefined') {
+      this.poll_answer = new PollAnswer(x.poll_answer, client)
     }
   }
 }
@@ -9056,6 +9346,18 @@ export class User extends UserContext implements IUser {
    */
   language_code?: string
 
+  /** True, if the bot can be invited to groups. Returned only in [[getMe]]. */
+  can_join_groups?: boolean
+
+  /**
+   * True, if [privacy mode](https://core.telegram.org/bots#privacy-mode)
+   * is disabled for the bot. Returned only in [[getMe]].
+   */
+  can_read_all_group_messages?: boolean
+
+  /** True, if the bot supports inline queries. Returned only in [[getMe]]. */
+  supports_inline_queries?: boolean
+
   /**
    * Parses a raw [[IUser]] object received from Telegram, into Botgram's
    * representation.
@@ -9077,6 +9379,15 @@ export class User extends UserContext implements IUser {
     }
     if (typeof x.language_code !== 'undefined') {
       this.language_code = x.language_code
+    }
+    if (typeof x.can_join_groups !== 'undefined') {
+      this.can_join_groups = x.can_join_groups
+    }
+    if (typeof x.can_read_all_group_messages !== 'undefined') {
+      this.can_read_all_group_messages = x.can_read_all_group_messages
+    }
+    if (typeof x.supports_inline_queries !== 'undefined') {
+      this.supports_inline_queries = x.supports_inline_queries
     }
   }
 }
@@ -9133,6 +9444,13 @@ export class Chat extends ChatContext implements IChat {
   permissions?: IChatPermissions
 
   /**
+   * For supergroups, the minimum allowed delay between consecutive
+   * messages sent by each unpriviledged user. Returned only in
+   * [[getChat]].
+   */
+  slow_mode_delay?: integer
+
+  /**
    * For supergroups, name of group sticker set. Returned only in
    * [[getChat]].
    */
@@ -9182,6 +9500,9 @@ export class Chat extends ChatContext implements IChat {
     }
     if (typeof x.permissions !== 'undefined') {
       this.permissions = x.permissions
+    }
+    if (typeof x.slow_mode_delay !== 'undefined') {
+      this.slow_mode_delay = x.slow_mode_delay
     }
     if (typeof x.sticker_set_name !== 'undefined') {
       this.sticker_set_name = x.sticker_set_name
@@ -9573,14 +9894,17 @@ export class Message extends MessageContext implements IMessage {
  */
 export class MessageEntity implements IMessageEntity {
   /**
-   * Type of the entity. Can be *mention* (`@username`), *hashtag*,
-   * *cashtag*, *bot_command*, *url*, *email*, *phone_number*, *bold* (bold
-   * text), *italic* (italic text), *code* (monowidth string), *pre*
-   * (monowidth block), *text_link* (for clickable text URLs),
-   * *text_mention* (for users [without
+   * Type of the entity. Can be “mention” (`@username`), “hashtag”
+   * (`#hashtag`), “cashtag” (`$USD`), “bot_command” (`/start@jobs_bot`),
+   * “url” (`https://telegram.org`), “email” (`do-not-reply@telegram.org`),
+   * “phone_number” (`+1-212-555-0123`), “bold” (**bold text**), “italic”
+   * (*italic text*), “underline” (underlined text), “strikethrough”
+   * (strikethrough text), “code” (monowidth string), “pre” (monowidth
+   * block), “text_link” (for clickable text URLs), “text_mention” (for
+   * users [without
    * usernames](https://telegram.org/blog/edit#new-mentions))
    */
-  type: 'mention' | 'hashtag' | 'cashtag' | 'bot_command' | 'url' | 'email' | 'phone_number' | 'bold' | 'italic' | 'code' | 'pre' | 'text_link' | 'text_mention'
+  type: 'mention' | 'hashtag' | 'cashtag' | 'bot_command' | 'url' | 'email' | 'phone_number' | 'bold' | 'italic' | 'underline' | 'strikethrough' | 'code' | 'pre' | 'text_link' | 'text_mention'
 
   /** Offset in UTF-16 code units to the start of the entity */
   offset: integer
@@ -9596,6 +9920,9 @@ export class MessageEntity implements IMessageEntity {
 
   /** For “text_mention” only, the mentioned user */
   user?: User
+
+  /** For “pre” only, the programming language of the entity text */
+  language?: string
 
   /**
    * Parses a raw [[IMessageEntity]] object received from Telegram, into
@@ -9616,6 +9943,9 @@ export class MessageEntity implements IMessageEntity {
     if (typeof x.user !== 'undefined') {
       this.user = new User(x.user, client)
     }
+    if (typeof x.language !== 'undefined') {
+      this.language = x.language
+    }
   }
 }
 
@@ -9624,6 +9954,13 @@ export class MessageEntity implements IMessageEntity {
  * [[ISticker]] thumbnail.
  */
 export class PhotoSize extends FileContext implements IPhotoSize {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /** Photo width */
   width: integer
 
@@ -9644,6 +9981,7 @@ export class PhotoSize extends FileContext implements IPhotoSize {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     this.width = x.width
     this.height = x.height
     if (typeof x.file_size !== 'undefined') {
@@ -9657,6 +9995,13 @@ export class PhotoSize extends FileContext implements IPhotoSize {
  * Telegram clients.
  */
 export class Audio extends FileContext implements IAudio {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /** Duration of the audio in seconds as defined by sender */
   duration: integer
 
@@ -9686,6 +10031,7 @@ export class Audio extends FileContext implements IAudio {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     this.duration = x.duration
     if (typeof x.performer !== 'undefined') {
       this.performer = x.performer
@@ -9710,6 +10056,13 @@ export class Audio extends FileContext implements IAudio {
  * [[IVoice]] and [[IAudio]]).
  */
 export class Document extends FileContext implements IDocument {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /** Document thumbnail as defined by sender */
   thumb?: PhotoSize
 
@@ -9733,6 +10086,7 @@ export class Document extends FileContext implements IDocument {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     if (typeof x.thumb !== 'undefined') {
       this.thumb = new PhotoSize(x.thumb, client)
     }
@@ -9752,6 +10106,13 @@ export class Document extends FileContext implements IDocument {
  * This object represents a video file.
  */
 export class Video extends FileContext implements IVideo {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /** Video width as defined by sender */
   width: integer
 
@@ -9781,6 +10142,7 @@ export class Video extends FileContext implements IVideo {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     this.width = x.width
     this.height = x.height
     this.duration = x.duration
@@ -9801,6 +10163,13 @@ export class Video extends FileContext implements IVideo {
  * video without sound).
  */
 export class Animation extends FileContext implements IAnimation {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /** Video width as defined by sender */
   width: integer
 
@@ -9833,6 +10202,7 @@ export class Animation extends FileContext implements IAnimation {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     this.width = x.width
     this.height = x.height
     this.duration = x.duration
@@ -9855,6 +10225,13 @@ export class Animation extends FileContext implements IAnimation {
  * This object represents a voice note.
  */
 export class Voice extends FileContext implements IVoice {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /** Duration of the audio in seconds as defined by sender */
   duration: integer
 
@@ -9875,6 +10252,7 @@ export class Voice extends FileContext implements IVoice {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     this.duration = x.duration
     if (typeof x.mime_type !== 'undefined') {
       this.mime_type = x.mime_type
@@ -9892,6 +10270,13 @@ export class Voice extends FileContext implements IVoice {
  * [v.4.0](https://telegram.org/blog/video-messages-and-telescope)).
  */
 export class VideoNote extends FileContext implements IVideoNote {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /**
    * Video width and height (diameter of the video message) as defined by
    * sender
@@ -9918,6 +10303,7 @@ export class VideoNote extends FileContext implements IVideoNote {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     this.length = x.length
     this.duration = x.duration
     if (typeof x.thumb !== 'undefined') {
@@ -9926,6 +10312,38 @@ export class VideoNote extends FileContext implements IVideoNote {
     if (typeof x.file_size !== 'undefined') {
       this.file_size = x.file_size
     }
+  }
+}
+
+/**
+ * This object represents an answer of a user in a non-anonymous poll.
+ */
+export class PollAnswer implements IPollAnswer {
+  /** Unique poll identifier */
+  poll_id: string
+
+  /** The user, who changed the answer to the poll */
+  user: User
+
+  /**
+   * 0-based identifiers of answer options, chosen by the user. May be
+   * empty if the user retracted their vote.
+   */
+  option_ids: integer[]
+
+  /**
+   * Parses a raw [[IPollAnswer]] object received from Telegram, into
+   * Botgram's representation.
+   *
+   * Users should never need to use this constructor directly.
+   *
+   * @param x - JSON-decoded object to parse
+   * @param client - Client that returned contexts will make requests with
+   */
+  constructor (x: any, client: ClientBase) {
+    this.poll_id = x.poll_id
+    this.user = new User(x.user, client)
+    this.option_ids = x.option_ids
   }
 }
 
@@ -9964,6 +10382,13 @@ export class UserProfilePhotos implements IUserProfilePhotos {
  * > Maximum file size to download is 20 MB
  */
 export class File extends FileContext implements IFile {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /** File size, if known */
   file_size?: integer
 
@@ -9984,6 +10409,7 @@ export class File extends FileContext implements IFile {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     if (typeof x.file_size !== 'undefined') {
       this.file_size = x.file_size
     }
@@ -10086,6 +10512,9 @@ export class ChatMember implements IChatMember {
    * “member”, “restricted”, “left” or “kicked”
    */
   status: 'creator' | 'administrator' | 'member' | 'restricted' | 'left' | 'kicked'
+
+  /** Owner and administrators only. Custom title for this user */
+  custom_title?: string
 
   /**
    * Restricted and kicked only. Date when restrictions will be lifted for
@@ -10194,6 +10623,9 @@ export class ChatMember implements IChatMember {
   constructor (x: any, client: ClientBase) {
     this.user = new User(x.user, client)
     this.status = x.status
+    if (typeof x.custom_title !== 'undefined') {
+      this.custom_title = x.custom_title
+    }
     if (typeof x.until_date !== 'undefined') {
       this.until_date = new Date(x.until_date * 1000)
     }
@@ -10427,6 +10859,13 @@ export function formatInputMediaDocument (result: any, x: IInputMediaDocument, f
  * This object represents a sticker.
  */
 export class Sticker extends FileContext implements ISticker {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /** Sticker width */
   width: integer
 
@@ -10465,6 +10904,7 @@ export class Sticker extends FileContext implements ISticker {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     this.width = x.width
     this.height = x.height
     this.is_animated = x.is_animated
@@ -10739,6 +11179,13 @@ export class PassportData implements IPassportData {
  * don't exceed 10MB.
  */
 export class PassportFile extends FileContext implements IPassportFile {
+  /**
+   * Unique identifier for this file, which is supposed to be the same over
+   * time and for different bots. Can't be used to download or reuse the
+   * file.
+   */
+  file_unique_id: string
+
   /** File size */
   file_size: integer
 
@@ -10756,6 +11203,7 @@ export class PassportFile extends FileContext implements IPassportFile {
    */
   constructor (x: any, client: ClientBase) {
     super(client, x.file_id)
+    this.file_unique_id = x.file_unique_id
     this.file_size = x.file_size
     this.file_date = new Date(x.file_date * 1000)
   }

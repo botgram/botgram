@@ -52,9 +52,26 @@ To learn how to create…">
 <blockquote>
 <p>Subscribe to <a href="https://t.me/botnews">@BotNews</a> to be the first to know about the latest updates and join the discussion in <a href="https://t.me/bottalk">@BotTalk</a></p>
 </blockquote>
+<h4><a class="anchor" name="january-23-2020" href="#january-23-2020"><i class="anchor-icon"></i></a>January 23, 2020</h4>
+<p><strong>Bot API 4.6</strong></p>
 <ul>
+<li>Supported <a href="https://telegram.org/blog/polls-2-0-vmq">Polls 2.0</a>.</li>
+<li>Added the ability to send non-anonymous, multiple answer, and quiz-style polls: added the parameters <em>is_anonymous</em>, <em>type</em>, <em>allows_multiple_answers</em>, <em>correct_option_id</em>, <em>is_closed</em> options to the method <a href="#sendpoll">sendPoll</a>.</li>
+<li>Added the object <a href="#keyboardbuttonpolltype">KeyboardButtonPollType</a> and the field <em>request_poll</em> to the object <a href="#keyboardbutton">KeyboardButton</a>.</li>
+<li>Added updates about changes of user answers in non-anonymous polls, represented by the object <a href="#pollanswer">PollAnswer</a> and the field <em>poll_answer</em> in the <a href="#update">Update</a> object. </li>
+<li>Added the fields <em>total_voter_count</em>, <em>is_anonymous</em>, <em>type</em>, <em>allows_multiple_answers</em>, <em>correct_option_id</em> to the <a href="#poll">Poll</a> object.</li>
+<li>Bots can now send polls to private chats.</li>
+<li>Added more information about the bot in response to the <a href="#getme">getMe</a> request: added the fields <em>can_join_groups</em>, <em>can_read_all_group_messages</em> and <em>supports_inline_queries</em> to the <a href="#user">User</a> object.</li>
+<li>Added the optional field <em>language</em> to the <a href="#messageentity">MessageEntity</a> object.</li>
 </ul>
+<h4><a class="anchor" name="december-31-2019" href="#december-31-2019"><i class="anchor-icon"></i></a>December 31, 2019</h4>
+<p><strong>Bot API 4.5</strong></p>
 <ul>
+<li>Added support for two new <a href="#messageentity">MessageEntity</a> types, <em>underline</em> and <em>strikethrough</em>.</li>
+<li>Added the field <em>file_unique_id</em> to the objects <a href="#animation">Animation</a>, <a href="#audio">Audio</a>, <a href="#document">Document</a>, <a href="#passportfile">PassportFile</a>, <a href="#photosize">PhotoSize</a>, <a href="#sticker">Sticker</a>, <a href="#video">Video</a>, <a href="#videonote">VideoNote</a>, <a href="#voice">Voice</a>, <a href="#file">File</a> and the fields <em>small_file_unique_id</em> and <em>big_file_unique_id</em> to the object <a href="#chatphoto">ChatPhoto</a>. The new fields contain a unique file identifier, which is supposed to be the same over time and for different bots, but can&#39;t be used to download or reuse the file.</li>
+<li>Added the field <em>custom_title</em> to the <a href="#chatmember">ChatMember</a> object.</li>
+<li>Added the new method <a href="#setchatadministratorcustomtitle">setChatAdministratorCustomTitle</a> to manage the custom titles of administrators promoted by the bot.</li>
+<li>Added the field <em>slow_mode_delay</em> to the <a href="#chat">Chat</a> object.</li>
 </ul>
 <p><strong><a href="/bots/api-changelog">See earlier changes »</a></strong></p>
 <h3><a class="anchor" name="authorizing-your-bot" href="#authorizing-your-bot"><i class="anchor-icon"></i></a>Authorizing your bot</h3>
@@ -147,6 +164,11 @@ To learn how to create…">
 <td>poll</td>
 <td><a href="#poll">Poll</a></td>
 <td><em>Optional</em>. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot</td>
+</tr>
+<tr>
+<td>poll_answer</td>
+<td><a href="#poll_answer">PollAnswer</a></td>
+<td><em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.</td>
 </tr>
 </tbody>
 </table>
@@ -333,6 +355,21 @@ To learn how to create…">
 <td>String</td>
 <td><em>Optional</em>. <a href="https://en.wikipedia.org/wiki/IETF_language_tag">IETF language tag</a> of the user&#39;s language</td>
 </tr>
+<tr>
+<td>can_join_groups</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the bot can be invited to groups. Returned only in <a href="#getme">getMe</a>.</td>
+</tr>
+<tr>
+<td>can_read_all_group_messages</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if <a href="https://core.telegram.org/bots#privacy-mode">privacy mode</a> is disabled for the bot. Returned only in <a href="#getme">getMe</a>.</td>
+</tr>
+<tr>
+<td>supports_inline_queries</td>
+<td>Boolean</td>
+<td><em>Optional</em>. True, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>.</td>
+</tr>
 </tbody>
 </table>
 <h4><a class="anchor" name="chat" href="#chat"><i class="anchor-icon"></i></a>Chat</h4>
@@ -400,6 +437,11 @@ To learn how to create…">
 <td>permissions</td>
 <td><a href="#chatpermissions">ChatPermissions</a></td>
 <td><em>Optional</em>. Default chat member permissions, for groups and supergroups. Returned only in <a href="#getchat">getChat</a>.</td>
+</tr>
+<tr>
+<td>slow_mode_delay</td>
+<td>Integer</td>
+<td><em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user. Returned only in <a href="#getchat">getChat</a>.</td>
 </tr>
 <tr>
 <td>sticker_set_name</td>
@@ -675,7 +717,7 @@ To learn how to create…">
 <tr>
 <td>type</td>
 <td>String</td>
-<td>Type of the entity. Can be <em>mention</em> (<code>@username</code>), <em>hashtag</em>, <em>cashtag</em>, <em>bot_command</em>, <em>url</em>, <em>email</em>, <em>phone_number</em>, <em>bold</em> (bold text), <em>italic</em> (italic text), <em>code</em> (monowidth string), <em>pre</em> (monowidth block), <em>text_link</em> (for clickable text URLs), <em>text_mention</em> (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>)</td>
+<td>Type of the entity. Can be “mention” (<code>@username</code>), “hashtag” (<code>#hashtag</code>), “cashtag” (<code>$USD</code>), “bot_command” (<code>/start@jobs_bot</code>), “url” (<code>https://telegram.org</code>), “email” (<code>do-not-reply@telegram.org</code>), “phone_number” (<code>+1-212-555-0123</code>), “bold” (<strong>bold text</strong>), “italic” (<em>italic text</em>), “underline” (underlined text), “strikethrough” (strikethrough text), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users <a href="https://telegram.org/blog/edit#new-mentions">without usernames</a>)</td>
 </tr>
 <tr>
 <td>offset</td>
@@ -697,6 +739,11 @@ To learn how to create…">
 <td><a href="#user">User</a></td>
 <td><em>Optional</em>. For “text_mention” only, the mentioned user</td>
 </tr>
+<tr>
+<td>language</td>
+<td>String</td>
+<td><em>Optional</em>. For “pre” only, the programming language of the entity text</td>
+</tr>
 </tbody>
 </table>
 <h4><a class="anchor" name="photosize" href="#photosize"><i class="anchor-icon"></i></a>PhotoSize</h4>
@@ -713,7 +760,12 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>width</td>
@@ -746,7 +798,12 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>duration</td>
@@ -794,7 +851,12 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>thumb</td>
@@ -832,7 +894,12 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>width</td>
@@ -880,7 +947,12 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>width</td>
@@ -933,7 +1005,12 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>duration</td>
@@ -966,7 +1043,12 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>length</td>
@@ -1112,6 +1194,34 @@ To learn how to create…">
 </tr>
 </tbody>
 </table>
+<h4><a class="anchor" name="pollanswer" href="#pollanswer"><i class="anchor-icon"></i></a>PollAnswer</h4>
+<p>This object represents an answer of a user in a non-anonymous poll.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>poll_id</td>
+<td>String</td>
+<td>Unique poll identifier</td>
+</tr>
+<tr>
+<td>user</td>
+<td><a href="#user">User</a></td>
+<td>The user, who changed the answer to the poll</td>
+</tr>
+<tr>
+<td>option_ids</td>
+<td>Array of Integer</td>
+<td>0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.</td>
+</tr>
+</tbody>
+</table>
 <h4><a class="anchor" name="poll" href="#poll"><i class="anchor-icon"></i></a>Poll</h4>
 <p>This object contains information about a poll.</p>
 <table class="table">
@@ -1139,9 +1249,34 @@ To learn how to create…">
 <td>List of poll options</td>
 </tr>
 <tr>
+<td>total_voter_count</td>
+<td>Integer</td>
+<td>Total number of users that voted in the poll</td>
+</tr>
+<tr>
 <td>is_closed</td>
 <td>Boolean</td>
 <td>True, if the poll is closed</td>
+</tr>
+<tr>
+<td>is_anonymous</td>
+<td>Boolean</td>
+<td>True, if the poll is anonymous</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>Poll type, currently can be “regular” or “quiz”</td>
+</tr>
+<tr>
+<td>allows_multiple_answers</td>
+<td>Boolean</td>
+<td>True, if the poll allows multiple answers</td>
+</tr>
+<tr>
+<td>correct_option_id</td>
+<td>Integer</td>
+<td><em>Optional</em>. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.</td>
 </tr>
 </tbody>
 </table>
@@ -1185,7 +1320,12 @@ To learn how to create…">
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>file_size</td>
@@ -1233,7 +1373,7 @@ To learn how to create…">
 </tbody>
 </table>
 <h4><a class="anchor" name="keyboardbutton" href="#keyboardbutton"><i class="anchor-icon"></i></a>KeyboardButton</h4>
-<p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields are mutually exclusive.</p>
+<p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p>
 <table class="table">
 <thead>
 <tr>
@@ -1258,9 +1398,32 @@ To learn how to create…">
 <td>Boolean</td>
 <td><em>Optional</em>. If <em>True</em>, the user&#39;s current location will be sent when the button is pressed. Available in private chats only</td>
 </tr>
+<tr>
+<td>request_poll</td>
+<td><a href="#keyboardbuttonpolltype">KeyboardButtonPollType</a></td>
+<td><em>Optional</em>. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only</td>
+</tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>
+<p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will receive unsupported message.<br><strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will receive unsupported message.</p>
+<h4><a class="anchor" name="keyboardbuttonpolltype" href="#keyboardbuttonpolltype"><i class="anchor-icon"></i></a>KeyboardButtonPollType</h4>
+<p>This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>String</td>
+<td><em>Optional</em>. If <em>quiz</em> is passed, the user will be allowed to create only polls in the quiz mode. If <em>regular</em> is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.</td>
+</tr>
+</tbody>
+</table>
 <h4><a class="anchor" name="replykeyboardremove" href="#replykeyboardremove"><i class="anchor-icon"></i></a>ReplyKeyboardRemove</h4>
 <p>Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see <a href="#replykeyboardmarkup">ReplyKeyboardMarkup</a>).</p>
 <table class="table">
@@ -1496,9 +1659,19 @@ To learn how to create…">
 <td>File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.</td>
 </tr>
 <tr>
+<td>small_file_unique_id</td>
+<td>String</td>
+<td>Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
+</tr>
+<tr>
 <td>big_file_id</td>
 <td>String</td>
 <td>File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.</td>
+</tr>
+<tr>
+<td>big_file_unique_id</td>
+<td>String</td>
+<td>Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 </tbody>
 </table>
@@ -1522,6 +1695,11 @@ To learn how to create…">
 <td>status</td>
 <td>String</td>
 <td>The member&#39;s status in the chat. Can be “creator”, “administrator”, “member”, “restricted”, “left” or “kicked”</td>
+</tr>
+<tr>
+<td>custom_title</td>
+<td>String</td>
+<td><em>Optional</em>. Owner and administrators only. Custom title for this user</td>
 </tr>
 <tr>
 <td>until_date</td>
@@ -1940,7 +2118,7 @@ To learn how to create…">
 <li>It is not possible to resend thumbnails.</li>
 <li>Resending a photo by <strong>file_id</strong> will send all of its <a href="#photosize">sizes</a>.</li>
 <li><strong>file_id</strong> is unique for each individual bot and <strong>can&#39;t</strong> be transferred from one bot to another.</li>
-<li><strong>file_id</strong> uniquely identifies a file, but a file can have different valid <strong>file_id</strong>s.</li>
+<li><strong>file_id</strong> uniquely identifies a file, but a file can have different valid <strong>file_id</strong>s even for the same bot.</li>
 </ul>
 <p><strong>Sending by URL</strong></p>
 <ul>
@@ -2014,9 +2192,9 @@ To learn how to create…">
 </tbody>
 </table>
 <h4><a class="anchor" name="formatting-options" href="#formatting-options"><i class="anchor-icon"></i></a>Formatting options</h4>
-<p>The Bot API supports basic formatting for messages. You can use bold and italic text, as well as inline links and pre-formatted code in your bots&#39; messages. Telegram clients will render them accordingly. You can use either markdown-style or HTML-style formatting.</p>
+<p>The Bot API supports basic formatting for messages. You can use bold, italic, underlined and strikethrough text, as well as inline links and pre-formatted code in your bots&#39; messages. Telegram clients will render them accordingly. You can use either markdown-style or HTML-style formatting.</p>
 <p>Note that Telegram clients will display an <strong>alert</strong> to the user before opening an inline link (‘Open this link?’ together with the full URL).</p>
-<p>Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their id without using a username. Please note:</p>
+<p>Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their ID without using a username. Please note:</p>
 <ul>
 <li>These links will work <strong>only</strong> if they are used inside an inline link. For example, they will not work, when used in an inline keyboard button or in a message text.</li>
 <li>These mentions are only guaranteed to work if the user has contacted the bot in the past, has sent a callback query to the bot via inline button or is a member in the group where he was mentioned.</li>
@@ -2032,7 +2210,7 @@ _italic text_
 pre-formatted fixed-width code block
 ```</code></pre>
 <h6><a class="anchor" name="html-style" href="#html-style"><i class="anchor-icon"></i></a>HTML style</h6>
-<p>To use this mode, pass <em>HTML</em> in the <em>parse_mode</em> field when using <a href="#sendmessage">sendMessage</a>. The following tags are currently supported:</p>
+<p>To use this mode, pass <em>HTML</em> in the <em>parse_mode</em> field. The following tags are currently supported:</p>
 <pre><code>&lt;b&gt;bold&lt;/b&gt;, &lt;strong&gt;bold&lt;/strong&gt;
 &lt;i&gt;italic&lt;/i&gt;, &lt;em&gt;italic&lt;/em&gt;
 &lt;a href=&quot;http://www.example.com/&quot;&gt;inline URL&lt;/a&gt;
@@ -2142,7 +2320,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="sendaudio" href="#sendaudio"><i class="anchor-icon"></i></a>sendAudio</h4>
-<p>Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .mp3 format. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.</p>
+<p>Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent <a href="#message">Message</a> is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.</p>
 <p>For sending voice messages, use the <a href="#sendvoice">sendVoice</a> method instead.</p>
 <table class="table">
 <thead>
@@ -2893,7 +3071,7 @@ pre-formatted fixed-width code block
 </tbody>
 </table>
 <h4><a class="anchor" name="sendpoll" href="#sendpoll"><i class="anchor-icon"></i></a>sendPoll</h4>
-<p>Use this method to send a native poll. A native poll can&#39;t be sent to a private chat. On success, the sent <a href="#message">Message</a> is returned.</p>
+<p>Use this method to send a native poll. On success, the sent <a href="#message">Message</a> is returned.</p>
 <table class="table">
 <thead>
 <tr>
@@ -2908,7 +3086,7 @@ pre-formatted fixed-width code block
 <td>chat_id</td>
 <td>Integer or String</td>
 <td>Yes</td>
-<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). A native poll can&#39;t be sent to a private chat.</td>
+<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>
 </tr>
 <tr>
 <td>question</td>
@@ -2921,6 +3099,36 @@ pre-formatted fixed-width code block
 <td>Array of String</td>
 <td>Yes</td>
 <td>List of answer options, 2-10 strings 1-100 characters each</td>
+</tr>
+<tr>
+<td>is_anonymous</td>
+<td>Boolean</td>
+<td>Optional</td>
+<td>True, if the poll needs to be anonymous, defaults to <em>True</em></td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>Optional</td>
+<td>Poll type, “quiz” or “regular”, defaults to “regular”</td>
+</tr>
+<tr>
+<td>allows_multiple_answers</td>
+<td>Boolean</td>
+<td>Optional</td>
+<td>True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em></td>
+</tr>
+<tr>
+<td>correct_option_id</td>
+<td>Integer</td>
+<td>Optional</td>
+<td>0-based identifier of the correct answer option, required for polls in quiz mode</td>
+</tr>
+<tr>
+<td>is_closed</td>
+<td>Boolean</td>
+<td>Optional</td>
+<td>Pass <em>True</em>, if the poll needs to be immediately closed</td>
 </tr>
 <tr>
 <td>disable_notification</td>
@@ -3027,9 +3235,6 @@ pre-formatted fixed-width code block
 <p><strong>Note:</strong> This function may not preserve the original file name and MIME type. You should save the file&#39;s MIME type and name (if available) when the File object is received.</p>
 <h4><a class="anchor" name="kickchatmember" href="#kickchatmember"><i class="anchor-icon"></i></a>kickChatMember</h4>
 <p>Use this method to kick a user from a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless <a href="#unbanchatmember">unbanned</a> first. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
-<blockquote>
-<p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group. Otherwise members may only be removed by the group&#39;s creator or by the member that added them.</p>
-</blockquote>
 <table class="table">
 <thead>
 <tr>
@@ -3198,6 +3403,38 @@ pre-formatted fixed-width code block
 </tr>
 </tbody>
 </table>
+<h4><a class="anchor" name="setchatadministratorcustomtitle" href="#setchatadministratorcustomtitle"><i class="anchor-icon"></i></a>setChatAdministratorCustomTitle</h4>
+<p>Use this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns <em>True</em> on success.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>chat_id</td>
+<td>Integer or String</td>
+<td>Yes</td>
+<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>Unique identifier of the target user</td>
+</tr>
+<tr>
+<td>custom_title</td>
+<td>String</td>
+<td>Yes</td>
+<td>New custom title for the administrator; 0-16 characters, emoji are not allowed</td>
+</tr>
+</tbody>
+</table>
 <h4><a class="anchor" name="setchatpermissions" href="#setchatpermissions"><i class="anchor-icon"></i></a>setChatPermissions</h4>
 <p>Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the <em>can_restrict_members</em> admin rights. Returns <em>True</em> on success.</p>
 <table class="table">
@@ -3249,9 +3486,6 @@ pre-formatted fixed-width code block
 </blockquote>
 <h4><a class="anchor" name="setchatphoto" href="#setchatphoto"><i class="anchor-icon"></i></a>setChatPhoto</h4>
 <p>Use this method to set a new profile photo for the chat. Photos can&#39;t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
-<blockquote>
-<p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.</p>
-</blockquote>
 <table class="table">
 <thead>
 <tr>
@@ -3278,9 +3512,6 @@ pre-formatted fixed-width code block
 </table>
 <h4><a class="anchor" name="deletechatphoto" href="#deletechatphoto"><i class="anchor-icon"></i></a>deleteChatPhoto</h4>
 <p>Use this method to delete a chat photo. Photos can&#39;t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
-<blockquote>
-<p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.</p>
-</blockquote>
 <table class="table">
 <thead>
 <tr>
@@ -3301,9 +3532,6 @@ pre-formatted fixed-width code block
 </table>
 <h4><a class="anchor" name="setchattitle" href="#setchattitle"><i class="anchor-icon"></i></a>setChatTitle</h4>
 <p>Use this method to change the title of a chat. Titles can&#39;t be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate admin rights. Returns <em>True</em> on success.</p>
-<blockquote>
-<p>Note: In regular groups (non-supergroups), this method will only work if the ‘All Members Are Admins’ setting is off in the target group.</p>
-</blockquote>
 <table class="table">
 <thead>
 <tr>
@@ -3872,7 +4100,12 @@ pre-formatted fixed-width code block
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>width</td>
@@ -5545,7 +5778,7 @@ pre-formatted fixed-width code block
 </table>
 <p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>
 <h4><a class="anchor" name="inlinequeryresultcachedaudio" href="#inlinequeryresultcachedaudio"><i class="anchor-icon"></i></a>InlineQueryResultCachedAudio</h4>
-<p>Represents a link to an mp3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p>
+<p>Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p>
 <table class="table">
 <thead>
 <tr>
@@ -6329,7 +6562,12 @@ pre-formatted fixed-width code block
 <tr>
 <td>file_id</td>
 <td>String</td>
-<td>Identifier for this file</td>
+<td>Identifier for this file, which can be used to download or reuse the file</td>
+</tr>
+<tr>
+<td>file_unique_id</td>
+<td>String</td>
+<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can&#39;t be used to download or reuse the file.</td>
 </tr>
 <tr>
 <td>file_size</td>
