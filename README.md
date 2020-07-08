@@ -8,7 +8,7 @@ syntax, so you can create Telegram bots easily.
 const botgram = require("botgram")
 const bot = botgram("<auth token>")
 
-bot.command("start", "help", (msg, reply) =>
+bot.command("start", "help", (reply) =>
   reply.text("To schedule an alert, do: /alert <seconds> <text>"))
 
 bot.command("alert", (msg, reply, next) => {
@@ -18,7 +18,7 @@ bot.command("alert", (msg, reply, next) => {
   setTimeout(() => reply.text(text), Number(seconds) * 1000)
 })
 
-bot.command((msg, reply) =>
+bot.command((reply) =>
   reply.text("Invalid command."))
 ~~~
 
